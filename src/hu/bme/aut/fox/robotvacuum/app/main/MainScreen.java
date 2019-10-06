@@ -2,32 +2,31 @@ package hu.bme.aut.fox.robotvacuum.app.main;
 
 import hu.bme.aut.fox.robotvacuum.app.App;
 import hu.bme.aut.fox.robotvacuum.app.clock.ClockScreen;
-import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.layout.VBox;
+
+import javax.swing.*;
+import java.awt.*;
 
 public class MainScreen extends App.Screen {
 
 	public MainScreen() {
-		VBox pane = new VBox();
-		pane.setAlignment(Pos.CENTER);
-		pane.setSpacing(16);
+		BoxLayout layout = new BoxLayout(this, BoxLayout.Y_AXIS);
+		setLayout(layout);
 
-		Button clockButton = new Button("Clock");
-		clockButton.setOnMouseClicked(
+		JButton clockButton = new JButton("Clock");
+		clockButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+		clockButton.addActionListener(
 				(event) -> navigate(new ClockScreen())
 		);
 
-		Button exitButton = new Button("Exit");
-		exitButton.setOnMouseClicked(
-				(event) -> getStage().close()
+		JButton exitButton = new JButton("Exit");
+		exitButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+		exitButton.addActionListener(
+				(event) -> System.exit(0)
 		);
 
-		pane.getChildren().addAll(
-				clockButton,
-				exitButton
-		);
-
-		setRoot(pane);
+		add(Box.createVerticalGlue());
+		add(clockButton);
+		add(exitButton);
+		add(Box.createVerticalGlue());
 	}
 }

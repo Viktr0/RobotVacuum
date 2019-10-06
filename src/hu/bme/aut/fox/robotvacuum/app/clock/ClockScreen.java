@@ -2,35 +2,32 @@ package hu.bme.aut.fox.robotvacuum.app.clock;
 
 import hu.bme.aut.fox.robotvacuum.app.App;
 import hu.bme.aut.fox.robotvacuum.viewmodel.ClockViewModel;
-import javafx.geometry.Pos;
-import javafx.scene.control.Label;
-import javafx.scene.layout.HBox;
+
+import javax.swing.*;
 
 public class ClockScreen extends App.Screen {
 
 	private ClockViewModel viewModel = new ClockViewModel();
 
-	private Label hours;
-	private Label minutes;
-	private Label seconds;
+	private JLabel hours;
+	private JLabel minutes;
+	private JLabel seconds;
 
 	public ClockScreen() {
-		HBox pane = new HBox();
-		pane.setAlignment(Pos.CENTER);
+		BoxLayout layout = new BoxLayout(this, BoxLayout.X_AXIS);
+		setLayout(layout);
 
-		hours = new Label();
-		minutes = new Label();
-		seconds = new Label();
+		hours = new JLabel();
+		minutes = new JLabel();
+		seconds = new JLabel();
 
-		pane.getChildren().addAll(
-				hours,
-				new Label(":"),
-				minutes,
-				new Label(":"),
-				seconds
-		);
-
-		setRoot(pane);
+		add(Box.createHorizontalGlue());
+		add(hours);
+		add(new JLabel(":"));
+		add(minutes);
+		add(new JLabel(":"));
+		add(seconds);
+		add(Box.createHorizontalGlue());
 	}
 
 	@Override
