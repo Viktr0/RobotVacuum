@@ -4,43 +4,57 @@ import hu.bme.aut.fox.robotvacuum.app.main.MainScreen;
 import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
-import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.scene.Scene;
-import javafx.scene.layout.Pane;
-import javafx.stage.Stage;
-import javafx.stage.Window;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.HierarchyEvent;
 import java.util.LinkedList;
 import java.util.List;
 
-public class App extends Application {
+public class App {
 
-	@Override
-	public void start(Stage primaryStage) {
-		primaryStage.setWidth(960);
-		primaryStage.setHeight(600);
-		primaryStage.setScene(new MainScreen());
-		primaryStage.show();
-	}
+	public static void main(String[] args) {
+		JFrame frame = new JFrame();
 
-	@Override
-	public void stop() {
-		System.exit(0);
+		// Setting up the window
+		frame.setTitle("Robot Vacuum");
+		frame.setSize(960, 600);
+		frame.setLocationRelativeTo(null);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+		// Setting the main screen
+		Container cnt = new MainScreen();
+		frame.setContentPane(cnt);
+		frame.setVisible(true);
 	}
 
 	@SuppressWarnings({"WeakerAccess", "unused"})
-	public static abstract class Screen extends Scene {
+	public static abstract class Screen extends JPanel {
 
 		private List<Disposable> disposables = new LinkedList<>();
 
 		public Screen() {
-			super(new Pane());
+			addHierarchyListener(event -> {
+				if ((event.getChangeFlags() & HierarchyEvent.PARENT_CHANGED) != 0) {
+					if (event.getChangedParent() == getParent()) {
 
-			windowProperty().addListener((p, o, n) -> {
-				if (o != n) {
-					if (o != null) detach();
-					if (n != null) attach();
+						// Checking if the window is a JFrame
+						Window window = SwingUtilities.getWindowAncestor(this);
+						if (window instanceof JFrame) {
+
+							// Checking if the screen is the top level component
+							JFrame frame = (JFrame) window;
+							if (frame.getContentPane() != this) {
+								throw new IllegalStateException("The screen is not the top level component");
+							}
+						} else {
+							throw new IllegalStateException("The window is not a JFrame");
+						}
+
+						attach();
+					} else {
+						detach();
+					}
 				}
 			});
 		}
@@ -81,26 +95,27 @@ public class App extends Application {
 
 		/* Helper functions */
 
-		public Stage getStage() {
-			Window window = getWindow();
-			if (window instanceof Stage) {
-				return (Stage) window;
+		public JFrame getFrame() {
+			Window window = SwingUtilities.getWindowAncestor(this);
+			if (window instanceof JFrame) {
+				return (JFrame) window;
 			} else {
-				return null;
+				throw new IllegalStateException("The window is not a JFrame");
 			}
 		}
 
-		public void navigate(Scene scene) {
-			Stage stage = getStage();
-			if (stage != null) {
-				stage.setScene(scene);
+		public void navigate(Container container) {
+			JFrame frame = getFrame();
+			if (frame != null) {
+				frame.setContentPane(container);
+				frame.setVisible(true);
 			} else {
-				throw new IllegalStateException("The screen is not attached to a stage.");
+				throw new IllegalStateException("The screen is not attached to a window.");
 			}
 		}
 
 		public <T> void subscribe(Observable<T> observable, Consumer<? super T> onNext) {
-			Disposable disposable = observable.subscribe((value) -> Platform.runLater(() -> {
+			Disposable disposable = observable.subscribe((value) -> SwingUtilities.invokeLater(() -> {
 				try {
 					onNext.accept(value);
 				} catch (Exception e) {
