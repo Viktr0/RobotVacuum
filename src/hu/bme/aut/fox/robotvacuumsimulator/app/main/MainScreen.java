@@ -1,7 +1,7 @@
-package hu.bme.aut.fox.robotvacuum.app.main;
+package hu.bme.aut.fox.robotvacuumsimulator.app.main;
 
-import hu.bme.aut.fox.robotvacuum.app.App;
-import hu.bme.aut.fox.robotvacuum.app.clock.ClockScreen;
+import hu.bme.aut.fox.robotvacuumsimulator.app.App;
+import hu.bme.aut.fox.robotvacuumsimulator.app.clock.ClockScreen;
 
 import javax.swing.*;
 import java.awt.*;
