@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class VirtualWorld {
+	public static final double worldFieldSize = 1.0;
 	private static final Object positionLock = new Object();
 	private static final Object observableLock = new Object();
 
