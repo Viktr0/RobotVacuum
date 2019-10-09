@@ -1,6 +1,6 @@
-package hu.bme.aut.fox.robotvacuum.app;
+package hu.bme.aut.fox.robotvacuumsimulator.app;
 
-import hu.bme.aut.fox.robotvacuum.app.main.MainScreen;
+import hu.bme.aut.fox.robotvacuumsimulator.app.main.MainScreen;
 import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;

@@ -1,4 +1,4 @@
-package hu.bme.aut.fox.robotvacuum.viewmodel;
+package hu.bme.aut.fox.robotvacuumsimulator.viewmodel;
 
 import io.reactivex.subjects.BehaviorSubject;
 
