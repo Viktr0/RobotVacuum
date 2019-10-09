@@ -8,7 +8,6 @@ import hu.bme.aut.fox.robotvacuum.components.interpretedworld.InterpretedWorldFi
 public class Discretiser {
 	private static final double locationRadiusEpsilonSquared = 0.1 * 0.1;
 	private static final double directionAngleEpsilon = 0.1;
-	private static final double sqrt2p2 = Math.sqrt(2) / 2;
 
 	public InterpretedWorldField getDiscreteLocation(InterpretedWorld world) {
 		InterpretedWorldField[][] fields = world.getFields();
@@ -20,8 +19,8 @@ public class Discretiser {
 		j = new Double(position.y / worldFieldSize).intValue();
 
 		double centerX, centerY;
-		centerX = i + worldFieldSize * sqrt2p2;
-		centerY = j + worldFieldSize * sqrt2p2;
+		centerX = i * worldFieldSize + worldFieldSize / 2;
+		centerY = j * worldFieldSize + worldFieldSize / 2;
 
 		double a = position.x - centerX, b = position.y - centerY;
 		if (a * a + b * b <= locationRadiusEpsilonSquared)
