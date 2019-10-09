@@ -68,7 +68,6 @@ public class VirtualMotor implements Motor, Runnable {
 			} catch(InterruptedException e) {
 				e.printStackTrace();
 			}
-
 		}
 	}
 
