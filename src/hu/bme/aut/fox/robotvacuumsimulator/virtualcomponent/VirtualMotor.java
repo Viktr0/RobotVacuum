@@ -6,12 +6,15 @@ import hu.bme.aut.fox.robotvacuum.hardwareAbstractionLayer.Motor;
 import java.util.LinkedList;
 import java.util.List;
 
-public class VirtualMotor implements Motor, Runnable {
+public class VirtualMotor implements Motor {
 	private static final Object observableLock = new Object();
 	private static final int movingInterval = 300;
 	private static final double movingSpeed = 0.2;
 	private static final int rotationInterval = 300;
 	private static final double rotationSpeed = 0.2;
+
+	private boolean isRunning = false;
+	private Thread motorThread;
 
 	private List<MotorListener> listeners;
 	private VirtualWorld world;
@@ -22,6 +25,7 @@ public class VirtualMotor implements Motor, Runnable {
 	public VirtualMotor(VirtualWorld world) {
 		this.world = world;
 		this.listeners = new LinkedList<>();
+		motorThread = null;
 	}
 
 	private void notifyMotorListenersOfMove(final double deltaS) {
@@ -52,8 +56,25 @@ public class VirtualMotor implements Motor, Runnable {
 	}
 
 	@Override
-	public void run() {
-		while (true) {
+	public void start() {
+		if (isRunning) return;
+		isRunning = true;
+		motorThread = new Thread(this::run);
+		motorThread.start();
+	}
+
+	@Override
+	public void stop() {
+		isRunning = false;
+		try {
+			motorThread.join();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void run() {
+		while (isRunning) {
 			try {
 				if (rotating) {
 					double deltaPhi = performRotation();

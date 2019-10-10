@@ -18,24 +18,25 @@ public class Test {
 		fields.get(1).add(new VirtualWorldField(VirtualWorldField.Status.NOTEMPTY));
 		fields.get(1).add(new VirtualWorldField(VirtualWorldField.Status.DIRTY));
 
-		VirtualWorld world = new VirtualWorld(fields);
+		VirtualWorld world = new VirtualWorld(fields, 2, 3);
 		VirtualMotor motor = new VirtualMotor(world);
 		world.setRobotVacuumPosition(new Position(0, 0, Math.PI * 1.5));
 
 		world.addListener((Position p) -> System.out.println(Math.round(p.x * 100) / 100.0  + " " + Math.round(p.y * 100) / 100.0  + " " + Math.round(p.direction * 180.0 / Math.PI)));
 
-		Thread t = new Thread(motor);
 		Thread t2 = new Thread(() -> {
 			try {
 				Thread.sleep(1400);
 				motor.rotate(Math.PI / 2);
 				Thread.sleep(5000);
 				motor.rotate(-Math.PI);
+				Thread.sleep(7000);
+				motor.stop();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 		});
-		t.start();
+		motor.start();
 		t2.start();
 	}
 }
