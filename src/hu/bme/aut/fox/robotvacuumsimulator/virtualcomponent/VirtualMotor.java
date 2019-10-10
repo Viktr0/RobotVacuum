@@ -75,7 +75,7 @@ public class VirtualMotor implements Motor, Runnable {
 		Position p = world.getRobotVacuumPosition();
 		double translationX, translationY;
 		translationX = Math.cos(p.direction) * movingSpeed;
-		translationY = Math.sin(p.direction) * movingSpeed;
+		translationY = -Math.sin(p.direction) * movingSpeed;
 		p.x += translationX;
 		p.y += translationY;
 		world.setRobotVacuumPosition(p);
