@@ -7,6 +7,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class InterpretedWorld {
+	public static final double WORLD_FIELD_SIZE = 1.0;
+
+	private static final double PI_2 = Math.PI * 2;
+
 	private static final Object matrixLock = new Object();
 	private static final Object positionLock = new Object();
 	private static final Object observableLock = new Object();
@@ -25,6 +29,7 @@ public class InterpretedWorld {
 		M = 0;
 		worldMatrix = new ArrayList<>(N);
 		listeners = new LinkedList<>();
+		robotVacuumPosition = new Position(0, 0, 0);
 	}
 
 	public InterpretedWorldField[][] getFields() {
@@ -71,6 +76,7 @@ public class InterpretedWorld {
 	public void setRobotVacuumPosition(Position robotVacuumPosition) {
 		synchronized (positionLock) {
 			this.robotVacuumPosition = robotVacuumPosition;
+			setProperPositionDirection();
 			this.notifyListenersOfPositionChange();
 		}
 	}
@@ -80,6 +86,17 @@ public class InterpretedWorld {
 			if (listener == null) throw new NullPointerException();
 			this.listeners.add(listener);
 		}
+	}
+
+	private void setProperPositionDirection() {
+		System.out.println(this.robotVacuumPosition.direction);
+		if (this.robotVacuumPosition.direction > PI_2)
+			while (this.robotVacuumPosition.direction > PI_2)
+				robotVacuumPosition.direction -= PI_2;
+
+		if (this.robotVacuumPosition.direction < 0)
+			while (this.robotVacuumPosition.direction < 0)
+				robotVacuumPosition.direction += PI_2;
 	}
 
 	private void notifyListenersOfMatrixChange() {
