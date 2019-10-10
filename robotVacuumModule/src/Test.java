@@ -24,14 +24,14 @@ public class Test {
 		InterpretedWorld world = new InterpretedWorld();
 		world.addListener(new InterpretedWorld.InterpretedWorldListener() {
 			@Override
-			public void notifyWorldMatrixChange(InterpretedWorldField[][] matrix, int N, int M) {
+			public void worldMatrixChanged(InterpretedWorldField[][] matrix, int N, int M) {
 				for(int i = 0; i < N; ++i)
 					for(int j = 0; j < M; ++j)
 						System.out.println(i +" " + j + " " + matrix[i][j]);
 			}
 
 			@Override
-			public void notifyPositionChange(Position position) {
+			public void positionChanged(Position position) {
 				System.out.println("(" + position.x + ", " + position.y + " " + position.direction + ")");
 			}
 		});

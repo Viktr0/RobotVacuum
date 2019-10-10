@@ -40,7 +40,7 @@ public class InterpretedWorld {
 
 	public void cleanField(final short i, final short j) {
 		synchronized (matrixLock) {
-			if (i >= N || j >= M) throw new IndexOutOfBoundsException();
+			if (i >= N || j >= M || i < 0 || j < 0) throw new IndexOutOfBoundsException();
 			this.worldMatrix.get(i).get(j).clean();
 			this.worldMatrixDeepCopy[i][j].clean();
 			this.notifyListenersOfMatrixChange();
@@ -102,19 +102,19 @@ public class InterpretedWorld {
 	private void notifyListenersOfMatrixChange() {
 		synchronized (observableLock) {
 			for (InterpretedWorldListener listener : listeners)
-				listener.notifyWorldMatrixChange(worldMatrixDeepCopy, N, M);
+				listener.worldMatrixChanged(worldMatrixDeepCopy, N, M);
 		}
 	}
 
 	private void notifyListenersOfPositionChange() {
 		synchronized (observableLock) {
 			for (InterpretedWorldListener listener : listeners)
-				listener.notifyPositionChange(getRobotVacuumPosition());
+				listener.positionChanged(getRobotVacuumPosition());
 		}
 	}
 
 	public interface InterpretedWorldListener {
-		void notifyWorldMatrixChange(InterpretedWorldField[][] matrix, int N, int M);
-		void notifyPositionChange(Position position);
+		void worldMatrixChanged(InterpretedWorldField[][] matrix, int N, int M);
+		void positionChanged(Position position);
 	}
 }

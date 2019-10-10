@@ -1,7 +1,7 @@
 package hu.bme.aut.fox.robotvacuum;
 
 import hu.bme.aut.fox.robotvacuum.components.Discretiser;
-import hu.bme.aut.fox.robotvacuum.components.Navigator;
+import hu.bme.aut.fox.robotvacuum.components.navigation.Navigator;
 import hu.bme.aut.fox.robotvacuum.components.WorldInterpreter;
 import hu.bme.aut.fox.robotvacuum.components.interpretedworld.InterpretedWorld;
 import hu.bme.aut.fox.robotvacuum.components.interpretedworld.InterpretedWorldField;
@@ -22,6 +22,15 @@ public class RobotVacuum implements Radar.RadarListener, Motor.MotorListener {
 		this.motor = motor;
 		components = new Components();
 		nextField = null;
+	}
+
+	public void start() {
+		throw new NotImplementedException(); //TODO
+	}
+
+	public void stop() {
+		this.radar.stop();
+		this.motor.stop();
 	}
 
 	@Override
