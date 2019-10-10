@@ -89,12 +89,13 @@ public class InterpretedWorld {
 	}
 
 	private void setProperPositionDirection() {
+		System.out.println(this.robotVacuumPosition.direction);
 		if (this.robotVacuumPosition.direction > PI_2)
-			while (this.robotVacuumPosition.direction <= PI_2)
+			while (this.robotVacuumPosition.direction > PI_2)
 				robotVacuumPosition.direction -= PI_2;
 
 		if (this.robotVacuumPosition.direction < 0)
-			while (this.robotVacuumPosition.direction >= 0)
+			while (this.robotVacuumPosition.direction < 0)
 				robotVacuumPosition.direction += PI_2;
 	}
 

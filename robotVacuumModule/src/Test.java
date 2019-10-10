@@ -10,7 +10,7 @@ import java.util.List;
 public class Test {
 	public static void main(String[] args) {
 		Discretiser d = new Discretiser();
-		
+
 		List<List<InterpretedWorldField>> fields = new ArrayList<>();
 		fields.add(new ArrayList<>());
 		fields.get(0).add(new InterpretedWorldField(InterpretedWorldField.Status.CLEANED));
@@ -32,12 +32,12 @@ public class Test {
 
 			@Override
 			public void notifyPositionChange(Position position) {
-				System.out.println("(" + position.x + ", " + position.y + ")");
+				System.out.println("(" + position.x + ", " + position.y + " " + position.direction + ")");
 			}
 		});
 
 		world.setNewMatrix(fields, 2, 3);
-		world.setRobotVacuumPosition(new Position(1, 3, Math.PI / 2 - 0.08));
+		world.setRobotVacuumPosition(new Position(1, 3, -Math.PI / 2 - 0.08));
 
 		InterpretedWorldField result = d.getDiscreteLocation(world);
 		Direction direction = d.getDiscreteDirection(world);
