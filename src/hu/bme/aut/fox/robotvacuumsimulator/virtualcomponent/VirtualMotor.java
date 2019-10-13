@@ -22,6 +22,9 @@ public class VirtualMotor implements Motor {
 	private boolean rotating = false;
 	private double remainingRotation = 0;
 
+	private boolean moving = false;
+	private double remainingTranslation = 0;
+
 	public VirtualMotor(VirtualWorld world) {
 		this.world = world;
 		this.listeners = new LinkedList<>();
@@ -52,7 +55,17 @@ public class VirtualMotor implements Motor {
 	@Override
 	public void rotate(double deltaPhi) {
 		rotating = true;
+		moving = false;
 		remainingRotation = deltaPhi;
+		remainingTranslation = 0;
+	}
+
+	@Override
+	public void moveForward(double deltaS) {
+		moving = true;
+		rotating = false;
+		remainingTranslation = deltaS;
+		remainingRotation = 0;
 	}
 
 	@Override
@@ -81,9 +94,9 @@ public class VirtualMotor implements Motor {
 					notifyMotorListenersOfRotation(deltaPhi);
 					Thread.sleep(rotationInterval);
 				}
-				else {
-					performTranslation();
-					notifyMotorListenersOfMove(movingSpeed);
+				else if (moving){
+					double deltaS = performTranslation();
+					notifyMotorListenersOfMove(deltaS);
 					Thread.sleep(movingInterval);
 				}
 			} catch(InterruptedException e) {
@@ -92,14 +105,24 @@ public class VirtualMotor implements Motor {
 		}
 	}
 
-	private void performTranslation() {
+	private double performTranslation() {
 		Position p = world.getRobotVacuumPosition();
-		double translationX, translationY;
-		translationX = Math.cos(p.direction) * movingSpeed;
-		translationY = -Math.sin(p.direction) * movingSpeed;
+		double translationX, translationY, deltaS;
+		if (movingSpeed < remainingTranslation) {
+			deltaS = movingSpeed;
+			remainingTranslation -= movingSpeed;
+		}
+		else {
+			deltaS = remainingTranslation;
+			remainingTranslation = 0;
+			moving = false;
+		}
+		translationX = Math.cos(p.direction) * deltaS;
+		translationY = -Math.sin(p.direction) * deltaS;
 		p.x += translationX;
 		p.y += translationY;
 		world.setRobotVacuumPosition(p);
+		return deltaS;
 	}
 
 	private double performRotation() {
