@@ -1,13 +1,13 @@
 package hu.bme.aut.fox.robotvacuum.virtual.app.interpretedworld;
 
 import hu.bme.aut.fox.robotvacuum.components.world.InterpretedWorldField;
-import hu.bme.aut.fox.robotvacuum.virtual.app.App;
 import hu.bme.aut.fox.robotvacuum.virtual.viewmodel.InterpretedWorldViewModel;
+import hu.bme.aut.fox.robotvacuumsimulator.app.Screen;
 
 import java.awt.*;
 
-public class InterpretedWorldScreen extends App.Screen {
-	private static final int fieldSize = 8;
+public class InterpretedWorldScreen extends Screen {
+	private static final int fieldSize = 10;
 	InterpretedWorldViewModel viewModel;
 	Canvas canvas;
 	public InterpretedWorldScreen() {

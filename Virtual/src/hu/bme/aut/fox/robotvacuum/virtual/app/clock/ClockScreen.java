@@ -1,11 +1,11 @@
 package hu.bme.aut.fox.robotvacuum.virtual.app.clock;
 
-import hu.bme.aut.fox.robotvacuum.virtual.app.App;
+import hu.bme.aut.fox.robotvacuumsimulator.app.Screen;
 import hu.bme.aut.fox.robotvacuum.virtual.viewmodel.ClockViewModel;
 
 import javax.swing.*;
 
-public class ClockScreen extends App.Screen {
+public class ClockScreen extends Screen {
 
 	private ClockViewModel viewModel = new ClockViewModel();
 
