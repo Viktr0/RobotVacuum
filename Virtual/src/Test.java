@@ -1,4 +1,3 @@
-import hu.bme.aut.fox.robotvacuum.Position;
 import hu.bme.aut.fox.robotvacuum.virtual.components.VirtualMotor;
 import hu.bme.aut.fox.robotvacuum.virtual.components.VirtualWorld;
 import hu.bme.aut.fox.robotvacuum.virtual.components.VirtualWorldField;

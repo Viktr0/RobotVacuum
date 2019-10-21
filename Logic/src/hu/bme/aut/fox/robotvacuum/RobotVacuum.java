@@ -1,30 +1,34 @@
 package hu.bme.aut.fox.robotvacuum;
 
-import hu.bme.aut.fox.robotvacuum.components.Discretiser;
-import hu.bme.aut.fox.robotvacuum.components.navigation.Navigator;
-import hu.bme.aut.fox.robotvacuum.components.WorldInterpreter;
-import hu.bme.aut.fox.robotvacuum.components.world.InterpretedWorld;
-import hu.bme.aut.fox.robotvacuum.components.world.InterpretedWorldField;
 import hu.bme.aut.fox.robotvacuum.hardware.Motor;
 import hu.bme.aut.fox.robotvacuum.hardware.Radar;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
-import java.util.List;
+import hu.bme.aut.fox.robotvacuum.interpretation.Interpreter;
+import hu.bme.aut.fox.robotvacuum.navigation.Navigator;
+import hu.bme.aut.fox.robotvacuum.world.World;
 
 public class RobotVacuum {
 
 	private Radar radar;
 	private Motor motor;
 
-	private InterpretedWorldField nextField;
-	private Components components;
+	private Interpreter interpreter;
+	private Navigator navigator;
 
-	public RobotVacuum(Radar radar, Motor motor) {
+	private State state;
+	private World world;
+
+	public RobotVacuum(
+			Radar radar, Motor motor,
+			Interpreter interpreter, Navigator navigator
+	) {
 		this.radar = radar;
 		this.motor = motor;
 
-		components = new Components();
-		nextField = null;
+		this.interpreter = interpreter;
+		this.navigator = navigator;
+
+		state = new State();
+		world = new World();
 	}
 
 	public void start() {
@@ -45,29 +49,44 @@ public class RobotVacuum {
 		motor.removeOnRotationListener(this::onMotorRotation);
 	}
 
-	private void onRadarUpdate(List<Radar.RadarData> data) {
-		throw new NotImplementedException(); //TODO
+	private void onRadarUpdate(Radar.RadarData[] data) {
+		world = interpreter.interpretRadar(world, state, data);
 	}
 
 	private void onMotorMovement(double distance) {
-		throw new NotImplementedException(); //TODO
+		state = interpreter.interpretMovement(world, state, distance);
 	}
 
 	private void onMotorRotation(double angle) {
-		throw new NotImplementedException(); //TODO
+		state = interpreter.interpretRotation(world, state, angle);
 	}
 
-	private static class Components {
-		private WorldInterpreter worldInterpreter;
-		private InterpretedWorld world;
-		private Navigator navigator;
-		private Discretiser discretiser;
+	public static class State {
 
-		private Components() {
-			worldInterpreter = new WorldInterpreter();
-			world = new InterpretedWorld();
-			navigator = new Navigator();
-			discretiser = new Discretiser();
+		private final double positionX;
+		private final double positionY;
+		private final double direction;
+
+		public State() {
+			this(0, 0, 0);
+		}
+
+		public State(double positionX, double positionY, double direction) {
+			this.positionX = positionX;
+			this.positionY = positionY;
+			this.direction = direction;
+		}
+
+		public double getPositionX() {
+			return positionX;
+		}
+
+		public double getPositionY() {
+			return positionY;
+		}
+
+		public double getDirection() {
+			return direction;
 		}
 	}
 }

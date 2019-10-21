@@ -1,7 +1,5 @@
 package hu.bme.aut.fox.robotvacuum.virtual.components;
 
-import hu.bme.aut.fox.robotvacuum.Position;
-
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;

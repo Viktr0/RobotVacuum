@@ -1,7 +1,5 @@
 package hu.bme.aut.fox.robotvacuum.hardware;
 
-import java.util.List;
-
 public interface Radar {
 
 	void addOnUpdateListener(OnUpdateListener listener);
@@ -11,7 +9,7 @@ public interface Radar {
 	void stop();
 
 	interface OnUpdateListener {
-		void onUpdate(List<RadarData> data);
+		void onUpdate(RadarData[] data);
 	}
 
 	final class RadarData {

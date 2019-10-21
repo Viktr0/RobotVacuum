@@ -1,9 +1,7 @@
 package hu.bme.aut.fox.robotvacuum.virtual.viewmodel;
 
-import hu.bme.aut.fox.robotvacuum.Position;
 import hu.bme.aut.fox.robotvacuum.components.world.InterpretedWorld;
 import hu.bme.aut.fox.robotvacuum.components.world.InterpretedWorldField;
-import hu.bme.aut.fox.robotvacuum.virtual.components.VirtualWorld;
 import io.reactivex.subjects.BehaviorSubject;
 
 import java.util.ArrayList;
