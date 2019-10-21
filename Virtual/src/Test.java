@@ -5,7 +5,6 @@ import hu.bme.aut.fox.robotvacuum.virtual.components.VirtualWorldField;
 
 import java.util.ArrayList;
 import java.util.List;
-/*
 public class Test {
 	public static void main(String[] args) {
 		List<List<VirtualWorldField>> fields = new ArrayList<>();
@@ -41,4 +40,4 @@ public class Test {
 		motor.start();
 		t2.start();
 	}
-}*/
+}
