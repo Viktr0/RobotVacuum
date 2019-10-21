@@ -17,7 +17,10 @@ public class Simulation {
 
 	public Simulation() {
 		world = generateWorld();
-		vacuum = new RobotVacuum(new VirtualRadar(world), new VirtualMotor(world));
+		vacuum = new RobotVacuum(
+				new VirtualRadar(world), new VirtualMotor(world),
+				null, null
+		);
 	}
 
 	public RobotVacuum getRobotVacuum() { return vacuum; }

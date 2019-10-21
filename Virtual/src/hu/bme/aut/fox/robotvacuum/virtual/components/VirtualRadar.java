@@ -25,7 +25,7 @@ public class VirtualRadar implements Radar {
 		radarThread = null;
 	}
 
-	private void notifyRadarListeners(List<RadarData> data) {
+	private void notifyRadarListeners(RadarData[] data) {
 		synchronized (observableLock) {
 			for(OnUpdateListener listener : listeners)
 				listener.onUpdate(data);
@@ -78,7 +78,7 @@ public class VirtualRadar implements Radar {
 		final List<RadarData> data = new ArrayList<>();
 		for (double phi = angle / 2; phi >= -angle / 2; phi -= dPhi)
 			data.add(new RadarData(position.direction, this.getRayLength(phi, position)));
-		notifyRadarListeners(data);
+		notifyRadarListeners(data.toArray(new RadarData[0]));
 	}
 
 	private double getRayLength (double phi, Position position) {

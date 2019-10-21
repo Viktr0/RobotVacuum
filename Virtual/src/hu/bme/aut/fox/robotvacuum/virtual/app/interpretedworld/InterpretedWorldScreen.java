@@ -1,8 +1,8 @@
 package hu.bme.aut.fox.robotvacuum.virtual.app.interpretedworld;
 
-import hu.bme.aut.fox.robotvacuum.components.world.InterpretedWorldField;
 import hu.bme.aut.fox.robotvacuum.virtual.viewmodel.InterpretedWorldViewModel;
 import hu.bme.aut.fox.robotvacuum.virtual.app.Screen;
+import hu.bme.aut.fox.robotvacuum.world.World;
 
 import javax.swing.*;
 import java.awt.*;
@@ -54,7 +54,7 @@ public class InterpretedWorldScreen extends Screen {
 
 	}
 
-	private void drawNewMatrix(InterpretedWorldField[][] matrix, int N, int M) {
+	private void drawNewWorld(World world, int N, int M) {
 		Graphics graphics = canvas.getGraphics();
 		clearCanvas(graphics);
 		graphics.drawRect(1, 2, 3, 4);
