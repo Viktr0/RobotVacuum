@@ -4,21 +4,53 @@ import hu.bme.aut.fox.robotvacuum.components.world.InterpretedWorldField;
 import hu.bme.aut.fox.robotvacuum.virtual.viewmodel.InterpretedWorldViewModel;
 import hu.bme.aut.fox.robotvacuum.virtual.app.Screen;
 
+import javax.swing.*;
 import java.awt.*;
 
 public class InterpretedWorldScreen extends Screen {
+
 	private static final int fieldSize = 10;
-	InterpretedWorldViewModel viewModel;
-	Canvas canvas;
+	private InterpretedWorldViewModel viewModel = new InterpretedWorldViewModel();
+	private Canvas canvas;
+
 	public InterpretedWorldScreen() {
-		canvas = new Canvas();
+		canvas = new MyCanvas();
+        BoxLayout layout = new BoxLayout(this, BoxLayout.X_AXIS);
+        setLayout(layout);
+		//setSize(500, 300);
+
+        //viewModel.setDefaultInterpretedWorld();
+		//Graphics graphics = new Graphics();
+		//clearCanvas(graphics);
+		//graphics.drawRect(1, 2, 3, 4);
+		//canvas.paint(graphics);
 		add(canvas);
+	}
+
+	public void paint(Graphics graphics){
+        graphics.setColor(Color.LIGHT_GRAY);
+        graphics.drawRect(10,10,10,10);
+        graphics.fillRect(200,100,90,90);
+        graphics.setColor(Color.BLUE);
+        graphics.fillRect(290,100,10,10);
+        graphics.setColor(Color.BLUE);
+
+        for(int i = 0; i < 100; i++){
+            if(i % 2 == 0){
+                graphics.setColor(Color.LIGHT_GRAY);
+                graphics.fillRect(i * 10,300,10,10);
+            }
+            else{
+                graphics.setColor(Color.BLACK);
+                graphics.fillRect(i * 10,300,10,10);
+            }
+        }
 	}
 
 	@Override
 	public void onAttach() {
 		super.onAttach();
-		subscribe(viewModel.matrixSubject, (matrix) -> {drawNewMatrix(matrix, matrix.length, matrix[0].length);});
+		//subscribe(viewModel.matrixSubject, (matrix) -> {drawNewMatrix(matrix, matrix.length, matrix[0].length);});
 
 	}
 
@@ -32,5 +64,32 @@ public class InterpretedWorldScreen extends Screen {
 		graphics.setColor(Color.WHITE);
 		graphics.fillRect(0, 0, 30, 30);
 
+	}
+
+	private class MyCanvas extends Canvas{
+
+		@Override
+		public void paint(Graphics graphics) {
+			//super.paint(graphics);
+			graphics.setColor(Color.LIGHT_GRAY);
+			graphics.drawRect(10,10,10,10);
+			graphics.fillRect(200,100,90,90);
+			graphics.setColor(Color.BLUE);
+			graphics.fillRect(290,100,10,10);
+			graphics.setColor(Color.BLUE);
+
+			for(int i = 0; i < 100; i++){
+			    if(i % 2 == 0){
+			        graphics.setColor(Color.LIGHT_GRAY);
+                    graphics.fillRect(i * 10,300,10,10);
+                }
+			    else{
+                    graphics.setColor(Color.BLACK);
+                    graphics.fillRect(i * 10,300,10,10);
+                }
+            }
+
+
+		}
 	}
 }

@@ -12,7 +12,7 @@ public class App {
 
 		// Setting up the window
 		frame.setTitle("Robot Vacuum");
-		frame.setSize(960, 800);
+		frame.setSize(1400, 700);
 		frame.setLocationRelativeTo(null);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 

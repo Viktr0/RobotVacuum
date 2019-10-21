@@ -1,17 +1,21 @@
-package hu.bme.aut.fox.robotvacuum.hal;
+package hu.bme.aut.fox.robotvacuum.hardware;
 
 import java.util.List;
 
 public interface Radar {
-	void addRadarListener(RadarListener listener);
+
+	void addOnUpdateListener(OnUpdateListener listener);
+	void removeOnUpdateListener(OnUpdateListener listener);
+
 	void start();
 	void stop();
 
-	interface RadarListener {
-		void newRadarData(List<RadarData> data);
+	interface OnUpdateListener {
+		void onUpdate(List<RadarData> data);
 	}
 
 	final class RadarData {
+
 		public final double direction;
 		public final double distance;
 
