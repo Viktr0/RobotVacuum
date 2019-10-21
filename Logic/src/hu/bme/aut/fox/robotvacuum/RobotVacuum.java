@@ -5,46 +5,55 @@ import hu.bme.aut.fox.robotvacuum.components.navigation.Navigator;
 import hu.bme.aut.fox.robotvacuum.components.WorldInterpreter;
 import hu.bme.aut.fox.robotvacuum.components.world.InterpretedWorld;
 import hu.bme.aut.fox.robotvacuum.components.world.InterpretedWorldField;
-import hu.bme.aut.fox.robotvacuum.hal.Motor;
-import hu.bme.aut.fox.robotvacuum.hal.Radar;
+import hu.bme.aut.fox.robotvacuum.hardware.Motor;
+import hu.bme.aut.fox.robotvacuum.hardware.Radar;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.List;
 
-public class RobotVacuum implements Radar.RadarListener, Motor.MotorListener {
+public class RobotVacuum {
+
 	private Radar radar;
 	private Motor motor;
+
 	private InterpretedWorldField nextField;
 	private Components components;
 
 	public RobotVacuum(Radar radar, Motor motor) {
 		this.radar = radar;
 		this.motor = motor;
+
 		components = new Components();
 		nextField = null;
 	}
 
 	public void start() {
-		throw new NotImplementedException(); //TODO
+		radar.addOnUpdateListener(this::onRadarUpdate);
+		motor.addOnMovementListener(this::onMotorMovement);
+		motor.addOnRotationListener(this::onMotorRotation);
+
+		radar.start();
+		motor.start();
 	}
 
 	public void stop() {
-		this.radar.stop();
-		this.motor.stop();
+		radar.stop();
+		motor.stop();
+
+		radar.removeOnUpdateListener(this::onRadarUpdate);
+		motor.removeOnMovementListener(this::onMotorMovement);
+		motor.removeOnRotationListener(this::onMotorRotation);
 	}
 
-	@Override
-	public void motorMovedForward(double deltaS) {
+	private void onRadarUpdate(List<Radar.RadarData> data) {
 		throw new NotImplementedException(); //TODO
 	}
 
-	@Override
-	public void motorRotated(double deltaPhi) {
+	private void onMotorMovement(double distance) {
 		throw new NotImplementedException(); //TODO
 	}
 
-	@Override
-	public void newRadarData(List<Radar.RadarData> data) {
+	private void onMotorRotation(double angle) {
 		throw new NotImplementedException(); //TODO
 	}
 

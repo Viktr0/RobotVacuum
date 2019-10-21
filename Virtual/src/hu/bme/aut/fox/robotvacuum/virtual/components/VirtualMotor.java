@@ -1,7 +1,7 @@
 package hu.bme.aut.fox.robotvacuum.virtual.components;
 
 import hu.bme.aut.fox.robotvacuum.Position;
-import hu.bme.aut.fox.robotvacuum.hal.Motor;
+import hu.bme.aut.fox.robotvacuum.hardware.Motor;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -17,7 +17,8 @@ public class VirtualMotor implements Motor {
 	private boolean isRunning = false;
 	private Thread motorThread;
 
-	private List<MotorListener> listeners;
+	private List<OnMovementListener> movementListeners;
+	private List<OnRotationListener> rotationListener;
 	private VirtualWorld world;
 
 	private boolean rotating = false;
@@ -28,28 +29,61 @@ public class VirtualMotor implements Motor {
 
 	public VirtualMotor(VirtualWorld world) {
 		this.world = world;
-		this.listeners = new LinkedList<>();
+		this.movementListeners = new LinkedList<>();
+		this.rotationListener = new LinkedList<>();
 		motorThread = null;
 	}
 
 	private void notifyMotorListenersOfMove(final double deltaS) {
 		synchronized (observableLock) {
-			for(MotorListener listener : listeners)
-				listener.motorMovedForward(deltaS);
+			for(OnMovementListener listener : movementListeners)
+				listener.onMovement(deltaS);
 		}
 	}
 
 	private void notifyMotorListenersOfRotation(final double deltaPhi) {
 		synchronized (observableLock) {
-			for(MotorListener listener : listeners)
-				listener.motorRotated(deltaPhi);
+			for(OnRotationListener listener : rotationListener)
+				listener.onRotation(deltaPhi);
 		}
 	}
 
 	@Override
-	public void addMotorListener(MotorListener listener) {
+	public void addOnMovementListener(OnMovementListener listener) {
 		synchronized (observableLock) {
-			this.listeners.add(listener);
+			this.movementListeners.add(listener);
+		}
+	}
+
+	@Override
+	public void removeOnMovementListener(OnMovementListener listener) {
+		synchronized (observableLock) {
+			this.movementListeners.remove(listener);
+		}
+	}
+
+	@Override
+	public void addOnRotationListener(OnRotationListener listener) {
+		synchronized (observableLock) {
+			this.rotationListener.add(listener);
+		}
+	}
+
+	@Override
+	public void removeOnRotationListener(OnRotationListener listener) {
+		synchronized (observableLock) {
+			this.rotationListener.remove(listener);
+		}
+	}
+
+	@Override
+	public void move(double deltaS) {
+		synchronized (controlLock) {
+			moving = true;
+			rotating = false;
+			remainingTranslation = deltaS;
+			remainingRotation = 0;
+			controlLock.notify();
 		}
 	}
 
@@ -60,17 +94,6 @@ public class VirtualMotor implements Motor {
 			moving = false;
 			remainingRotation = deltaPhi;
 			remainingTranslation = 0;
-			controlLock.notify();
-		}
-	}
-
-	@Override
-	public void moveForward(double deltaS) {
-		synchronized (controlLock) {
-			moving = true;
-			rotating = false;
-			remainingTranslation = deltaS;
-			remainingRotation = 0;
 			controlLock.notify();
 		}
 	}
