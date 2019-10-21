@@ -125,7 +125,7 @@ public class VirtualMotor implements Motor {
 					if (rotating) {
 						double deltaPhi = performRotation();
 						notifyMotorListenersOfRotation(deltaPhi);
-						sleep = movingInterval;
+						sleep = rotationInterval;
 					} else if (moving) {
 						double deltaS = performTranslation();
 						notifyMotorListenersOfMove(deltaS);
