@@ -1,7 +1,5 @@
 package hu.bme.aut.fox.robotvacuum.virtual.components;
 
-import hu.bme.aut.fox.robotvacuum.Position;
-
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -28,7 +26,7 @@ public class VirtualWorld {
 		robotVacuumPosition = new Position(0, 0, 0);
 	}
 
-	public boolean isFieldEmpty(short i, short j) {
+	public boolean isFieldEmpty(int i, int j) {
 		if (i >= N || j >= M || i < 0 || j < 0) throw new IndexOutOfBoundsException();
 		return worldMatrix.get(i).get(j).status != VirtualWorldField.Status.NOTEMPTY;
 	}
