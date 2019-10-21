@@ -4,7 +4,7 @@ import hu.bme.aut.fox.robotvacuum.virtual.components.Position;
 import hu.bme.aut.fox.robotvacuum.virtual.components.VirtualWorld;
 import hu.bme.aut.fox.robotvacuum.virtual.components.VirtualWorldField;
 import io.reactivex.subjects.BehaviorSubject;
-import org.omg.CosNaming.NamingContextPackage.NotEmpty;
+
 
 import java.util.ArrayList;
 import java.util.List;

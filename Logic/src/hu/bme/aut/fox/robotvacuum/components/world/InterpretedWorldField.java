@@ -34,6 +34,10 @@ public class InterpretedWorldField {
 			return status;
 		}
 
+		public void setStatus(Status s){
+			status = s;
+		}
+
 		public long getFound() {
 			return found;
 		}
