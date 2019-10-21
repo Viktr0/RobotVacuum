@@ -1,6 +1,6 @@
 package hu.bme.aut.fox.robotvacuum.virtual.components;
 
-import hu.bme.aut.fox.robotvacuum.hal.Radar;
+import hu.bme.aut.fox.robotvacuum.hardware.Radar;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.LinkedList;
@@ -11,7 +11,7 @@ public class VirtualRadar implements Radar {
 	private static final int pingInterval = 500;
 	private static final double angle = 2.0 / 3.0 * Math.PI;
 
-	private List<RadarListener> listeners;
+	private List<OnUpdateListener> listeners;
 	private VirtualWorld world;
 	private boolean isRunning = false;
 	private Thread radarThread;
@@ -24,14 +24,22 @@ public class VirtualRadar implements Radar {
 
 	private void notifyRadarListeners(List<RadarData> data) {
 		synchronized (observableLock) {
-			for(RadarListener listener : listeners)
-				listener.newRadarData(data);
+			for(OnUpdateListener listener : listeners)
+				listener.onUpdate(data);
 		}
 	}
+
 	@Override
-	public void addRadarListener(RadarListener listener) {
+	public void addOnUpdateListener(OnUpdateListener listener) {
 		synchronized (observableLock) {
 			this.listeners.add(listener);
+		}
+	}
+
+	@Override
+	public void removeOnUpdateListener(OnUpdateListener listener) {
+		synchronized (observableLock) {
+			this.listeners.remove(listener);
 		}
 	}
 
