@@ -49,7 +49,7 @@ public class WorldViewModel implements VirtualWorld.VirtualWorldListener {
             }
         }
         virtualWorld = new VirtualWorld(fields, 50, 64);
-        virtualWorld.setRobotVacuumPosition(new hu.bme.aut.fox.robotvacuum.Position(1, 1, Math.PI * 1.5));
+        virtualWorld.setRobotVacuumPosition(new Position(1, 1, Math.PI * 1.5));
     }
 
     public VirtualWorld getVirtualWorld(){
@@ -57,7 +57,7 @@ public class WorldViewModel implements VirtualWorld.VirtualWorldListener {
     }
 
     @Override
-    public void positionChanged(hu.bme.aut.fox.robotvacuum.Position position) {
+    public void positionChanged(Position position) {
 
     }
 }
