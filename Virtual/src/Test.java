@@ -26,11 +26,11 @@ public class Test {
 
 		Thread t2 = new Thread(() -> {
 			try {
-				motor.moveForward(100);
+				motor.move(100);
 				Thread.sleep(1400);
 				motor.rotate(Math.PI / 2);
 				Thread.sleep(5000);
-				motor.moveForward(100);
+				motor.move(100);
 				Thread.sleep(7000);
 				motor.rotate(-Math.PI);
 				motor.stop();
