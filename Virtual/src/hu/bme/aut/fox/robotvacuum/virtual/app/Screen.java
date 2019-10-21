@@ -1,4 +1,4 @@
-package hu.bme.aut.fox.robotvacuumsimulator.app;
+package hu.bme.aut.fox.robotvacuum.virtual.app;
 
 import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
