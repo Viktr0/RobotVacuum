@@ -19,12 +19,14 @@ public class RobotVacuumInterpreter implements Interpreter {
 
 	@Override
 	public RobotVacuum.State interpretMovement(World currentWorld, RobotVacuum.State currentState, double movementDistance) {
-		return null;
+		final double dx = Math.cos(currentState.getDirection()) * movementDistance;
+		final double dy = Math.sin(currentState.getDirection()) * movementDistance;
+		return new RobotVacuum.State(currentState.getPositionX() + dx, currentState.getPositionY() + dy, currentState.getDirection());
 	}
 
 	@Override
 	public RobotVacuum.State interpretRotation(World currentWorld, RobotVacuum.State currentState, double rotationAngle) {
-		return null;
+		return new RobotVacuum.State(currentState.getPositionX(), currentState.getPositionY(), currentState.getDirection() + rotationAngle);
 	}
 
 	private void interpretRadarRay(

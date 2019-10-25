@@ -12,7 +12,7 @@ public class VirtualRadar implements Radar {
 	private static final Object observableLock = new Object();
 	private static final int pingInterval = 500;
 	private static final double angle = 2.0 / 3.0 * Math.PI;
-	private static final double dPhi = 0.2;
+	private static final double dPhi = 0.15;
 	private static final double maxLength = 5.0;
 	private int debug = 0;
 
