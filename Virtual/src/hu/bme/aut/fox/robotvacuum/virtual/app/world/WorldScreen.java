@@ -1,124 +1,95 @@
 package hu.bme.aut.fox.robotvacuum.virtual.app.world;
 
-import hu.bme.aut.fox.robotvacuum.virtual.components.VirtualWorld;
-import hu.bme.aut.fox.robotvacuum.virtual.components.VirtualWorldField;
-import hu.bme.aut.fox.robotvacuum.virtual.app.App.Screen;
 import hu.bme.aut.fox.robotvacuum.virtual.viewmodel.WorldViewModel;
-
+import hu.bme.aut.fox.robotvacuum.virtual.app.App.Screen;
+import hu.bme.aut.fox.robotvacuum.world.World;
 
 import javax.swing.*;
-import javax.swing.border.LineBorder;
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.util.List;
-
 
 public class WorldScreen extends Screen {
 
-    private WorldViewModel viewModel = new WorldViewModel();
+	private static final int fieldSize = 10;
+	private WorldViewModel viewModel = new WorldViewModel();
+	private Canvas canvas;
 
-
-    //proba
-    private final JPanel gui = new JPanel();
-    private JButton[][] firstMapSquares = new JButton[50][64];
-    private JPanel firstMap;
-
-
-
-    public WorldScreen() {
-/*
-        viewModel.setDefaultWorld();
-        int posX = (int) viewModel.getVirtualWorld().getRobotVacuumPosition().x;
-        int posY = (int) viewModel.getVirtualWorld().getRobotVacuumPosition().y;
-
-        List<List<VirtualWorldField>> fields = viewModel.getVirtualWorld().getWorldMatrix();
-
-
-        int rows = viewModel.getVirtualWorld().getSize().N;
-        int columns = viewModel.getVirtualWorld().getSize().M;
-*/
-
+	public WorldScreen() {
+		canvas = new MyCanvas();
         BoxLayout layout = new BoxLayout(this, BoxLayout.X_AXIS);
         setLayout(layout);
-        Canvas myCanvas = new DisplayGraphics();
-        add(myCanvas);
+		//setSize(500, 300);
 
+        //viewModel.setDefaultInterpretedWorld();
+		//Graphics graphics = new Graphics();
+		//clearCanvas(graphics);
+		//graphics.drawRect(1, 2, 3, 4);
+		//canvas.paint(graphics);
+		add(canvas);
+	}
 
+	public void paint(Graphics graphics){
+        graphics.setColor(Color.LIGHT_GRAY);
+        graphics.drawRect(10,10,10,10);
+        graphics.fillRect(200,100,90,90);
+        graphics.setColor(Color.BLUE);
+        graphics.fillRect(290,100,10,10);
+        graphics.setColor(Color.BLUE);
 
-
-    }
-
-    public class DisplayGraphics extends Canvas {
-
-        //matrix adatok
-        private int baseX = 50;
-        private int baseY = 100;
-        private int fieldSize = 10;
-        private int posX = 0;
-        private int posY = 0;
-        private int rows = 0;
-        private int columns = 0;
-        List<List<VirtualWorldField>> fields;
-
-        public DisplayGraphics(){
-
-            viewModel.setDefaultWorld();
-            posX = (int) viewModel.getVirtualWorld().getRobotVacuumPosition().x;
-            posY = (int) viewModel.getVirtualWorld().getRobotVacuumPosition().y;
-
-            fields = viewModel.getVirtualWorld().getWorldMatrix();
-
-
-            rows = viewModel.getVirtualWorld().getSize().N;
-            columns = viewModel.getVirtualWorld().getSize().M;
+        for(int i = 0; i < 100; i++){
+            if(i % 2 == 0){
+                graphics.setColor(Color.LIGHT_GRAY);
+                graphics.fillRect(i * 10,300,10,10);
+            }
+            else{
+                graphics.setColor(Color.BLACK);
+                graphics.fillRect(i * 10,300,10,10);
+            }
         }
+	}
 
-        public void paint(Graphics g) {
+	@Override
+	public void onAttach() {
+		super.onAttach();
+		//subscribe(viewModel.matrixSubject, (matrix) -> {drawNewMatrix(matrix, matrix.length, matrix[0].length);});
 
-            for(int i = 0; i < columns; i++){
-                for(int j = 0; j < rows; j++){
+	}
 
-                    VirtualWorldField.Status stat = fields.get(j).get(i).status;
+	private void drawNewWorld(World world, int N, int M) {
+		Graphics graphics = canvas.getGraphics();
+		clearCanvas(graphics);
+		graphics.drawRect(1, 2, 3, 4);
+	}
 
-                    if(stat == VirtualWorldField.Status.DIRTY)
-                        g.setColor(Color.LIGHT_GRAY);
-                    else if(stat == VirtualWorldField.Status.NOTEMPTY)
-                        g.setColor(Color.BLACK);
-                    else{
-                        g.setColor(Color.WHITE);
-                    }
+	private void clearCanvas(Graphics graphics) {
+		graphics.setColor(Color.WHITE);
+		graphics.fillRect(0, 0, 30, 30);
 
-                    g.fillRect(baseX + i * fieldSize, baseY + j * fieldSize, fieldSize, fieldSize);
+	}
 
-                    /*if(i % 2 == 0){
-                        g.setColor(Color.BLACK);
-                        g.fillRect(baseX + i * fieldSize, baseY + j * fieldSize, fieldSize, fieldSize);
-                    }
-                    else {
-                        g.setColor(Color.LIGHT_GRAY);
-                        g.fillRect(baseX + i * fieldSize, baseY + j * fieldSize, fieldSize, fieldSize);
-                    }
+	private class MyCanvas extends Canvas{
 
-                     */
+		@Override
+		public void paint(Graphics graphics) {
+			//super.paint(graphics);
+			graphics.setColor(Color.LIGHT_GRAY);
+			graphics.drawRect(10,10,10,10);
+			graphics.fillRect(200,100,90,90);
+			graphics.setColor(Color.BLUE);
+			graphics.fillRect(290,100,10,10);
+			graphics.setColor(Color.BLUE);
+
+			for(int i = 0; i < 100; i++){
+			    if(i % 2 == 0){
+			        graphics.setColor(Color.LIGHT_GRAY);
+                    graphics.fillRect(i * 10,300,10,10);
+                }
+			    else{
+                    graphics.setColor(Color.BLACK);
+                    graphics.fillRect(i * 10,300,10,10);
                 }
             }
-            g.setColor(Color.RED);
-
-            //porszivo helyzete
-            g.fillRect(baseX + posX * fieldSize, baseY + posY * fieldSize, fieldSize, fieldSize);
-
-        }
-    }
-
-    @Override
-    public void onAttach() {
-        super.onAttach();
 
 
-    }
-
-    @Override
-    public void onDetach() {
-
-    }
+		}
+	}
 }
