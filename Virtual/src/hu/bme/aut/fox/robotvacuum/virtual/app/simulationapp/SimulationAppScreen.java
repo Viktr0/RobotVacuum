@@ -4,7 +4,7 @@ import hu.bme.aut.fox.robotvacuum.virtual.app.App;
 import hu.bme.aut.fox.robotvacuum.virtual.app.Simulation;
 import hu.bme.aut.fox.robotvacuum.virtual.app.virtualworld.VirtualWorldScreen;
 import hu.bme.aut.fox.robotvacuum.virtual.app.world.WorldScreen;
-import hu.bme.aut.fox.robotvacuum.world.World;
+import hu.bme.aut.fox.robotvacuum.world.*;
 
 import javax.swing.*;
 

@@ -2,7 +2,7 @@ package hu.bme.aut.fox.robotvacuum.virtual.app.world;
 
 import hu.bme.aut.fox.robotvacuum.virtual.viewmodel.WorldViewModel;
 import hu.bme.aut.fox.robotvacuum.virtual.app.App.Screen;
-import hu.bme.aut.fox.robotvacuum.world.World;
+import hu.bme.aut.fox.robotvacuum.world.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,13 +17,7 @@ public class WorldScreen extends Screen {
 		canvas = new MyCanvas();
         BoxLayout layout = new BoxLayout(this, BoxLayout.X_AXIS);
         setLayout(layout);
-		//setSize(500, 300);
 
-        //viewModel.setDefaultInterpretedWorld();
-		//Graphics graphics = new Graphics();
-		//clearCanvas(graphics);
-		//graphics.drawRect(1, 2, 3, 4);
-		//canvas.paint(graphics);
 		add(canvas);
 	}
 

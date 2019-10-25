@@ -23,21 +23,20 @@ public class VirtualWorldScreen extends Screen {
 
 
     public VirtualWorldScreen() {
-/*
-        viewModel.setDefaultWorld();
-        int posX = (int) viewModel.getVirtualWorld().getRobotVacuumPosition().x;
-        int posY = (int) viewModel.getVirtualWorld().getRobotVacuumPosition().y;
-
-        List<List<VirtualWorldField>> fields = viewModel.getVirtualWorld().getWorldMatrix();
-
-
-        int rows = viewModel.getVirtualWorld().getSize().N;
-        int columns = viewModel.getVirtualWorld().getSize().M;
-*/
 
         BoxLayout layout = new BoxLayout(this, BoxLayout.X_AXIS);
         setLayout(layout);
+
+
+
+
+
+
+
+
         Canvas myCanvas = new DisplayGraphics();
+
+
         add(myCanvas);
 
 
@@ -87,16 +86,6 @@ public class VirtualWorldScreen extends Screen {
 
                     g.fillRect(baseX + i * fieldSize, baseY + j * fieldSize, fieldSize, fieldSize);
 
-                    /*if(i % 2 == 0){
-                        g.setColor(Color.BLACK);
-                        g.fillRect(baseX + i * fieldSize, baseY + j * fieldSize, fieldSize, fieldSize);
-                    }
-                    else {
-                        g.setColor(Color.LIGHT_GRAY);
-                        g.fillRect(baseX + i * fieldSize, baseY + j * fieldSize, fieldSize, fieldSize);
-                    }
-
-                     */
                 }
             }
             g.setColor(Color.RED);
@@ -110,12 +99,11 @@ public class VirtualWorldScreen extends Screen {
     @Override
     public void onAttach() {
         super.onAttach();
-
-
     }
 
     @Override
     public void onDetach() {
 
     }
+
 }
