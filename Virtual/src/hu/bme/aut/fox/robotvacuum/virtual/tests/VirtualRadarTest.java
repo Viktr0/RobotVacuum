@@ -41,12 +41,12 @@ class VirtualRadarTest {
 		World world = interpreter.interpretRadar(new World(1.0), new RobotVacuum.State(), data);
 		for (int i = -20; i < 20; ++i) {
 			for (int j = -20; j < 20; ++j){
-				if ((j == -20 || j == 19) || (i == -20 || i == 19)) System.out.print(".");
+				if ((j == -20 || j == 19) || (i == -20 || i == 19)) System.out.print("..");
 				else {
 					Field f = world.getField(i, j);
-					if (f == null) System.out.print("?");
-					else if (!f.isObstacle()) System.out.print(" ");
-					else System.out.print("#");
+					if (f == null) System.out.print("??");
+					else if (!f.isObstacle()) System.out.print("  ");
+					else System.out.print("##");
 				}
 			}
 			System.out.println();

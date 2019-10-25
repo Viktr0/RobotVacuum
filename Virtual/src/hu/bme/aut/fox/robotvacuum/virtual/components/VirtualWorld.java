@@ -42,8 +42,8 @@ public class VirtualWorld {
 	public void setRobotVacuumPosition(Position position) {
 		synchronized (positionLock){
 			this.robotVacuumPosition = position;
-			this.notifyListenersOfPositionChange();
 			this.setProperPositionDirection();
+			this.notifyListenersOfPositionChange();
 		}
 	}
 

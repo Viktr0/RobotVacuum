@@ -1,8 +1,11 @@
 package hu.bme.aut.fox.robotvacuum;
 
+import hu.bme.aut.fox.robotvacuum.cleaning.Cleaner;
 import hu.bme.aut.fox.robotvacuum.hardware.Motor;
 import hu.bme.aut.fox.robotvacuum.hardware.Radar;
 import hu.bme.aut.fox.robotvacuum.interpretation.Interpreter;
+import hu.bme.aut.fox.robotvacuum.interpretation.RobotVacuumInterpreter;
+import hu.bme.aut.fox.robotvacuum.navigation.MotorController;
 import hu.bme.aut.fox.robotvacuum.navigation.Navigator;
 import hu.bme.aut.fox.robotvacuum.world.World;
 
@@ -13,9 +16,18 @@ public class RobotVacuum {
 
 	private Interpreter interpreter;
 	private Navigator navigator;
+	private MotorController motorController;
+	private Cleaner cleaner;
 
 	private State state;
 	private World world;
+
+	private Navigator.Target[] targets;
+	private short completedTargets;
+
+	public RobotVacuum(Radar radar, Motor motor) {
+		this (radar, motor, new RobotVacuumInterpreter(), null); // TODO
+	}
 
 	public RobotVacuum(
 			Radar radar, Motor motor,
@@ -26,9 +38,14 @@ public class RobotVacuum {
 
 		this.interpreter = interpreter;
 		this.navigator = navigator;
+		this.motorController = new MotorController();
+		this.cleaner = new Cleaner();
 
 		state = new State();
 		world = new World();
+
+		targets = new Navigator.Target[]{};
+		completedTargets = 0;
 	}
 
 	public void start() {
@@ -55,10 +72,37 @@ public class RobotVacuum {
 
 	private void onMotorMovement(double distance) {
 		state = interpreter.interpretMovement(world, state, distance);
+		world = cleaner.cleanCurrentField(world, state);
+		if (motorController.isMovementCompleted(state, targets[completedTargets]))
+			goToNextTarget();
 	}
 
 	private void onMotorRotation(double angle) {
 		state = interpreter.interpretRotation(world, state, angle);
+		if (motorController.isRotationCompleted(state, targets[completedTargets]))
+			moveToNextTarget();
+	}
+
+	private void goToNextTarget() {
+		completedTargets++;
+		if (completedTargets == targets.length)
+			getNewTargetPath();
+		rotateToNextTarget();
+	}
+
+	private void getNewTargetPath() {
+		targets = navigator.getTargetPath(world, state);
+		completedTargets = 0;
+	}
+
+	private void rotateToNextTarget() {
+		final double direction = motorController.getNextTargetDirection(state, targets[completedTargets]);
+		motor.rotate(direction - state.getDirection());
+	}
+
+	private void moveToNextTarget() {
+		final double distance = motorController.getNextTargetDistance(state, targets[completedTargets]);
+		motor.move(distance);
 	}
 
 	public static class State {

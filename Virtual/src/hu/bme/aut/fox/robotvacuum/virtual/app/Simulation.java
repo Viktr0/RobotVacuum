@@ -17,10 +17,11 @@ public class Simulation {
 
 	public Simulation() {
 		world = generateWorld();
-		vacuum = new RobotVacuum(
-				new VirtualRadar(world), new VirtualMotor(world),
-				null, null
-		);
+		vacuum = new RobotVacuum(new VirtualRadar(world), new VirtualMotor(world));
+	}
+
+	public void start() {
+		vacuum.start();
 	}
 
 	public RobotVacuum getRobotVacuum() { return vacuum; }
