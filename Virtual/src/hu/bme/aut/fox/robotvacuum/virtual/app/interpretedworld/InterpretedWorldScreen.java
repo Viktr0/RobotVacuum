@@ -1,7 +1,7 @@
 package hu.bme.aut.fox.robotvacuum.virtual.app.interpretedworld;
 
 import hu.bme.aut.fox.robotvacuum.virtual.viewmodel.InterpretedWorldViewModel;
-import hu.bme.aut.fox.robotvacuum.virtual.app.Screen;
+import hu.bme.aut.fox.robotvacuum.virtual.app.App.Screen;
 import hu.bme.aut.fox.robotvacuum.world.World;
 
 import javax.swing.*;

@@ -1,6 +1,7 @@
 package hu.bme.aut.fox.robotvacuum.virtual.app.clock;
 
-import hu.bme.aut.fox.robotvacuum.virtual.app.Screen;
+import hu.bme.aut.fox.robotvacuum.virtual.app.App;
+import hu.bme.aut.fox.robotvacuum.virtual.app.App.Screen;
 import hu.bme.aut.fox.robotvacuum.virtual.viewmodel.ClockViewModel;
 
 import javax.swing.*;

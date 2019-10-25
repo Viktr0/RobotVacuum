@@ -1,15 +1,16 @@
 package hu.bme.aut.fox.robotvacuum.virtual.app.main;
 
+import hu.bme.aut.fox.robotvacuum.virtual.app.App;
 import hu.bme.aut.fox.robotvacuum.virtual.app.clock.ClockScreen;
 
 import hu.bme.aut.fox.robotvacuum.virtual.app.interpretedworld.InterpretedWorldScreen;
-import hu.bme.aut.fox.robotvacuum.virtual.app.Screen;
+import hu.bme.aut.fox.robotvacuum.virtual.app.App.Screen;
 import hu.bme.aut.fox.robotvacuum.virtual.app.world.WorldScreen;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class MainScreen extends Screen {
+public class MainScreen extends App.Screen {
 
 	public MainScreen() {
 		BoxLayout layout = new BoxLayout(this, BoxLayout.Y_AXIS);

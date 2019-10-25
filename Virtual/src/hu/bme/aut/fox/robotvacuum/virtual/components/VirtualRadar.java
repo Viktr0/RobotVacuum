@@ -2,7 +2,7 @@ package hu.bme.aut.fox.robotvacuum.virtual.components;
 
 import hu.bme.aut.fox.robotvacuum.hardware.Radar;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-import javafx.util.Pair;
+//import javafx.util.Pair;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -167,5 +167,19 @@ public class VirtualRadar implements Radar {
 		final double pX, final double pY,
 		final double x, final double y0, final double y1) {
 		return intersectLineWithHorizontalSegment(cosPhi, sinPhi, pY, pX, x, y0, y1);
+	}
+
+	private static final class Pair<T, U> {
+		private T key;
+		private U value;
+		public Pair(T a, U b){
+			key = a;
+			value = b;
+		}
+		public T getKey() {
+			return key;
+		}
+
+		public U getValue(){return value;}
 	}
 }
