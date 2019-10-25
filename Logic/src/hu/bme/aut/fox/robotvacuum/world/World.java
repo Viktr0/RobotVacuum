@@ -1,5 +1,8 @@
 package hu.bme.aut.fox.robotvacuum.world;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class World {
 
 	private final double gridScale;
@@ -108,11 +111,11 @@ public class World {
 			if (field.getX() >= 0 && field.getY() >= 0) {
 				fields00[field.getX()][field.getY()] = field;
 			} else if (field.getX() < 0 && field.getY() >= 0) {
-				fields01[-field.getX() + 1][field.getY()] = field;
+				fields01[-(field.getX() + 1)][field.getY()] = field;
 			} else if (field.getX() >= 0 && field.getY() < 0) {
-				fields10[field.getX()][-field.getY() + 1] = field;
+				fields10[field.getX()][-(field.getY() + 1)] = field;
 			} else if (field.getX() < 0 && field.getY() < 0) {
-				fields11[-field.getX() + 1][-field.getY() + 1] = field;
+				fields11[-(field.getX() + 1)][-(field.getY() + 1)] = field;
 			}
 		}
 	}
@@ -142,5 +145,25 @@ public class World {
 				(int) Math.floor(x / gridScale),
 				(int) Math.floor(y / gridScale)
 		);
+	}
+
+	public List<Field[][]> shallowCopy() {
+		List<Field[][]> copy = new ArrayList<>(4);
+
+		copy.set(0, new Field[width00][height00]);
+		copy.set(1, new Field[width01][height01]);
+		copy.set(2, new Field[width11][height11]);
+		copy.set(3, new Field[width10][height10]);
+
+		for (int i = 0; i < width00; ++i)
+			if (height00 >= 0) System.arraycopy(fields00[i], 0, copy.get(0)[i], 0, height00);
+		for (int i = 0; i < width01; ++i)
+			if (height01 >= 0) System.arraycopy(fields01[i], 0, copy.get(1)[i], 0, height01);
+		for (int i = 0; i < width11; ++i)
+			if (height11 >= 0) System.arraycopy(fields11[i], 0, copy.get(2)[i], 0, height11);
+		for (int i = 0; i < width10; ++i)
+			if (height10 >= 0) System.arraycopy(fields10[i], 0, copy.get(3)[i], 0, height10);
+
+		return copy;
 	}
 }

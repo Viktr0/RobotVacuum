@@ -23,7 +23,7 @@ public class VirtualWorld {
 		M = m;
 		worldMatrix = Collections.unmodifiableList(fields);
 		listeners = new LinkedList<>();
-		robotVacuumPosition = new Position(0, 0, 0);
+		robotVacuumPosition = new Position(5, 5, Math.PI * 3 / 2);
 	}
 
 	public boolean isFieldEmpty(int i, int j) {
