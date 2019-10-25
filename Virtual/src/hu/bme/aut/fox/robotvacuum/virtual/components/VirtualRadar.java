@@ -13,6 +13,8 @@ public class VirtualRadar implements Radar {
 	private static final int pingInterval = 500;
 	private static final double angle = 2.0 / 3.0 * Math.PI;
 	private static final double dPhi = 0.2;
+	private static final double maxLength = 5.0;
+	private int debug = 0;
 
 	private List<OnUpdateListener> listeners;
 	private VirtualWorld world;
@@ -76,36 +78,42 @@ public class VirtualRadar implements Radar {
 	private void measure() {
 		final Position position = world.getRobotVacuumPosition();
 		final List<RadarData> data = new ArrayList<>();
-		for (double phi = angle / 2; phi >= -angle / 2; phi -= dPhi)
-			data.add(new RadarData(position.direction, this.getRayLength(phi, position)));
+		for (double phi = angle / 2; phi >= -angle / 2; phi -= dPhi){
+			final double length = this.getRayLength(phi, position);
+			if (length > maxLength) data.add(new RadarData(position.direction + phi, maxLength, false));
+			else data.add(new RadarData(position.direction + phi, length, true));
+		}
 		notifyRadarListeners(data.toArray(new RadarData[0]));
 	}
 
 	private double getRayLength (double phi, Position position) {
 		final double fieldSize = VirtualWorld.WORLD_FIELD_SIZE;
-		int x = (int) Math.round(position.x / fieldSize), y = (int) Math.round(position.y / fieldSize);
-		final double sinPhi = Math.sin(phi + position.direction), cosPhi = Math.cos(phi + position.direction);
-		int dx, dy;
-		dx = sinPhi > 0 ? 1 : -1;
-		dy = cosPhi > 0 ? 1 : -1;
+		int x = (int) Math.round(position.x / fieldSize),
+			y = (int) Math.round(position.y / fieldSize);
+		final double
+			sinPhi = Math.sin(phi + position.direction),
+			cosPhi = Math.cos(phi + position.direction);
+		int dx = sinPhi > 0 ? 1 : -1,
+			dy = cosPhi > 0 ? 1 : -1;
+
 		while (true) {
 			Pair<Double, Double> intersect = findFirstIntersection(
 				(x + dx) * fieldSize, y * fieldSize,
 				sinPhi ,cosPhi, position.x, position.y);
-			if (intersect != null)
-				if (world.isFieldEmpty(x + dx, y))
+			if (intersect != null) {
+				if (!world.isFieldEmpty(x + dx, y))
 					return getLength(intersect, position);
 				else {
 					x += dx;
 					continue;
 				}
-
+			}
 			intersect = findFirstIntersection(
 				x * fieldSize, (y + dy) * fieldSize,
 				sinPhi ,cosPhi, position.x, position.y);
-			if (intersect == null) throw new NullPointerException("Na ez látod nagy baj");
 
-			if (world.isFieldEmpty(x, y + dy))
+			if (intersect == null) throw new NullPointerException("Na ez látod nagy baj");
+			if (!world.isFieldEmpty(x, y + dy))
 				return getLength(intersect, position);
 			y += dy;
 		}
@@ -124,9 +132,9 @@ public class VirtualRadar implements Radar {
 
 		final double fieldSize = VirtualWorld.WORLD_FIELD_SIZE;
 		Pair<Double, Double> intersectSouth = intersectLineWithHorizontalSegment(
-			sinPhi, cosPhi, pX, pY, fieldY + fieldSize, fieldX, fieldX + fieldSize);
-		Pair<Double, Double> intersectNorth = intersectLineWithHorizontalSegment(
 			sinPhi, cosPhi, pX, pY, fieldY, fieldX, fieldX + fieldSize);
+		Pair<Double, Double> intersectNorth = intersectLineWithHorizontalSegment(
+			sinPhi, cosPhi, pX, pY, fieldY + fieldSize, fieldX, fieldX + fieldSize);
 		Pair<Double, Double> intersectEast = intersectLineWithVerticalSegment(
 			sinPhi, cosPhi, pX, pY, fieldX + fieldSize, fieldY, fieldY + fieldSize);
 		Pair<Double, Double> intersectWest = intersectLineWithVerticalSegment(

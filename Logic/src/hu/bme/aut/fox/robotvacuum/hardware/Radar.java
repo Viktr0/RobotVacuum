@@ -14,12 +14,26 @@ public interface Radar {
 
 	final class RadarData {
 
-		public final double direction;
-		public final double distance;
+		private final double direction;
+		private final double distance;
+		private final boolean obstacle;
 
-		public RadarData(double dir, double s) {
+		public RadarData(double dir, double s, boolean o) {
 			direction = dir;
 			distance = s;
+			obstacle = o;
+		}
+
+		public double getDirection() {
+			return direction;
+		}
+
+		public double getDistance() {
+			return distance;
+		}
+
+		public boolean isObstacle() {
+			return obstacle;
 		}
 	}
 }

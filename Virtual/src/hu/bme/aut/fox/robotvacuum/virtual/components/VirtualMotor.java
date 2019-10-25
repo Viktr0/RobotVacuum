@@ -150,7 +150,7 @@ public class VirtualMotor implements Motor {
 			moving = false;
 		}
 		translationX = Math.cos(p.direction) * deltaS;
-		translationY = -Math.sin(p.direction) * deltaS;
+		translationY = Math.sin(p.direction) * deltaS;
 		p.x += translationX;
 		p.y += translationY;
 		world.setRobotVacuumPosition(p);
