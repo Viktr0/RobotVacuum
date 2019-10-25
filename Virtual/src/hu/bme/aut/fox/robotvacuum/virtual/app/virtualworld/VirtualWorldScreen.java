@@ -1,5 +1,6 @@
 package hu.bme.aut.fox.robotvacuum.virtual.app.virtualworld;
 
+import hu.bme.aut.fox.robotvacuum.virtual.components.VirtualWorld;
 import hu.bme.aut.fox.robotvacuum.virtual.components.VirtualWorldField;
 import hu.bme.aut.fox.robotvacuum.virtual.app.App.Screen;
 import hu.bme.aut.fox.robotvacuum.virtual.viewmodel.VirtualWorldViewModel;
@@ -12,7 +13,7 @@ import java.util.List;
 
 public class VirtualWorldScreen extends Screen {
 
-    private VirtualWorldViewModel viewModel = new VirtualWorldViewModel();
+    private VirtualWorldViewModel viewModel;
 
 
     //proba
@@ -22,14 +23,11 @@ public class VirtualWorldScreen extends Screen {
 
 
 
-    public VirtualWorldScreen() {
+    public VirtualWorldScreen(VirtualWorld virtualWorld) {
 
+        viewModel = new VirtualWorldViewModel(virtualWorld);
         BoxLayout layout = new BoxLayout(this, BoxLayout.X_AXIS);
         setLayout(layout);
-
-
-
-
 
 
 
@@ -58,7 +56,6 @@ public class VirtualWorldScreen extends Screen {
 
         public DisplayGraphics(){
 
-            viewModel.setDefaultWorld();
             posX = (int) viewModel.getVirtualWorld().getRobotVacuumPosition().x;
             posY = (int) viewModel.getVirtualWorld().getRobotVacuumPosition().y;
 

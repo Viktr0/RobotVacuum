@@ -6,6 +6,7 @@ import hu.bme.aut.fox.robotvacuum.virtual.app.clock.ClockScreen;
 import hu.bme.aut.fox.robotvacuum.virtual.app.simulationapp.SimulationAppScreen;
 import hu.bme.aut.fox.robotvacuum.virtual.app.world.WorldScreen;
 import hu.bme.aut.fox.robotvacuum.virtual.app.virtualworld.VirtualWorldScreen;
+import hu.bme.aut.fox.robotvacuum.virtual.components.VirtualWorld;
 
 import javax.swing.*;
 import java.awt.*;
@@ -30,9 +31,9 @@ public class MainScreen extends App.Screen {
 
 		JButton virtualWorldButton = new JButton("VirtualWorld");
 		virtualWorldButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-		virtualWorldButton.addActionListener(
-				(event) -> navigate(new VirtualWorldScreen())
-		);
+//		virtualWorldButton.addActionListener(
+//				(event) -> navigate(new VirtualWorldScreen(new VirtualWorld()))
+//		);
 
 		JButton interpretedWorldButton = new JButton("InterpretedWorld");
 		interpretedWorldButton.setAlignmentX(Component.CENTER_ALIGNMENT);

@@ -19,14 +19,14 @@ public class SimulationAppScreen extends App.Screen {
 
         simulation = new Simulation();
         WorldScreen worldScreen = new WorldScreen();
-        VirtualWorldScreen virtualWorldScreen = new VirtualWorldScreen();
+//        VirtualWorldScreen virtualWorldScreen = new VirtualWorldScreen();
 
         
 
 
 
         add(worldScreen);
-        add(virtualWorldScreen);
+//        add(virtualWorldScreen);
 
     }
 

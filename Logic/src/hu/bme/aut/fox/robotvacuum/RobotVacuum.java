@@ -48,6 +48,10 @@ public class RobotVacuum {
 		completedTargets = 0;
 	}
 
+	public World getWorld(){
+	    return world;
+    }
+
 	public void start() {
 		radar.addOnUpdateListener(this::onRadarUpdate);
 		motor.addOnMovementListener(this::onMotorMovement);
