@@ -1,49 +1,47 @@
 package hu.bme.aut.fox.robotvacuum.virtual.app.world;
 
+import hu.bme.aut.fox.robotvacuum.RobotVacuum;
 import hu.bme.aut.fox.robotvacuum.virtual.viewmodel.WorldViewModel;
 import hu.bme.aut.fox.robotvacuum.virtual.app.App.Screen;
 import hu.bme.aut.fox.robotvacuum.world.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.HierarchyEvent;
 
 public class WorldScreen extends Screen {
 
 	private static final int fieldSize = 10;
-	private WorldViewModel viewModel = new WorldViewModel();
-	private Canvas canvas;
+	private WorldViewModel viewModel;
+	private Canvas canvas = new Canvas();
+
+	private JButton increaseBtn = new JButton("+");
+	private JButton decreaseBtn = new JButton("-");
 
 	public WorldScreen() {
-		canvas = new MyCanvas();
+
+
         BoxLayout layout = new BoxLayout(this, BoxLayout.X_AXIS);
         setLayout(layout);
 
-		add(canvas);
+        increaseBtn.addActionListener((event)-> {viewModel.increaseScalingFactor(); System.out.println(viewModel.getScalingFactor());});
+        decreaseBtn.addActionListener((event) -> {viewModel.decreaseScalingFactor(); System.out.println(viewModel.getScalingFactor());});
+
+        
+		add(Box.createHorizontalGlue());
+		add(increaseBtn);
+		add(decreaseBtn);
 	}
 
-	public void paint(Graphics graphics){
-        graphics.setColor(Color.LIGHT_GRAY);
-        graphics.drawRect(10,10,10,10);
-        graphics.fillRect(200,100,90,90);
-        graphics.setColor(Color.BLUE);
-        graphics.fillRect(290,100,10,10);
-        graphics.setColor(Color.BLUE);
-
-        for(int i = 0; i < 100; i++){
-            if(i % 2 == 0){
-                graphics.setColor(Color.LIGHT_GRAY);
-                graphics.fillRect(i * 10,300,10,10);
-            }
-            else{
-                graphics.setColor(Color.BLACK);
-                graphics.fillRect(i * 10,300,10,10);
-            }
-        }
+	public void setViewModel(RobotVacuum rv){
+		viewModel = new WorldViewModel(rv);
 	}
+
 
 	@Override
 	public void onAttach() {
 		super.onAttach();
+
 		//subscribe(viewModel.matrixSubject, (matrix) -> {drawNewMatrix(matrix, matrix.length, matrix[0].length);});
 
 	}
@@ -60,6 +58,11 @@ public class WorldScreen extends Screen {
 
 	}
 
+
+
+
+
+/*
 	private class MyCanvas extends Canvas{
 
 		@Override
@@ -86,4 +89,6 @@ public class WorldScreen extends Screen {
 
 		}
 	}
+	*/
+
 }

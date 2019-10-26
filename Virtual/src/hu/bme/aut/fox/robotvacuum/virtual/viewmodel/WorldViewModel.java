@@ -8,10 +8,14 @@ import io.reactivex.subjects.BehaviorSubject;
 public class WorldViewModel {
 
 
-    public BehaviorSubject<Field[][]> world = BehaviorSubject.createDefault(null);
-    private RobotVacuum robotVacuum;
+    public BehaviorSubject<Field[][]> world = BehaviorSubject.create();
     private Thread timerThread;
-    public WorldViewModel(){
+    private RobotVacuum robotVacuum;
+    private int scalingFactor = 40;
+
+
+    public WorldViewModel(RobotVacuum rv){
+        robotVacuum = rv;
         timerThread = new Thread(() -> {
             while(true) {
                 this.updateWorld();
@@ -26,13 +30,34 @@ public class WorldViewModel {
     }
 
     private void updateWorld() {
-        Field[][] fields = new Field[40][40];
-        for(int i = -20; i < 20; ++i)
-            for(int j = -20; j < 20;++j)
-                fields[i + 20][j + 20] = robotVacuum.getWorld().getField(i, j);
-
+        Field[][] fields = new Field[scalingFactor][scalingFactor];
+        int min = 0 - scalingFactor/2;
+        int max = scalingFactor/2;
+        for(int i = min; i < max; ++i)
+            for(int j = min; j < max; ++j)
+                fields[i + max][j + max] = robotVacuum.getWorld().getField(i, j);
         world.onNext(fields);
-        world.getValue();
+    }
+
+
+    public int getScalingFactor() {
+        return scalingFactor;
+    }
+
+    public void setScalingFactor(int scalingFactor) {
+        this.scalingFactor = scalingFactor;
+    }
+
+    public void increaseScalingFactor(){
+        if(scalingFactor < 65){
+            scalingFactor++;
+        }
+    }
+
+    public void decreaseScalingFactor(){
+        if(scalingFactor > 3){
+            scalingFactor--;
+        }
     }
 
 }

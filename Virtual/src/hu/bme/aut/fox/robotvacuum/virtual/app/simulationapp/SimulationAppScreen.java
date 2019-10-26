@@ -16,16 +16,20 @@ public class SimulationAppScreen extends App.Screen {
     public SimulationAppScreen(){
         BoxLayout layout = new BoxLayout(this, BoxLayout.Y_AXIS);
         setLayout(layout);
+        add(Box.createHorizontalGlue());
 
         simulation = new Simulation();
+
+
         WorldScreen worldScreen = new WorldScreen();
-//        VirtualWorldScreen virtualWorldScreen = new VirtualWorldScreen();
-
-        
-
+        worldScreen.setViewModel(simulation.getRobotVacuum());
+        VirtualWorldScreen virtualWorldScreen = new VirtualWorldScreen(simulation.getWorld());
 
 
-        add(worldScreen);
+
+
+
+//        add(worldScreen);
 //        add(virtualWorldScreen);
 
     }

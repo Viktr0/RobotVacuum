@@ -1,12 +1,14 @@
 package hu.bme.aut.fox.robotvacuum.virtual.app.main;
 
 import hu.bme.aut.fox.robotvacuum.virtual.app.App;
+import hu.bme.aut.fox.robotvacuum.virtual.app.Simulation;
 import hu.bme.aut.fox.robotvacuum.virtual.app.clock.ClockScreen;
 
 import hu.bme.aut.fox.robotvacuum.virtual.app.simulationapp.SimulationAppScreen;
 import hu.bme.aut.fox.robotvacuum.virtual.app.world.WorldScreen;
 import hu.bme.aut.fox.robotvacuum.virtual.app.virtualworld.VirtualWorldScreen;
 import hu.bme.aut.fox.robotvacuum.virtual.components.VirtualWorld;
+import hu.bme.aut.fox.robotvacuum.world.World;
 
 import javax.swing.*;
 import java.awt.*;
@@ -31,15 +33,19 @@ public class MainScreen extends App.Screen {
 
 		JButton virtualWorldButton = new JButton("VirtualWorld");
 		virtualWorldButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-//		virtualWorldButton.addActionListener(
-//				(event) -> navigate(new VirtualWorldScreen(new VirtualWorld()))
-//		);
-
-		JButton interpretedWorldButton = new JButton("InterpretedWorld");
-		interpretedWorldButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-		interpretedWorldButton.addActionListener(
-				(event) -> navigate(new WorldScreen())
+		virtualWorldButton.addActionListener(
+				(event) -> navigate(new VirtualWorldScreen(new Simulation().getWorld()))
 		);
+
+		JButton worldButton = new JButton("RobotVacuum's world");
+		worldButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+		worldButton.addActionListener(
+				(event) -> {
+					WorldScreen ws = new WorldScreen();
+					ws.setViewModel(new Simulation().getRobotVacuum());
+					navigate(ws);
+				});
+
 
 		JButton exitButton = new JButton("Exit");
 		exitButton.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -51,7 +57,7 @@ public class MainScreen extends App.Screen {
 		add(clockButton);
 		add(simulationButton);
 		add(virtualWorldButton);
-		add(interpretedWorldButton);
+		add(worldButton);
 		add(exitButton);
 		add(Box.createVerticalGlue());
 	}
