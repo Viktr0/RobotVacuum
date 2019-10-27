@@ -7,13 +7,14 @@ import hu.bme.aut.fox.robotvacuum.world.*;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.HierarchyEvent;
+
 
 public class WorldScreen extends Screen {
 
 	private static final int fieldSize = 10;
 	private WorldViewModel viewModel;
 	private Canvas canvas = new Canvas();
+	//private Graphics g = getGraphics();
 
 	private JButton increaseBtn = new JButton("+");
 	private JButton decreaseBtn = new JButton("-");
@@ -21,14 +22,16 @@ public class WorldScreen extends Screen {
 	public WorldScreen() {
 
 
-        BoxLayout layout = new BoxLayout(this, BoxLayout.X_AXIS);
-        setLayout(layout);
+		setLayout (new BoxLayout (this, BoxLayout.LINE_AXIS));
 
         increaseBtn.addActionListener((event)-> {viewModel.increaseScalingFactor(); System.out.println(viewModel.getScalingFactor());});
         decreaseBtn.addActionListener((event) -> {viewModel.decreaseScalingFactor(); System.out.println(viewModel.getScalingFactor());});
 
-        
-		add(Box.createHorizontalGlue());
+        canvas.setBackground(Color.WHITE);
+
+
+
+		//add(canvas);
 		add(increaseBtn);
 		add(decreaseBtn);
 	}
@@ -37,58 +40,51 @@ public class WorldScreen extends Screen {
 		viewModel = new WorldViewModel(rv);
 	}
 
+	@Override
+	public void paintComponent(Graphics g) {
+		super.paintComponent(g);
+
+		g.setColor(Color.BLUE);
+		g.fillRect(0, 0, 100, 100);
+	}
+
+	private void drawWorld(Field[][] fields){
+		Graphics g = canvas.getGraphics();
+		clearCanvas(g);
+		int n = viewModel.getScalingFactor();
+		for(int i = 0; i < n; i++){
+			for(int j = 0; j < n; j++){
+				Field field = fields[i][j];
+				if(field != null) {
+					if (!field.isCleaned()) {
+						if (!field.isObstacle()) {
+							g.setColor(Color.LIGHT_GRAY);
+						} else {
+							g.setColor(Color.BLACK);
+						}
+					} else {
+						g.setColor(Color.WHITE);
+					}
+				}
+
+				g.fillRect(i * fieldSize, j * fieldSize, fieldSize, fieldSize);
+
+			}
+		}
+		g.setColor(Color.RED);
+		g.fillRect(viewModel.getScalingFactor()/2 * fieldSize, viewModel.getScalingFactor()/2 * fieldSize, fieldSize, fieldSize);
+	}
+
 
 	@Override
 	public void onAttach() {
 		super.onAttach();
-
-		//subscribe(viewModel.matrixSubject, (matrix) -> {drawNewMatrix(matrix, matrix.length, matrix[0].length);});
-
-	}
-
-	private void drawNewWorld(World world, int N, int M) {
-		Graphics graphics = canvas.getGraphics();
-		clearCanvas(graphics);
-		graphics.drawRect(1, 2, 3, 4);
+		subscribe(viewModel.world, (matrix) -> drawWorld(matrix));
 	}
 
 	private void clearCanvas(Graphics graphics) {
 		graphics.setColor(Color.WHITE);
-		graphics.fillRect(0, 0, 30, 30);
-
+		graphics.fillRect(0, 0, 1000, 1000);
 	}
-
-
-
-
-
-/*
-	private class MyCanvas extends Canvas{
-
-		@Override
-		public void paint(Graphics graphics) {
-			//super.paint(graphics);
-			graphics.setColor(Color.LIGHT_GRAY);
-			graphics.drawRect(10,10,10,10);
-			graphics.fillRect(200,100,90,90);
-			graphics.setColor(Color.BLUE);
-			graphics.fillRect(290,100,10,10);
-			graphics.setColor(Color.BLUE);
-
-			for(int i = 0; i < 100; i++){
-			    if(i % 2 == 0){
-			        graphics.setColor(Color.LIGHT_GRAY);
-                    graphics.fillRect(i * 10,300,10,10);
-                }
-			    else{
-                    graphics.setColor(Color.BLACK);
-                    graphics.fillRect(i * 10,300,10,10);
-                }
-            }
-
-
-		}
-	}
-	*/
 
 }

@@ -1,5 +1,6 @@
 package hu.bme.aut.fox.robotvacuum.virtual.app.virtualworld;
 
+import hu.bme.aut.fox.robotvacuum.virtual.components.Position;
 import hu.bme.aut.fox.robotvacuum.virtual.components.VirtualWorld;
 import hu.bme.aut.fox.robotvacuum.virtual.components.VirtualWorldField;
 import hu.bme.aut.fox.robotvacuum.virtual.app.App.Screen;
@@ -14,12 +15,12 @@ import java.util.List;
 public class VirtualWorldScreen extends Screen {
 
     private VirtualWorldViewModel viewModel;
-
-
-    //proba
-    private final JPanel gui = new JPanel();
-    private JButton[][] firstMapSquares = new JButton[50][64];
-    private JPanel firstMap;
+    private int baseX = 50;
+    private int baseY = 100;
+    private int fieldSize = 10;
+    private int recentPosX;
+    private int recentPosY;
+    private DisplayGraphics myCanvas;
 
 
 
@@ -29,25 +30,17 @@ public class VirtualWorldScreen extends Screen {
         BoxLayout layout = new BoxLayout(this, BoxLayout.X_AXIS);
         setLayout(layout);
 
-
-
-
-        Canvas myCanvas = new DisplayGraphics();
-
-
+        myCanvas = new DisplayGraphics();
+        myCanvas.posX = 30;
+        myCanvas.posY = 40;
+        myCanvas.repaint();
         add(myCanvas);
-
-
-
 
     }
 
     public class DisplayGraphics extends Canvas {
 
         //matrix adatok
-        private int baseX = 50;
-        private int baseY = 100;
-        private int fieldSize = 10;
         private int posX = 0;
         private int posY = 0;
         private int rows = 0;
@@ -58,6 +51,9 @@ public class VirtualWorldScreen extends Screen {
 
             posX = (int) viewModel.getVirtualWorld().getRobotVacuumPosition().x;
             posY = (int) viewModel.getVirtualWorld().getRobotVacuumPosition().y;
+
+            recentPosX = posX;
+            recentPosY = posY;
 
             fields = viewModel.getVirtualWorld().getWorldMatrix();
 
@@ -93,9 +89,20 @@ public class VirtualWorldScreen extends Screen {
         }
     }
 
+    public void drawRobotVacuum(Position pos){
+        Graphics g = getGraphics();
+        g.setColor(Color.WHITE);
+        g.fillRect(baseX + recentPosX * fieldSize, baseY + recentPosY * fieldSize, fieldSize, fieldSize);
+        g.setColor(Color.RED);
+        g.fillRect(baseX + (int)pos.x * fieldSize, baseY + (int)pos.y * fieldSize, fieldSize, fieldSize);
+        recentPosX = (int)pos.x;
+        recentPosY = (int)pos.y;
+    }
+
     @Override
     public void onAttach() {
         super.onAttach();
+        subscribe(viewModel.robotVacuum, (position) -> drawRobotVacuum(position));
     }
 
     @Override
