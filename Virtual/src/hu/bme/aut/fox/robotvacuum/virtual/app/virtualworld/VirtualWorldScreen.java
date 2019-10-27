@@ -20,8 +20,13 @@ public class VirtualWorldScreen extends Screen {
     private int fieldSize = 10;
     private int recentPosX;
     private int recentPosY;
+    private int actualPosX = 0;
+    private int actualPosY = 0;
     private DisplayGraphics myCanvas;
-
+    private JButton stepRightBtn;
+    private JButton stepLeftBtn;
+    private JButton stepUpBtn;
+    private JButton stepDownBtn;
 
 
     public VirtualWorldScreen(VirtualWorld virtualWorld) {
@@ -30,30 +35,41 @@ public class VirtualWorldScreen extends Screen {
         BoxLayout layout = new BoxLayout(this, BoxLayout.X_AXIS);
         setLayout(layout);
 
-        myCanvas = new DisplayGraphics();
-        myCanvas.posX = 30;
-        myCanvas.posY = 40;
-        myCanvas.repaint();
-        add(myCanvas);
+        stepRightBtn = new JButton("Right");
+        stepRightBtn.addActionListener((event) -> stepRight());
+        stepLeftBtn = new JButton("Left");
+        stepLeftBtn.addActionListener((event) -> stepLeft());
+        stepUpBtn = new JButton("Up");
+        stepUpBtn.addActionListener((event) -> stepUp());
+        stepDownBtn = new JButton("Down");
+        stepDownBtn.addActionListener((event) -> stepDown());
 
+        myCanvas = new DisplayGraphics();
+
+        add(myCanvas);
+        add(stepUpBtn);
+        add(stepDownBtn);
+        add(stepLeftBtn);
+        add(stepRightBtn);
     }
+
+
+
 
     public class DisplayGraphics extends Canvas {
 
         //matrix adatok
-        private int posX = 0;
-        private int posY = 0;
         private int rows = 0;
         private int columns = 0;
         List<List<VirtualWorldField>> fields;
 
         public DisplayGraphics(){
 
-            posX = (int) viewModel.getVirtualWorld().getRobotVacuumPosition().x;
-            posY = (int) viewModel.getVirtualWorld().getRobotVacuumPosition().y;
+            actualPosX = (int) viewModel.getVirtualWorld().getRobotVacuumPosition().x;
+            actualPosY = (int) viewModel.getVirtualWorld().getRobotVacuumPosition().y;
 
-            recentPosX = posX;
-            recentPosY = posY;
+            recentPosX = actualPosX;
+            recentPosY = actualPosY;
 
             fields = viewModel.getVirtualWorld().getWorldMatrix();
 
@@ -63,11 +79,12 @@ public class VirtualWorldScreen extends Screen {
         }
 
         public void paint(Graphics g) {
-
+            //System.out.println(recentPosX);
+            //System.out.println(recentPosY);
             for(int i = 0; i < columns; i++){
                 for(int j = 0; j < rows; j++){
-
                     VirtualWorldField.Status stat = fields.get(j).get(i).status;
+                    fields.get(recentPosY).get(recentPosX).status = VirtualWorldField.Status.CLEAN;
 
                     if(stat == VirtualWorldField.Status.DIRTY)
                         g.setColor(Color.LIGHT_GRAY);
@@ -82,10 +99,9 @@ public class VirtualWorldScreen extends Screen {
                 }
             }
             g.setColor(Color.RED);
-
-            //porszivo helyzete
-            g.fillRect(baseX + posX * fieldSize, baseY + posY * fieldSize, fieldSize, fieldSize);
-
+            g.fillRect(baseX + actualPosX * fieldSize, baseY + actualPosY * fieldSize, fieldSize, fieldSize);
+            recentPosX = actualPosX;
+            recentPosY = actualPosY;
         }
     }
 
@@ -99,15 +115,44 @@ public class VirtualWorldScreen extends Screen {
         recentPosY = (int)pos.y;
     }
 
+    public void setRobotVacuumPos(Position pos){
+        actualPosX = (int)pos.x;
+        actualPosY = (int)pos.y;
+        myCanvas.repaint();
+        add(myCanvas);
+    }
+
     @Override
     public void onAttach() {
         super.onAttach();
-        subscribe(viewModel.robotVacuum, (position) -> drawRobotVacuum(position));
+        //subscribe(viewModel.robotVacuum, (position) -> drawRobotVacuum(position));
+        //subscribe(viewModel.robotVacuum, (position) -> setRobotVacuumPos(position));
+        subscribe(viewModel.robotVacuum, (position) -> myCanvas.repaint());
     }
 
     @Override
     public void onDetach() {
 
+    }
+    public void stepRight(){
+        actualPosX++;
+        myCanvas.repaint();
+        add(myCanvas);
+    }
+    public void stepLeft(){
+        actualPosX--;
+        myCanvas.repaint();
+        add(myCanvas);
+    }
+    public void stepUp(){
+        actualPosY--;
+        myCanvas.repaint();
+        add(myCanvas);
+    }
+    public void stepDown(){
+        actualPosY++;
+        myCanvas.repaint();
+        add(myCanvas);
     }
 
 }

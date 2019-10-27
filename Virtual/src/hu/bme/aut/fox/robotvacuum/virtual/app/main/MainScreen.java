@@ -41,8 +41,7 @@ public class MainScreen extends App.Screen {
 		worldButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 		worldButton.addActionListener(
 				(event) -> {
-					WorldScreen ws = new WorldScreen();
-					ws.setViewModel(new Simulation().getRobotVacuum());
+					WorldScreen ws = new WorldScreen(new Simulation().getRobotVacuum());
 					navigate(ws);
 				});
 

@@ -21,8 +21,8 @@ public class SimulationAppScreen extends App.Screen {
         simulation = new Simulation();
 
 
-        WorldScreen worldScreen = new WorldScreen();
-        worldScreen.setViewModel(simulation.getRobotVacuum());
+        WorldScreen worldScreen = new WorldScreen(simulation.getRobotVacuum());
+
         VirtualWorldScreen virtualWorldScreen = new VirtualWorldScreen(simulation.getWorld());
 
 

@@ -13,6 +13,13 @@ public class WorldViewModel {
     private RobotVacuum robotVacuum;
     private int scalingFactor = 40;
 
+    public void setRobotVacuum(RobotVacuum rv){
+        robotVacuum = rv;
+    }
+
+    public RobotVacuum getRobotVacuum(){
+        return robotVacuum;
+    }
 
     public WorldViewModel(RobotVacuum rv){
         robotVacuum = rv;

@@ -14,13 +14,16 @@ public class WorldScreen extends Screen {
 	private static final int fieldSize = 10;
 	private WorldViewModel viewModel;
 	private Canvas canvas = new Canvas();
+	private RobotVacuum robotVacuum;
 	//private Graphics g = getGraphics();
 
 	private JButton increaseBtn = new JButton("+");
 	private JButton decreaseBtn = new JButton("-");
 
-	public WorldScreen() {
+	public WorldScreen(RobotVacuum rv) {
 
+		robotVacuum = rv;
+		viewModel = new WorldViewModel(robotVacuum);
 
 		setLayout (new BoxLayout (this, BoxLayout.LINE_AXIS));
 
@@ -34,10 +37,6 @@ public class WorldScreen extends Screen {
 		//add(canvas);
 		add(increaseBtn);
 		add(decreaseBtn);
-	}
-
-	public void setViewModel(RobotVacuum rv){
-		viewModel = new WorldViewModel(rv);
 	}
 
 	@Override
