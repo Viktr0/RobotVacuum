@@ -19,19 +19,11 @@ public class SimulationAppScreen extends App.Screen {
         add(Box.createHorizontalGlue());
 
         simulation = new Simulation();
-
-
         WorldScreen worldScreen = new WorldScreen(simulation.getRobotVacuum());
-
         VirtualWorldScreen virtualWorldScreen = new VirtualWorldScreen(simulation.getWorld());
 
-
-
-
-
-//        add(worldScreen);
-//        add(virtualWorldScreen);
-
+        add(worldScreen);
+        add(virtualWorldScreen);
     }
 
 }

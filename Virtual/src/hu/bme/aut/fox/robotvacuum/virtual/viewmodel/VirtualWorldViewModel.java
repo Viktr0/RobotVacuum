@@ -6,12 +6,8 @@ import hu.bme.aut.fox.robotvacuum.virtual.components.VirtualWorldField;
 import io.reactivex.subjects.BehaviorSubject;
 
 
-import java.util.List;
-
-
 public class VirtualWorldViewModel implements VirtualWorld.VirtualWorldListener {
 
-    private List<List<VirtualWorldField>> worldFields;
 
     public final BehaviorSubject<Position> robotVacuum = BehaviorSubject.create();
 
@@ -20,21 +16,20 @@ public class VirtualWorldViewModel implements VirtualWorld.VirtualWorldListener 
 
     public VirtualWorldViewModel(VirtualWorld vW){
         virtualWorld = vW;
-        worldFields = virtualWorld.getWorldMatrix();
         virtualWorld.addListener(this);
     }
 
-
-    public VirtualWorld getVirtualWorld() {
-        return virtualWorld;
-    }
 
     @Override
     public void positionChanged(Position position) {
         robotVacuum.onNext(position);
     }
 
-    public List<List<VirtualWorldField>> getWorld() {
-        return worldFields;
+    public VirtualWorldField[][] getWorld() {
+        return virtualWorld.getWorldMatrix();
+    }
+
+    public VirtualWorld getVirtualWorld() {
+        return virtualWorld;
     }
 }

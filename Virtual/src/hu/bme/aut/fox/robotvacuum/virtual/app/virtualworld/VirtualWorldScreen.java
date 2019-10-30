@@ -15,14 +15,14 @@ import java.util.List;
 public class VirtualWorldScreen extends Screen {
 
     private VirtualWorldViewModel viewModel;
-    private int baseX = 50;
-    private int baseY = 100;
-    private int fieldSize = 10;
+    private final int baseX = 50;
+    private final int baseY = 100;
+    private final int fieldSize = 10;
     private int recentPosX;
     private int recentPosY;
     private int actualPosX = 0;
     private int actualPosY = 0;
-    private DisplayGraphics myCanvas;
+    private JPanel myCanvas;
     private JButton stepRightBtn;
     private JButton stepLeftBtn;
     private JButton stepUpBtn;
@@ -56,12 +56,13 @@ public class VirtualWorldScreen extends Screen {
 
 
 
-    public class DisplayGraphics extends Canvas {
+
+    public class DisplayGraphics extends JPanel {
 
         //matrix adatok
         private int rows = 0;
         private int columns = 0;
-        List<List<VirtualWorldField>> fields;
+        VirtualWorldField[][] fields;
 
         public DisplayGraphics(){
 
@@ -73,18 +74,18 @@ public class VirtualWorldScreen extends Screen {
 
             fields = viewModel.getVirtualWorld().getWorldMatrix();
 
-
             rows = viewModel.getVirtualWorld().getSize().N;
             columns = viewModel.getVirtualWorld().getSize().M;
         }
 
+        @Override
         public void paint(Graphics g) {
-            //System.out.println(recentPosX);
+            System.out.println(recentPosX);
             //System.out.println(recentPosY);
             for(int i = 0; i < columns; i++){
                 for(int j = 0; j < rows; j++){
-                    VirtualWorldField.Status stat = fields.get(j).get(i).status;
-                    fields.get(recentPosY).get(recentPosX).status = VirtualWorldField.Status.CLEAN;
+                    VirtualWorldField.Status stat = fields[j][i].status;
+                    fields[recentPosY][recentPosX].status = VirtualWorldField.Status.CLEAN; //TODO
 
                     if(stat == VirtualWorldField.Status.DIRTY)
                         g.setColor(Color.LIGHT_GRAY);
@@ -119,7 +120,6 @@ public class VirtualWorldScreen extends Screen {
         actualPosX = (int)pos.x;
         actualPosY = (int)pos.y;
         myCanvas.repaint();
-        add(myCanvas);
     }
 
     @Override
@@ -137,22 +137,18 @@ public class VirtualWorldScreen extends Screen {
     public void stepRight(){
         actualPosX++;
         myCanvas.repaint();
-        add(myCanvas);
     }
     public void stepLeft(){
         actualPosX--;
         myCanvas.repaint();
-        add(myCanvas);
     }
     public void stepUp(){
         actualPosY--;
         myCanvas.repaint();
-        add(myCanvas);
     }
     public void stepDown(){
         actualPosY++;
         myCanvas.repaint();
-        add(myCanvas);
     }
 
 }

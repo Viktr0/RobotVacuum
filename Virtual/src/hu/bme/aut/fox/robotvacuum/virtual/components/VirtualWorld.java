@@ -14,24 +14,24 @@ public class VirtualWorld {
 	private int N;
 	private int M;
 
-	private List<List<VirtualWorldField>> worldMatrix;
+	private VirtualWorldField[][] worldMatrix;
 
 	private List<VirtualWorldListener> listeners;
 
-	public VirtualWorld(List<List<VirtualWorldField>> fields, int n, int m) {
+	public VirtualWorld(VirtualWorldField[][] fields, int n, int m, Position p) {
 		N = n;
 		M = m;
-		worldMatrix = Collections.unmodifiableList(fields);
+		worldMatrix = fields;
 		listeners = new LinkedList<>();
-		robotVacuumPosition = new Position(5, 5, Math.PI * 3 / 2);
+		robotVacuumPosition = p;
 	}
 
 	public boolean isFieldEmpty(int i, int j) {
 		if (i >= N || j >= M || i < 0 || j < 0) throw new IndexOutOfBoundsException();
-		return worldMatrix.get(i).get(j).status != VirtualWorldField.Status.NOTEMPTY;
+		return worldMatrix[i][j].status != VirtualWorldField.Status.NOTEMPTY;
 	}
 
-	public List<List<VirtualWorldField>> getWorldMatrix() {
+	public VirtualWorldField[][] getWorldMatrix() {
 		return worldMatrix;
 	}
 
@@ -42,6 +42,7 @@ public class VirtualWorld {
 	public void setRobotVacuumPosition(Position position) {
 		synchronized (positionLock){
 			this.robotVacuumPosition = position;
+			this.cleanField();
 			this.setProperPositionDirection();
 			this.notifyListenersOfPositionChange();
 		}
@@ -54,13 +55,14 @@ public class VirtualWorld {
 	}
 
 	private void setProperPositionDirection() {
-		if (this.robotVacuumPosition.direction > PI_2)
-			while (this.robotVacuumPosition.direction > PI_2)
-				robotVacuumPosition.direction -= PI_2;
+		while (this.robotVacuumPosition.direction > PI_2) robotVacuumPosition.direction -= PI_2;
+		while (this.robotVacuumPosition.direction < 0) robotVacuumPosition.direction += PI_2;
+	}
 
-		if (this.robotVacuumPosition.direction < 0)
-			while (this.robotVacuumPosition.direction < 0)
-				robotVacuumPosition.direction += PI_2;
+	private void cleanField() {
+		int i = (int) Math.floor(robotVacuumPosition.x);
+		int j = (int) Math.floor(robotVacuumPosition.y);
+		worldMatrix[i][j].status = VirtualWorldField.Status.CLEAN;
 	}
 
 	public void addListener(VirtualWorldListener listener) {
