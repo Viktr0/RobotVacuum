@@ -2,8 +2,8 @@ package hu.bme.aut.fox.robotvacuum.hardware;
 
 public interface Motor {
 
-	void move(double deltaS);
-	void rotate(double deltaPhi);
+	void move(double distance);
+	void rotate(double angle);
 
 	void addOnMovementListener(OnMovementListener listener);
 	void removeOnMovementListener(OnMovementListener listener);

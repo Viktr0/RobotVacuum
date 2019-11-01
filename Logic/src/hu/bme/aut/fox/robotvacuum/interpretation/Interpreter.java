@@ -6,21 +6,40 @@ import hu.bme.aut.fox.robotvacuum.world.World;
 
 public interface Interpreter {
 
-	World interpretRadar(
+	Interpretation interpretRadar(
 			World currentWorld,
 			RobotVacuum.State currentState,
 			Radar.RadarData[] radarData
 	);
 
-	RobotVacuum.State interpretMovement(
+	Interpretation interpretMovement(
 			World currentWorld,
 			RobotVacuum.State currentState,
-			double movementDistance
+			double distance
 	);
 
-	RobotVacuum.State interpretRotation(
+	Interpretation interpretRotation(
 			World currentWorld,
 			RobotVacuum.State currentState,
-			double rotationAngle
+			double angle
 	);
+
+	class Interpretation {
+
+		private final World world;
+		private final RobotVacuum.State state;
+
+		public Interpretation(World world, RobotVacuum.State state) {
+			this.world = world;
+			this.state = state;
+		}
+
+		public World getWorld() {
+			return world;
+		}
+
+		public RobotVacuum.State getState() {
+			return state;
+		}
+	}
 }
