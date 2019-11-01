@@ -1,6 +1,9 @@
 package hu.bme.aut.fox.robotvacuum.virtual.app;
 
 import hu.bme.aut.fox.robotvacuum.RobotVacuum;
+import hu.bme.aut.fox.robotvacuum.interpretation.SimpleInterpreter;
+import hu.bme.aut.fox.robotvacuum.movement.SimpleMovementController;
+import hu.bme.aut.fox.robotvacuum.navigation.SimpleNavigator;
 import hu.bme.aut.fox.robotvacuum.virtual.components.*;
 
 import java.io.FileNotFoundException;
@@ -12,7 +15,10 @@ public class Simulation {
 	public Simulation() {
 		try {
 			world = new WorldLoader("world1").load();
-			vacuum = new RobotVacuum(new VirtualRadar(world), new VirtualMotor(world));
+			vacuum = new RobotVacuum(
+					new VirtualRadar(world), new VirtualMotor(world),
+					new SimpleInterpreter(), new SimpleNavigator(), new SimpleMovementController()
+			);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
