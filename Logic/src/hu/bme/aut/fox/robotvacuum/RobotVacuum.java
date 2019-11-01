@@ -1,56 +1,74 @@
 package hu.bme.aut.fox.robotvacuum;
 
-import hu.bme.aut.fox.robotvacuum.cleaning.Cleaner;
 import hu.bme.aut.fox.robotvacuum.hardware.Motor;
 import hu.bme.aut.fox.robotvacuum.hardware.Radar;
 import hu.bme.aut.fox.robotvacuum.interpretation.Interpreter;
-import hu.bme.aut.fox.robotvacuum.interpretation.RobotVacuumInterpreter;
-import hu.bme.aut.fox.robotvacuum.navigation.MotorController;
+import hu.bme.aut.fox.robotvacuum.movement.MovementController;
 import hu.bme.aut.fox.robotvacuum.navigation.Navigator;
 import hu.bme.aut.fox.robotvacuum.world.World;
 
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.Queue;
+
 public class RobotVacuum {
 
-	private Radar radar;
-	private Motor motor;
+	private final Radar radar;
+	private final Motor motor;
 
-	private Interpreter interpreter;
-	private Navigator navigator;
-	private MotorController motorController;
-	private Cleaner cleaner;
+	private final Interpreter interpreter;
+	private final Navigator navigator;
+	private final MovementController movementController;
 
 	private State state;
 	private World world;
 
-	private Navigator.Target[] targets;
-	private short completedTargets;
-
-	public RobotVacuum(Radar radar, Motor motor) {
-		this (radar, motor, new RobotVacuumInterpreter(), null); // TODO
-	}
+	private Queue<Navigator.Target> targets = new LinkedList<>();
+	private Navigator.Target target;
 
 	public RobotVacuum(
 			Radar radar, Motor motor,
-			Interpreter interpreter, Navigator navigator
+			Interpreter interpreter, Navigator navigator, MovementController movementController
 	) {
 		this.radar = radar;
 		this.motor = motor;
 
 		this.interpreter = interpreter;
 		this.navigator = navigator;
-		this.motorController = new MotorController();
-		this.cleaner = new Cleaner();
+		this.movementController = movementController;
 
 		state = new State();
 		world = new World();
 
-		targets = new Navigator.Target[]{};
-		completedTargets = 0;
+		onStateChanged();
+		onWorldChanged();
+	}
+
+	public State getState() {
+		return state;
+	}
+
+	private void setState(State state) {
+		State prevState = this.state;
+		this.state = state;
+
+		if (this.state != prevState) {
+			onStateChanged();
+		}
 	}
 
 	public World getWorld(){
-	    return world;
-    }
+		return world;
+	}
+
+	private void setWorld(World world) {
+		World prevWorld = this.world;
+		this.world = world;
+
+		if (this.world != prevWorld) {
+			onWorldChanged();
+		}
+	}
 
 	public void start() {
 		radar.addOnUpdateListener(this::onRadarUpdate);
@@ -71,42 +89,56 @@ public class RobotVacuum {
 	}
 
 	private void onRadarUpdate(Radar.RadarData[] data) {
-		world = interpreter.interpretRadar(world, state, data);
+		Interpreter.Interpretation interpretation = interpreter.interpretRadar(world, state, data);
+		setWorld(interpretation.getWorld());
+		setState(interpretation.getState());
 	}
 
 	private void onMotorMovement(double distance) {
-		state = interpreter.interpretMovement(world, state, distance);
-		world = cleaner.cleanCurrentField(world, state);
-		if (motorController.isMovementCompleted(state, targets[completedTargets]))
-			goToNextTarget();
+		Interpreter.Interpretation interpretation = interpreter.interpretMovement(world, state, distance);
+		setWorld(interpretation.getWorld());
+		setState(interpretation.getState());
 	}
 
 	private void onMotorRotation(double angle) {
-		state = interpreter.interpretRotation(world, state, angle);
-		if (motorController.isRotationCompleted(state, targets[completedTargets]))
-			moveToNextTarget();
+		Interpreter.Interpretation interpretation = interpreter.interpretRotation(world, state, angle);
+		setWorld(interpretation.getWorld());
+		setState(interpretation.getState());
 	}
 
-	private void goToNextTarget() {
-		completedTargets++;
-		if (completedTargets == targets.length)
-			getNewTargetPath();
-		rotateToNextTarget();
+	private void onStateChanged() {
+		while (true) {
+			if (target != null) {
+				MovementController.Movement movement = movementController.getNextMovement(
+						state,
+						target.getX(),
+						target.getY()
+				);
+
+				if (movement != null) {
+					motor.move(movement.getDistance());
+					motor.rotate(movement.getAngle());
+					break;
+				}
+			}
+
+			if (targets.size() == 0) {
+				Collections.addAll(
+						targets,
+						navigator.getTargetPath(world, state)
+				);
+			}
+
+			if (targets.size() > 0) {
+				target = targets.remove();
+			} else {
+				break;
+			}
+		}
 	}
 
-	private void getNewTargetPath() {
-		targets = navigator.getTargetPath(world, state);
-		completedTargets = 0;
-	}
+	private void onWorldChanged() {
 
-	private void rotateToNextTarget() {
-		final double direction = motorController.getNextTargetDirection(state, targets[completedTargets]);
-		motor.rotate(direction - state.getDirection());
-	}
-
-	private void moveToNextTarget() {
-		final double distance = motorController.getNextTargetDistance(state, targets[completedTargets]);
-		motor.move(distance);
 	}
 
 	public static class State {
