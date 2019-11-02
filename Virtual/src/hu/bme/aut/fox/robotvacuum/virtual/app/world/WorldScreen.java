@@ -1,9 +1,10 @@
 package hu.bme.aut.fox.robotvacuum.virtual.app.world;
 
 import hu.bme.aut.fox.robotvacuum.RobotVacuum;
+import hu.bme.aut.fox.robotvacuum.virtual.app.Simulation;
 import hu.bme.aut.fox.robotvacuum.virtual.viewmodel.WorldViewModel;
 import hu.bme.aut.fox.robotvacuum.virtual.app.App.Screen;
-import hu.bme.aut.fox.robotvacuum.world.*;
+import hu.bme.aut.fox.robotvacuum.world.Field;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,67 +12,75 @@ import java.awt.*;
 
 public class WorldScreen extends Screen {
 
-	private static final int fieldSize = 10;
+	private int fieldSize = 10;
+	private final int baseX = 0;
+	private final int baseY = 0;
 	private WorldViewModel viewModel;
-	private Canvas canvas = new Canvas();
-	private RobotVacuum robotVacuum;
-	//private Graphics g = getGraphics();
-
+	private JPanel myCanvas;
 	private JButton increaseBtn = new JButton("+");
 	private JButton decreaseBtn = new JButton("-");
 
+	private Canvas canvas = new Canvas();
+
+
+
 	public WorldScreen(RobotVacuum rv) {
 
-		robotVacuum = rv;
-		viewModel = new WorldViewModel(robotVacuum);
-
+		viewModel = new WorldViewModel(rv);
 		setLayout (new BoxLayout (this, BoxLayout.LINE_AXIS));
 
         increaseBtn.addActionListener((event)-> {viewModel.increaseScalingFactor(); System.out.println(viewModel.getScalingFactor());});
         decreaseBtn.addActionListener((event) -> {viewModel.decreaseScalingFactor(); System.out.println(viewModel.getScalingFactor());});
 
-        canvas.setBackground(Color.WHITE);
 
-
-
-		//add(canvas);
+		myCanvas = new RobotWorldCanvas();
+		myCanvas.repaint();
+		add(myCanvas);
 		add(increaseBtn);
 		add(decreaseBtn);
 	}
 
-	@Override
-	public void paintComponent(Graphics g) {
-		super.paintComponent(g);
-
-		g.setColor(Color.BLUE);
-		g.fillRect(0, 0, 100, 100);
+	private void drawWorld(Field[][] fields){
+		System.out.println("WorldScreen.drawWorld meghivodott meghivodott");
+		myCanvas.repaint();
 	}
 
-	private void drawWorld(Field[][] fields){
-		Graphics g = canvas.getGraphics();
-		clearCanvas(g);
-		int n = viewModel.getScalingFactor();
-		for(int i = 0; i < n; i++){
-			for(int j = 0; j < n; j++){
-				Field field = fields[i][j];
-				if(field != null) {
-					if (!field.isCleaned()) {
-						if (!field.isObstacle()) {
-							g.setColor(Color.LIGHT_GRAY);
-						} else {
-							g.setColor(Color.BLACK);
+	public class RobotWorldCanvas extends JPanel{
+
+		private Field[][] fields;
+
+		public RobotWorldCanvas(){}
+
+		@Override
+		public void paint(Graphics graphics) {
+			System.out.println("RobotWorldCanvas.paint meghivodott");
+			super.paint(graphics);
+			fields = viewModel.getFields();
+			fieldSize = (int) (660/viewModel.getScalingFactor());
+
+			for(int i = 0; i < viewModel.getScalingFactor(); i++){
+				for(int j = 0; j < viewModel.getScalingFactor(); j++){
+					if(fields[j][i] != null){
+						if(fields[j][i].isObstacle()){
+							graphics.setColor(Color.BLACK);
 						}
-					} else {
-						g.setColor(Color.WHITE);
+						else{
+							if(fields[j][i].isCleaned()){
+								graphics.setColor(Color.WHITE);
+							}
+							else{
+								graphics.setColor(Color.LIGHT_GRAY);
+							}
+						}
 					}
+					else{
+						graphics.setColor(this.getBackground());
+					}
+					graphics.fillRect(baseX + i * fieldSize, baseY + j * fieldSize, fieldSize, fieldSize);
 				}
-
-				g.fillRect(i * fieldSize, j * fieldSize, fieldSize, fieldSize);
-
 			}
+
 		}
-		g.setColor(Color.RED);
-		g.fillRect(viewModel.getScalingFactor()/2 * fieldSize, viewModel.getScalingFactor()/2 * fieldSize, fieldSize, fieldSize);
 	}
 
 
@@ -81,9 +90,5 @@ public class WorldScreen extends Screen {
 		subscribe(viewModel.world, (matrix) -> drawWorld(matrix));
 	}
 
-	private void clearCanvas(Graphics graphics) {
-		graphics.setColor(Color.WHITE);
-		graphics.fillRect(0, 0, 1000, 1000);
-	}
 
 }

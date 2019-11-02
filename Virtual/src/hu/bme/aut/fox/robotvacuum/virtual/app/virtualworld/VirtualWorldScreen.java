@@ -9,14 +9,12 @@ import hu.bme.aut.fox.robotvacuum.virtual.viewmodel.VirtualWorldViewModel;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.List;
-
 
 public class VirtualWorldScreen extends Screen {
 
     private VirtualWorldViewModel viewModel;
-    private final int baseX = 50;
-    private final int baseY = 100;
+    private final int baseX = 0;
+    private final int baseY = 0;
     private final int fieldSize = 10;
     private int recentPosX;
     private int recentPosY;
@@ -44,7 +42,7 @@ public class VirtualWorldScreen extends Screen {
         stepDownBtn = new JButton("Down");
         stepDownBtn.addActionListener((event) -> stepDown());
 
-        myCanvas = new DisplayGraphics();
+        myCanvas = new FullWorldCanvas();
 
         add(myCanvas);
         add(stepUpBtn);
@@ -57,14 +55,14 @@ public class VirtualWorldScreen extends Screen {
 
 
 
-    public class DisplayGraphics extends JPanel {
+    public class FullWorldCanvas extends JPanel {
 
         //matrix adatok
         private int rows = 0;
         private int columns = 0;
         VirtualWorldField[][] fields;
 
-        public DisplayGraphics(){
+        public FullWorldCanvas(){
 
             actualPosX = (int) viewModel.getVirtualWorld().getRobotVacuumPosition().x;
             actualPosY = (int) viewModel.getVirtualWorld().getRobotVacuumPosition().y;
@@ -80,7 +78,7 @@ public class VirtualWorldScreen extends Screen {
 
         @Override
         public void paint(Graphics g) {
-            System.out.println(recentPosX);
+            System.out.println("coordinates: (" + recentPosX + "," + recentPosY + ")");
             //System.out.println(recentPosY);
             for(int i = 0; i < columns; i++){
                 for(int j = 0; j < rows; j++){
@@ -106,16 +104,6 @@ public class VirtualWorldScreen extends Screen {
         }
     }
 
-    public void drawRobotVacuum(Position pos){
-        Graphics g = getGraphics();
-        g.setColor(Color.WHITE);
-        g.fillRect(baseX + recentPosX * fieldSize, baseY + recentPosY * fieldSize, fieldSize, fieldSize);
-        g.setColor(Color.RED);
-        g.fillRect(baseX + (int)pos.x * fieldSize, baseY + (int)pos.y * fieldSize, fieldSize, fieldSize);
-        recentPosX = (int)pos.x;
-        recentPosY = (int)pos.y;
-    }
-
     public void setRobotVacuumPos(Position pos){
         actualPosX = (int)pos.x;
         actualPosY = (int)pos.y;
@@ -125,15 +113,15 @@ public class VirtualWorldScreen extends Screen {
     @Override
     public void onAttach() {
         super.onAttach();
-        //subscribe(viewModel.robotVacuum, (position) -> drawRobotVacuum(position));
-        //subscribe(viewModel.robotVacuum, (position) -> setRobotVacuumPos(position));
-        subscribe(viewModel.robotVacuum, (position) -> myCanvas.repaint());
+        subscribe(viewModel.robotVacuum, (position) -> setRobotVacuumPos(position));
+        //subscribe(viewModel.robotVacuum, (position) -> myCanvas.repaint());
     }
 
     @Override
     public void onDetach() {
-
     }
+
+    //Gombok
     public void stepRight(){
         actualPosX++;
         myCanvas.repaint();
