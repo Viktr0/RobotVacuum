@@ -133,6 +133,7 @@ public class RobotVacuum {
 			if (targets.size() > 0) {
 				target = targets.remove();
 			} else {
+				motor.rotate(Math.PI);
 				break;
 			}
 		}

@@ -15,7 +15,7 @@ public class SimpleInterpreter implements Interpreter {
 		List<Field> newFields = new LinkedList<>();
 		for (Radar.RadarData data : radarData) {
 			double posX = currentState.getPositionX();
-			double posY = currentState.getPositionX();
+			double posY = currentState.getPositionY();
 			double dirX = Math.cos(data.getDirection());
 			double dirY = Math.sin(data.getDirection());
 
