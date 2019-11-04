@@ -64,16 +64,16 @@ public class VirtualWorldScreen extends Screen {
 
         public FullWorldCanvas(){
 
-            actualPosX = (int) viewModel.getVirtualWorld().getRobotVacuumPosition().x;
-            actualPosY = (int) viewModel.getVirtualWorld().getRobotVacuumPosition().y;
+            actualPosX = (int) viewModel.getVirtualWorld().getRobotVacuumPosition().y;
+            actualPosY = (int) viewModel.getVirtualWorld().getRobotVacuumPosition().x;
 
-            recentPosX = actualPosX;
-            recentPosY = actualPosY;
+            recentPosX = actualPosY;
+            recentPosY = actualPosX;
 
             fields = viewModel.getVirtualWorld().getWorldMatrix();
 
-            rows = viewModel.getVirtualWorld().getSize().N;
-            columns = viewModel.getVirtualWorld().getSize().M;
+            columns = viewModel.getVirtualWorld().getSize().N;
+            rows = viewModel.getVirtualWorld().getSize().M;
         }
 
         @Override
@@ -82,8 +82,8 @@ public class VirtualWorldScreen extends Screen {
             //System.out.println(recentPosY);
             for(int i = 0; i < columns; i++){
                 for(int j = 0; j < rows; j++){
-                    VirtualWorldField.Status stat = fields[j][i].status;
-                    fields[recentPosY][recentPosX].status = VirtualWorldField.Status.CLEAN; //TODO
+                    VirtualWorldField.Status stat = fields[i][j].status;
+                    fields[recentPosX][recentPosY].status = VirtualWorldField.Status.CLEAN; //TODO
 
                     if(stat == VirtualWorldField.Status.DIRTY)
                         g.setColor(Color.LIGHT_GRAY);
@@ -98,15 +98,15 @@ public class VirtualWorldScreen extends Screen {
                 }
             }
             g.setColor(Color.RED);
-            g.fillRect(baseX + actualPosX * fieldSize, baseY + actualPosY * fieldSize, fieldSize, fieldSize);
-            recentPosX = actualPosX;
-            recentPosY = actualPosY;
+            g.fillRect(baseX + actualPosY * fieldSize, baseY + actualPosX * fieldSize, fieldSize, fieldSize);
+            recentPosX = actualPosY;
+            recentPosY = actualPosX;
         }
     }
 
     public void setRobotVacuumPos(Position pos){
-        actualPosX = (int)pos.x;
-        actualPosY = (int)pos.y;
+        actualPosX = (int)pos.y;
+        actualPosY = (int)pos.x;
         myCanvas.repaint();
     }
 
@@ -123,19 +123,19 @@ public class VirtualWorldScreen extends Screen {
 
     //Gombok
     public void stepRight(){
-        actualPosX++;
+        actualPosY++;
         myCanvas.repaint();
     }
     public void stepLeft(){
-        actualPosX--;
-        myCanvas.repaint();
-    }
-    public void stepUp(){
         actualPosY--;
         myCanvas.repaint();
     }
+    public void stepUp(){
+        actualPosX--;
+        myCanvas.repaint();
+    }
     public void stepDown(){
-        actualPosY++;
+        actualPosX++;
         myCanvas.repaint();
     }
 

@@ -1,7 +1,6 @@
 package hu.bme.aut.fox.robotvacuum.virtual.app.world;
 
 import hu.bme.aut.fox.robotvacuum.RobotVacuum;
-import hu.bme.aut.fox.robotvacuum.virtual.app.Simulation;
 import hu.bme.aut.fox.robotvacuum.virtual.viewmodel.WorldViewModel;
 import hu.bme.aut.fox.robotvacuum.virtual.app.App.Screen;
 import hu.bme.aut.fox.robotvacuum.world.Field;
@@ -56,7 +55,7 @@ public class WorldScreen extends Screen {
 			System.out.println("RobotWorldCanvas.paint meghivodott");
 			super.paint(graphics);
 			fields = viewModel.getFields();
-			fieldSize = (int) (660/viewModel.getScalingFactor());
+			fieldSize = (int) (600/viewModel.getScalingFactor());
 
 			for(int i = 0; i < viewModel.getScalingFactor(); i++){
 				for(int j = 0; j < viewModel.getScalingFactor(); j++){
@@ -74,6 +73,7 @@ public class WorldScreen extends Screen {
 						}
 					}
 					else{
+						//graphics.setColor(Color.BLACK);
 						graphics.setColor(this.getBackground());
 					}
 					graphics.fillRect(baseX + i * fieldSize, baseY + j * fieldSize, fieldSize, fieldSize);
