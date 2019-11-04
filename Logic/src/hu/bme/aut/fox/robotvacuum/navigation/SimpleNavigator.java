@@ -12,7 +12,7 @@ public class SimpleNavigator implements Navigator {
 			for (double dir = 0; dir < Math.PI * 2; dir += 1 / rad) {
 				double x = state.getPositionX() + Math.cos(dir) * rad;
 				double y = state.getPositionY() + Math.cos(dir) * rad;
-				Field field = world.getFieldAt(x, y);
+				Field field = world.getField(x, y);
 				if (field == null || !field.isCleaned()) {
 					new Target(x, y);
 				}

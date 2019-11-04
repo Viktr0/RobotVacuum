@@ -2,7 +2,6 @@ package hu.bme.aut.fox.robotvacuum.virtual.viewmodel;
 
 
 import hu.bme.aut.fox.robotvacuum.RobotVacuum;
-import hu.bme.aut.fox.robotvacuum.virtual.app.Simulation;
 import hu.bme.aut.fox.robotvacuum.world.Field;
 import io.reactivex.subjects.BehaviorSubject;
 
@@ -45,7 +44,7 @@ public class WorldViewModel {
         int max = scalingFactor/2;
         for(int i = min; i < max; ++i)
             for(int j = min; j < max; ++j)
-                fields[i + max][j + max] = robotVacuum.getWorld().getField(i, j);
+                fields[i + max][j + max] = robotVacuum.getWorld().getGridField(i, j);
         world.onNext(fields);
     }
 
