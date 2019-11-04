@@ -5,6 +5,7 @@ import hu.bme.aut.fox.robotvacuum.hardware.Radar;
 import hu.bme.aut.fox.robotvacuum.interpretation.Interpreter;
 import hu.bme.aut.fox.robotvacuum.movement.MovementController;
 import hu.bme.aut.fox.robotvacuum.navigation.Navigator;
+import hu.bme.aut.fox.robotvacuum.world.Field;
 import hu.bme.aut.fox.robotvacuum.world.World;
 
 import java.util.Collections;
@@ -116,8 +117,8 @@ public class RobotVacuum {
 				);
 
 				if (movement != null) {
-					motor.move(movement.getDistance());
-					motor.rotate(movement.getAngle());
+					if (movement.getDistance() != 0) motor.move(movement.getDistance());
+					if (movement.getAngle() != 0) motor.rotate(movement.getAngle());
 					break;
 				}
 			}
@@ -138,7 +139,16 @@ public class RobotVacuum {
 	}
 
 	private void onWorldChanged() {
-
+		// TODO: Remove logging
+		for (int y = -5; y <= 5; y++) {
+			for (int x = -5; x <= 5; x++) {
+				Field field = world.getField(x, y);
+				System.out.print(field == null ? "  " : field.isObstacle() ? "##" : "||");
+			}
+			System.out.println();
+		}
+		System.out.println();
+		System.out.println();
 	}
 
 	public static class State {

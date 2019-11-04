@@ -19,6 +19,8 @@ public class Simulation {
 					new VirtualRadar(world), new VirtualMotor(world),
 					new SimpleInterpreter(), new SimpleNavigator(), new SimpleMovementController()
 			);
+
+			start();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
