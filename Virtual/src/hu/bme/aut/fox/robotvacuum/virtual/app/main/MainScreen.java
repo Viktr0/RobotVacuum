@@ -34,7 +34,14 @@ public class MainScreen extends App.Screen {
 		JButton virtualWorldButton = new JButton("VirtualWorld");
 		virtualWorldButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 		virtualWorldButton.addActionListener(
-				(event) -> navigate(new VirtualWorldScreen(new Simulation().getWorld()))
+				(event) -> {
+					Simulation simulation = new Simulation();
+					navigate(new VirtualWorldScreen(
+							simulation.getWorld(),
+							simulation.getRadar(),
+							simulation.getMotor()
+					));
+				}
 		);
 
 		JButton worldButton = new JButton("RobotVacuum's world");

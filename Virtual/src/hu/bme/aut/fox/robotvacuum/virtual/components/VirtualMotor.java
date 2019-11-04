@@ -8,9 +8,9 @@ import java.util.List;
 public class VirtualMotor implements Motor {
 	private static final Object controlLock = new Object();
 	private static final Object observableLock = new Object();
-	private static final int movingInterval = 300;
+	private static final int movingInterval = 30;
 	private static final double movingSpeed = 0.2;
-	private static final int rotationInterval = 300;
+	private static final int rotationInterval = 30;
 	private static final double rotationSpeed = 0.2;
 
 	private boolean isRunning = false;

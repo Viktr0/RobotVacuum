@@ -10,7 +10,7 @@ import java.util.List;
 
 public class VirtualRadar implements Radar {
 	private static final Object observableLock = new Object();
-	private static final int pingInterval = 500;
+	private static final int pingInterval = 0;
 	private static final double angle = 2.0 / 3.0 * Math.PI;
 	private static final double dPhi = 0.15;
 	private static final double maxLength = 5.0;
@@ -78,11 +78,54 @@ public class VirtualRadar implements Radar {
 	private void measure() {
 		final Position position = world.getRobotVacuumPosition();
 		final List<RadarData> data = new ArrayList<>();
-		for (double phi = angle / 2; phi >= -angle / 2; phi -= dPhi){
-			final double length = this.getRayLength(phi, position);
-			if (length > maxLength) data.add(new RadarData(position.direction + phi, maxLength, false));
-			else data.add(new RadarData(position.direction + phi, length, true));
+//		for (double phi = angle / 2; phi >= -angle / 2; phi -= dPhi){
+//			final double length = this.getRayLength(phi, position);
+//			if (length > maxLength) data.add(new RadarData(position.direction + phi, maxLength, false));
+//			else data.add(new RadarData(position.direction + phi, length, true));
+//		}
+
+
+
+
+
+		// TODO: FIX!!!!!!!!!!!
+		// TODO: FIX!!!!!!!!!!!
+		// TODO: FIX!!!!!!!!!!!
+		// TODO: FIX!!!!!!!!!!!
+		// TODO: FIX!!!!!!!!!!!
+		for (double phi = position.direction - angle / 2; phi < position.direction + angle / 2; phi += dPhi){
+			double dirX = Math.cos(phi);
+			double dirY = Math.sin(phi);
+			Radar.RadarData rayData = null;
+
+			for (double dist = 0; dist < maxLength; dist += 0.01){
+				double x = position.x + dirX * dist;
+				double y = position.y + dirY * dist;
+
+				try {
+					if (world.getWorldMatrix()[(int) x][(int) y].status == VirtualWorldField.Status.NOTEMPTY) {
+						rayData = new RadarData(phi, dist, true);
+						break;
+					}
+				} catch (IndexOutOfBoundsException ignored) {
+					break;
+				}
+			}
+
+			if (rayData == null) {
+				rayData = new RadarData(phi, maxLength, false);
+			}
+
+			data.add(rayData);
 		}
+
+
+
+
+
+
+
+
 		notifyRadarListeners(data.toArray(new RadarData[0]));
 	}
 

@@ -1,8 +1,7 @@
 package hu.bme.aut.fox.robotvacuum.virtual.app.virtualworld;
 
-import hu.bme.aut.fox.robotvacuum.virtual.components.Position;
-import hu.bme.aut.fox.robotvacuum.virtual.components.VirtualWorld;
-import hu.bme.aut.fox.robotvacuum.virtual.components.VirtualWorldField;
+import hu.bme.aut.fox.robotvacuum.hardware.Radar;
+import hu.bme.aut.fox.robotvacuum.virtual.components.*;
 import hu.bme.aut.fox.robotvacuum.virtual.app.App.Screen;
 import hu.bme.aut.fox.robotvacuum.virtual.viewmodel.VirtualWorldViewModel;
 
@@ -15,21 +14,33 @@ public class VirtualWorldScreen extends Screen {
     private VirtualWorldViewModel viewModel;
     private final int baseX = 0;
     private final int baseY = 0;
-    private final int fieldSize = 10;
-    private int recentPosX;
-    private int recentPosY;
-    private int actualPosX = 0;
-    private int actualPosY = 0;
+    private final int fieldSize = 32;
+
+    private double recentPosX;
+    private double recentPosY;
+    private double actualPosX = 0;
+    private double actualPosY = 0;
+
+    private Radar.RadarData[] radarData = new Radar.RadarData[0];
+
     private JPanel myCanvas;
     private JButton stepRightBtn;
     private JButton stepLeftBtn;
     private JButton stepUpBtn;
     private JButton stepDownBtn;
 
+    public VirtualWorldScreen(
+            VirtualWorld virtualWorld,
+            VirtualRadar virtualRadar,
+            VirtualMotor virtualMotor
+    ) {
 
-    public VirtualWorldScreen(VirtualWorld virtualWorld) {
+        viewModel = new VirtualWorldViewModel(
+                virtualWorld,
+                virtualRadar,
+                virtualMotor
+        );
 
-        viewModel = new VirtualWorldViewModel(virtualWorld);
         BoxLayout layout = new BoxLayout(this, BoxLayout.X_AXIS);
         setLayout(layout);
 
@@ -50,10 +61,6 @@ public class VirtualWorldScreen extends Screen {
         add(stepLeftBtn);
         add(stepRightBtn);
     }
-
-
-
-
 
     public class FullWorldCanvas extends JPanel {
 
@@ -83,7 +90,7 @@ public class VirtualWorldScreen extends Screen {
             for(int i = 0; i < columns; i++){
                 for(int j = 0; j < rows; j++){
                     VirtualWorldField.Status stat = fields[i][j].status;
-                    fields[recentPosX][recentPosY].status = VirtualWorldField.Status.CLEAN; //TODO
+                    fields[(int) recentPosX][(int) recentPosY].status = VirtualWorldField.Status.CLEAN; //TODO
 
                     if(stat == VirtualWorldField.Status.DIRTY)
                         g.setColor(Color.LIGHT_GRAY);
@@ -97,24 +104,48 @@ public class VirtualWorldScreen extends Screen {
 
                 }
             }
+
             g.setColor(Color.RED);
-            g.fillRect(baseX + actualPosY * fieldSize, baseY + actualPosX * fieldSize, fieldSize, fieldSize);
+            g.fillRect(
+                    (int) (baseX + (actualPosY - 0.5) * fieldSize),
+                    (int) (baseY + (actualPosX - 0.5) * fieldSize),
+                    fieldSize, fieldSize
+            );
+
+            g.setColor(Color.BLUE);
+            for (Radar.RadarData data : radarData) {
+                double startX = baseX + actualPosY * fieldSize;
+                double startY = baseY + actualPosX * fieldSize;
+                double rayLength = data.getDistance() * fieldSize;
+                g.drawLine(
+                        (int) startX,
+                        (int) startY,
+                        (int) (startX + Math.cos(data.getDirection()) * rayLength),
+                        (int) (startY + Math.sin(data.getDirection()) * rayLength)
+                );
+            }
+
             recentPosX = actualPosY;
             recentPosY = actualPosX;
         }
     }
 
-    public void setRobotVacuumPos(Position pos){
-        actualPosX = (int)pos.y;
-        actualPosY = (int)pos.x;
+    private void setRobotVacuumPos(Position pos) {
+        actualPosX = pos.y;
+        actualPosY = pos.x;
+        myCanvas.repaint();
+    }
+
+    private void setRadarData(Radar.RadarData[] data) {
+        radarData = data;
         myCanvas.repaint();
     }
 
     @Override
     public void onAttach() {
         super.onAttach();
-        subscribe(viewModel.robotVacuum, (position) -> setRobotVacuumPos(position));
-        //subscribe(viewModel.robotVacuum, (position) -> myCanvas.repaint());
+        subscribe(viewModel.robotVacuum, this::setRobotVacuumPos);
+        subscribe(viewModel.radarData, this::setRadarData);
     }
 
     @Override
@@ -138,5 +169,4 @@ public class VirtualWorldScreen extends Screen {
         actualPosX++;
         myCanvas.repaint();
     }
-
 }
