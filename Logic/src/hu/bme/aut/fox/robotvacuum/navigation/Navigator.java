@@ -7,7 +7,7 @@ public interface Navigator {
 
 	Target[] getTargetPath(World world, RobotVacuum.State state);
 
-	class Target {
+	final class Target {
 
 		private final double x;
 		private final double y;

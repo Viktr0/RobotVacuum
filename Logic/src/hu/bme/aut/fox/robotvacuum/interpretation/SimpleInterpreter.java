@@ -13,7 +13,28 @@ public class SimpleInterpreter implements Interpreter {
 	@Override
 	public Interpretation interpretRadar(World currentWorld, RobotVacuum.State currentState, Radar.RadarData[] radarData) {
 		List<Field> newFields = new LinkedList<>();
-		for (Radar.RadarData data : radarData) interpretRadarRay(currentWorld, currentState, data, newFields);
+		for (Radar.RadarData data : radarData) {
+			double posX = currentState.getPositionX();
+			double posY = currentState.getPositionX();
+			double dirX = Math.cos(data.getDirection());
+			double dirY = Math.sin(data.getDirection());
+
+			for (double dist = 0; dist < data.getDistance(); dist += 0.1) {
+				int x = currentWorld.toGridCoordinate(posX + dirX * dist);
+				int y = currentWorld.toGridCoordinate(posY + dirY * dist);
+				if (currentWorld.getField(x, y) == null) {
+					newFields.add(new Field(x, y, false, false));
+				}
+			}
+
+			if (data.isHit()) {
+				newFields.add(new Field(
+						currentWorld.toGridCoordinate(posX + dirX * data.getDistance()),
+						currentWorld.toGridCoordinate(posY + dirY * data.getDistance()),
+						true, false
+				));
+			}
+		}
 
 		return new Interpretation(
 				new World(currentWorld, newFields.toArray(new Field[0])),
@@ -53,37 +74,5 @@ public class SimpleInterpreter implements Interpreter {
 		);
 
 		return new Interpretation(currentWorld, state);
-	}
-
-	private void interpretRadarRay(
-			World currentWorld,
-			RobotVacuum.State currentState,
-			Radar.RadarData ray,
-			List<Field> newFields) {
-
-		final double gridScale = currentWorld.getGridScale();
-		final double ds = gridScale / 8.0;
-		final double dx = Math.cos(currentState.getDirection() + ray.getDirection()) * ds;
-		final double dy = Math.sin(currentState.getDirection() + ray.getDirection()) * ds;
-		final double distance = ray.getDistance();
-		double x = currentState.getPositionX();
-		double y = currentState.getPositionY();
-		for (double s = 0; s < distance; s += ds, x += dx, y += dy) {
-			Field field = currentWorld.getFieldAt(x, y);
-			if (field != null)
-				newFields.add(new Field(field.getX(), field.getY(), false, field.isCleaned()));
-			else
-				newFields.add(new Field((int) Math.floor(x / gridScale), (int) Math.floor(y / gridScale), false, false));
-		}
-
-		if (ray.isObstacle()) {
-			final double endX = Math.cos(currentState.getDirection()) * distance + currentState.getPositionX();
-			final double endY = Math.sin(currentState.getDirection()) * distance + currentState.getPositionY();
-			Field obstacle = currentWorld.getFieldAt(endX + gridScale / 10.0, endY + gridScale / 10.0);
-			if (obstacle != null && (!obstacle.isObstacle() || true)) // TODO: Hotfix
-				newFields.add(new Field(obstacle.getX(), obstacle.getY(), true, false));
-			else
-				newFields.add(new Field((int) Math.floor(x / gridScale), (int) Math.floor(y / gridScale), true, false));
-		}
 	}
 }

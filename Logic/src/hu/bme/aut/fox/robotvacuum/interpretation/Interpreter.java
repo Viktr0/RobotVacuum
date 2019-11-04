@@ -24,7 +24,7 @@ public interface Interpreter {
 			double angle
 	);
 
-	class Interpretation {
+	final class Interpretation {
 
 		private final World world;
 		private final RobotVacuum.State state;

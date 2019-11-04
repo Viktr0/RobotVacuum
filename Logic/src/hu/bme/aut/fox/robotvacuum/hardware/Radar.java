@@ -16,12 +16,12 @@ public interface Radar {
 
 		private final double direction;
 		private final double distance;
-		private final boolean obstacle;
+		private final boolean hit;
 
-		public RadarData(double dir, double s, boolean o) {
-			direction = dir;
-			distance = s;
-			obstacle = o;
+		public RadarData(double direction, double distance, boolean hit) {
+			this.direction = direction;
+			this.distance = distance;
+			this.hit = hit;
 		}
 
 		public double getDirection() {
@@ -32,8 +32,8 @@ public interface Radar {
 			return distance;
 		}
 
-		public boolean isObstacle() {
-			return obstacle;
+		public boolean isHit() {
+			return hit;
 		}
 	}
 }
