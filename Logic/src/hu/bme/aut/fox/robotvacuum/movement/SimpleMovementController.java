@@ -7,8 +7,8 @@ public class SimpleMovementController implements MovementController {
 	private static final double DISTANCE_THRESHOLD = 0.001;
 	private static final double DIRECTION_THRESHOLD = 0.001;
 
-	private static final double MAX_DISTANCE = 0.1f;
-	private static final double MAX_ANGLE = 0.1;
+	private static final double MAX_DISTANCE = 0.5;
+	private static final double MAX_ANGLE = 0.5;
 
 	@Override
 	public Movement getNextMovement(RobotVacuum.State state, double targetX, double targetY) {

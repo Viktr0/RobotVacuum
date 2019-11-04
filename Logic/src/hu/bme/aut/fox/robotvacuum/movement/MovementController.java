@@ -6,7 +6,7 @@ public interface MovementController {
 
 	Movement getNextMovement(RobotVacuum.State state, double targetX, double targetY);
 
-	class Movement {
+	final class Movement {
 
 		private final double distance;
 		private final double angle;
