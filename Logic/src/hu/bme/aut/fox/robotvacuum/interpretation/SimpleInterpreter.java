@@ -22,7 +22,7 @@ public class SimpleInterpreter implements Interpreter {
 			for (double dist = 0; dist < data.getDistance(); dist += 0.1) {
 				int x = currentWorld.toGridCoordinate(posX + dirX * dist);
 				int y = currentWorld.toGridCoordinate(posY + dirY * dist);
-				if (currentWorld.getField(x, y) == null) {
+				if (currentWorld.getGridField(x, y) == null) {
 					newFields.add(new Field(x, y, false, false));
 				}
 			}
@@ -50,7 +50,7 @@ public class SimpleInterpreter implements Interpreter {
 				currentState.getDirection()
 		);
 
-		Field currentField = currentWorld.getFieldAt(state.getPositionX(), state.getPositionY());
+		Field currentField = currentWorld.getField(state.getPositionX(), state.getPositionY());
 		if (currentField == null) {
 			currentField = new Field(
 					currentWorld.toGridCoordinate(state.getPositionX()),

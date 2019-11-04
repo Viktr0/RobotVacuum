@@ -142,7 +142,7 @@ public class RobotVacuum {
 		// TODO: Remove logging
 		for (int y = -5; y <= 5; y++) {
 			for (int x = -5; x <= 5; x++) {
-				Field field = world.getField(x, y);
+				Field field = world.getGridField(x, y);
 				System.out.print(field == null ? "  " : field.isObstacle() ? "##" : "||");
 			}
 			System.out.println();
