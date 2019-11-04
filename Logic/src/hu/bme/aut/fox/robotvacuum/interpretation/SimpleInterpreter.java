@@ -14,6 +14,7 @@ public class SimpleInterpreter implements Interpreter {
 	public Interpretation interpretRadar(World currentWorld, RobotVacuum.State currentState, Radar.RadarData[] radarData) {
 		List<Field> newFields = new LinkedList<>();
 		for (Radar.RadarData data : radarData) interpretRadarRay(currentWorld, currentState, data, newFields);
+
 		return new Interpretation(
 				new World(currentWorld, newFields.toArray(new Field[0])),
 				currentState
@@ -29,6 +30,14 @@ public class SimpleInterpreter implements Interpreter {
 		);
 
 		Field currentField = currentWorld.getFieldAt(state.getPositionX(), state.getPositionY());
+		if (currentField == null) {
+			currentField = new Field(
+					currentWorld.toGridCoordinate(state.getPositionX()),
+					currentWorld.toGridCoordinate(state.getPositionY()),
+					false, false
+			);
+		}
+
 		Field cleanedField = new Field(currentField.getX(), currentField.getY(), currentField.isObstacle(), true);
 		World world = new World(currentWorld, cleanedField);
 
@@ -71,7 +80,7 @@ public class SimpleInterpreter implements Interpreter {
 			final double endX = Math.cos(currentState.getDirection()) * distance + currentState.getPositionX();
 			final double endY = Math.sin(currentState.getDirection()) * distance + currentState.getPositionY();
 			Field obstacle = currentWorld.getFieldAt(endX + gridScale / 10.0, endY + gridScale / 10.0);
-			if (obstacle != null && !obstacle.isObstacle())
+			if (obstacle != null && (!obstacle.isObstacle() || true)) // TODO: Hotfix
 				newFields.add(new Field(obstacle.getX(), obstacle.getY(), true, false));
 			else
 				newFields.add(new Field((int) Math.floor(x / gridScale), (int) Math.floor(y / gridScale), true, false));

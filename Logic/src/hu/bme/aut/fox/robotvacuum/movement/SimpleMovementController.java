@@ -4,8 +4,8 @@ import hu.bme.aut.fox.robotvacuum.RobotVacuum;
 
 public class SimpleMovementController implements MovementController {
 
-	private static final double DISTANCE_THRESHOLD = 0.01;
-	private static final double DIRECTION_THRESHOLD = 0.01;
+	private static final double DISTANCE_THRESHOLD = 0.001;
+	private static final double DIRECTION_THRESHOLD = 0.001;
 
 	private static final double MAX_DISTANCE = 0.1f;
 	private static final double MAX_ANGLE = 0.1;

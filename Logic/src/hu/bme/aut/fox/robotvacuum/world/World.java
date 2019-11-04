@@ -129,6 +129,7 @@ public class World {
 		return gridCoordinate * gridScale;
 	}
 
+	// TODO: Rename to getGridField
 	public Field getField(int x, int y) {
 		if (x >= 0 && y >= 0) {
 			return x < width00 && y < height00 ? fields00[x][y] : null;
@@ -145,6 +146,7 @@ public class World {
 		}
 	}
 
+	// TODO: Rename to getField
 	public Field getFieldAt(double x, double y) {
 		return getField(toGridCoordinate(x), toGridCoordinate(y));
 	}

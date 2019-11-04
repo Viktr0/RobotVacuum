@@ -1,18 +1,26 @@
-import hu.bme.aut.fox.robotvacuum.virtual.components.*;
+import hu.bme.aut.fox.robotvacuum.virtual.components.Position;
+import hu.bme.aut.fox.robotvacuum.virtual.components.VirtualMotor;
+import hu.bme.aut.fox.robotvacuum.virtual.components.VirtualWorld;
+import hu.bme.aut.fox.robotvacuum.virtual.components.WorldLoader;
 
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
+
 public class Test {
+
 	public static void main(String[] args) {
 
 		VirtualWorld world = null;
 		try {
 			world = new WorldLoader("world1").load();
 			VirtualMotor motor = new VirtualMotor(world);
-			world.setRobotVacuumPosition(new Position(0, 0, Math.PI * 1.5));
 
-			world.addListener((Position p) -> System.out.println(Math.round(p.x * 100) / 100.0  + " " + Math.round(p.y * 100) / 100.0  + " " + Math.round(p.direction * 180.0 / Math.PI)));
+			world.addListener(p -> {
+				System.out.println(Math.round(p.x * 100) / 100.0  + " " + Math.round(p.y * 100) / 100.0  + " " + Math.round(p.direction * 180.0 / Math.PI));
+			});
+
+			motor.addOnMovementListener(distance -> {
+				System.out.println("Distance moved: " + distance);
+			});
 
 			Thread t2 = new Thread(() -> {
 				try {
@@ -29,6 +37,7 @@ public class Test {
 				}
 			});
 			motor.start();
+
 			t2.start();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
