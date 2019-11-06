@@ -7,6 +7,7 @@ import hu.bme.aut.fox.robotvacuum.virtual.app.world.WorldScreen;
 import hu.bme.aut.fox.robotvacuum.world.*;
 
 import javax.swing.*;
+import java.awt.*;
 
 public class SimulationAppScreen extends App.Screen {
 
@@ -14,16 +15,28 @@ public class SimulationAppScreen extends App.Screen {
 
 
     public SimulationAppScreen(){
-//        BoxLayout layout = new BoxLayout(this, BoxLayout.Y_AXIS);
-//        setLayout(layout);
-//        add(Box.createHorizontalGlue());
-//
-//        simulation = new Simulation();
-//        WorldScreen worldScreen = new WorldScreen(simulation.getRobotVacuum());
-//        VirtualWorldScreen virtualWorldScreen = new VirtualWorldScreen(simulation.getWorld());
-//
-//        add(worldScreen);
-//        add(virtualWorldScreen);
+
+
+        setLayout(new GridLayout(1, 2));
+
+
+        simulation = new Simulation();
+        WorldScreen worldScreen = new WorldScreen(simulation.getRobotVacuum());
+        VirtualWorldScreen virtualWorldScreen = new VirtualWorldScreen(simulation.getWorld(), simulation.getRadar(), simulation.getMotor());
+
+        JPanel virtualPanel = new JPanel(new GridBagLayout());
+        virtualPanel.setBorder(BorderFactory.createLineBorder(Color.black));
+        virtualPanel.setPreferredSize(new Dimension(700,700));
+        JPanel robotPanel = new JPanel(new GridBagLayout());
+        robotPanel.setBorder(BorderFactory.createLineBorder(Color.black));
+        robotPanel.setSize(new Dimension(700,700));
+
+        add(virtualPanel, BorderLayout.EAST);
+        add(robotPanel, BorderLayout.WEST);
+
+
+        //add(worldScreen);
+        //add(virtualWorldScreen);
     }
 
 }
