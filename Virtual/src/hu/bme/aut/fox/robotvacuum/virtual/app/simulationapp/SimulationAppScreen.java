@@ -12,6 +12,8 @@ import java.awt.*;
 public class SimulationAppScreen extends App.Screen {
 
     private Simulation simulation;
+    private WorldScreen.WorldPanel worldPanel;
+    private VirtualWorldScreen.VirtualWorldPanel virtualWorldPanel;
 
 
     public SimulationAppScreen(){
@@ -21,22 +23,37 @@ public class SimulationAppScreen extends App.Screen {
 
 
         simulation = new Simulation();
-        WorldScreen worldScreen = new WorldScreen(simulation.getRobotVacuum());
-        VirtualWorldScreen virtualWorldScreen = new VirtualWorldScreen(simulation.getWorld(), simulation.getRadar(), simulation.getMotor());
 
+        WorldScreen worldScreen = new WorldScreen(simulation.getRobotVacuum());
+        worldPanel = new WorldScreen.WorldPanel(simulation.getRobotVacuum());
+
+        VirtualWorldScreen virtualWorldScreen = new VirtualWorldScreen(simulation.getWorld(), simulation.getRadar(), simulation.getMotor());
+        virtualWorldPanel = new VirtualWorldScreen.VirtualWorldPanel(simulation.getWorld(), simulation.getRadar(), simulation.getMotor());
+
+
+    /*
         JPanel virtualPanel = new JPanel(new GridBagLayout());
         virtualPanel.setBorder(BorderFactory.createLineBorder(Color.black));
         virtualPanel.setPreferredSize(new Dimension(700,700));
+
         JPanel robotPanel = new JPanel(new GridBagLayout());
         robotPanel.setBorder(BorderFactory.createLineBorder(Color.black));
         robotPanel.setSize(new Dimension(700,700));
-
-        add(virtualPanel, BorderLayout.EAST);
-        add(robotPanel, BorderLayout.WEST);
+*/
+        add(virtualWorldPanel);
+        add(worldPanel);
 
 
         //add(worldScreen);
         //add(virtualWorldScreen);
+    }
+
+    @Override
+    public void onAttach() {
+        super.onAttach();
+        subscribe(worldPanel.getViewModel().world, (matrix) -> worldPanel.drawWorld(matrix));
+        subscribe(virtualWorldPanel.getViewModel().robotVacuum, virtualWorldPanel::setRobotVacuumPos);
+        subscribe(virtualWorldPanel.getViewModel().radarData, virtualWorldPanel::setRadarData);
     }
 
 }

@@ -7,19 +7,11 @@ import io.reactivex.subjects.BehaviorSubject;
 
 public class WorldViewModel {
 
-
     public BehaviorSubject<Field[][]> world = BehaviorSubject.create();
     private Thread timerThread;
     private RobotVacuum robotVacuum;
     private Field[][] fields;
     private int scalingFactor = 40;
-    public void setRobotVacuum(RobotVacuum rv){
-        robotVacuum = rv;
-    }
-
-    public RobotVacuum getRobotVacuum(){
-        return robotVacuum;
-    }
 
     public WorldViewModel(RobotVacuum rv){
 
