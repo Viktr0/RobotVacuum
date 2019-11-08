@@ -21,6 +21,7 @@ public class RobotVacuum {
 	private final Navigator navigator;
 	private final MovementController movementController;
 
+	private final Object interpretationLock = new Object();
 	private State state;
 	private World world;
 
@@ -90,21 +91,27 @@ public class RobotVacuum {
 	}
 
 	private void onRadarUpdate(Radar.RadarData[] data) {
-		Interpreter.Interpretation interpretation = interpreter.interpretRadar(world, state, data);
-		setWorld(interpretation.getWorld());
-		setState(interpretation.getState());
+		synchronized (interpretationLock) {
+			Interpreter.Interpretation interpretation = interpreter.interpretRadar(world, state, data);
+			setWorld(interpretation.getWorld());
+			setState(interpretation.getState());
+		}
 	}
 
 	private void onMotorMovement(double distance) {
-		Interpreter.Interpretation interpretation = interpreter.interpretMovement(world, state, distance);
-		setWorld(interpretation.getWorld());
-		setState(interpretation.getState());
+		synchronized (interpretationLock) {
+			Interpreter.Interpretation interpretation = interpreter.interpretMovement(world, state, distance);
+			setWorld(interpretation.getWorld());
+			setState(interpretation.getState());
+		}
 	}
 
 	private void onMotorRotation(double angle) {
-		Interpreter.Interpretation interpretation = interpreter.interpretRotation(world, state, angle);
-		setWorld(interpretation.getWorld());
-		setState(interpretation.getState());
+		synchronized (interpretationLock) {
+			Interpreter.Interpretation interpretation = interpreter.interpretRotation(world, state, angle);
+			setWorld(interpretation.getWorld());
+			setState(interpretation.getState());
+		}
 	}
 
 	private void onStateChanged() {
@@ -140,16 +147,7 @@ public class RobotVacuum {
 	}
 
 	private void onWorldChanged() {
-		// TODO: Remove logging
-		for (int y = -5; y <= 5; y++) {
-			for (int x = -5; x <= 5; x++) {
-				Field field = world.getGridField(x, y);
-				System.out.print(field == null ? "  " : field.isObstacle() ? "##" : "||");
-			}
-			System.out.println();
-		}
-		System.out.println();
-		System.out.println();
+
 	}
 
 	public static class State {

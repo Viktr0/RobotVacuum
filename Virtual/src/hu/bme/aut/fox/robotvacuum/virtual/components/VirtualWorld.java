@@ -54,8 +54,12 @@ public class VirtualWorld {
 	}
 
 	private void setProperPositionDirection() {
-		while (this.robotVacuumPosition.direction > PI_2) robotVacuumPosition.direction -= PI_2;
-		while (this.robotVacuumPosition.direction < 0) robotVacuumPosition.direction += PI_2;
+		double direction = robotVacuumPosition.direction;
+
+		direction = direction % (2 * Math.PI);
+		if (direction < 0) direction += 2 * Math.PI;
+
+		robotVacuumPosition.direction = direction;
 	}
 
 	private void cleanField() {
