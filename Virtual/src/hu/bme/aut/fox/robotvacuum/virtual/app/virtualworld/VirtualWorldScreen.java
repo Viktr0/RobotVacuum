@@ -25,7 +25,7 @@ public class VirtualWorldScreen extends Screen {
         private VirtualWorldViewModel viewModel;
         private final int baseX = 0;
         private final int baseY = 0;
-        private final int fieldSize = 32;
+        private final int fieldSize = 15;
 
         private double recentPosX;
         private double recentPosY;
@@ -73,11 +73,11 @@ public class VirtualWorldScreen extends Screen {
 
             public FullWorldCanvas() {
 
-                actualPosX = (int) viewModel.getVirtualWorld().getRobotVacuumPosition().y;
-                actualPosY = (int) viewModel.getVirtualWorld().getRobotVacuumPosition().x;
+                actualPosX = (int) viewModel.getVirtualWorld().getRobotVacuumPosition().x;
+                actualPosY = (int) viewModel.getVirtualWorld().getRobotVacuumPosition().y;
 
-                recentPosX = actualPosY;
-                recentPosY = actualPosX;
+                recentPosX = actualPosX;
+                recentPosY = actualPosY;
 
                 fields = viewModel.getVirtualWorld().getWorldMatrix();
 
@@ -87,7 +87,7 @@ public class VirtualWorldScreen extends Screen {
 
             @Override
             public void paint(Graphics g) {
-                System.out.println("coordinates: (" + recentPosX + "," + recentPosY + ")");
+                super.paint(g);
                 for (int i = 0; i < columns; i++) {
                     for (int j = 0; j < rows; j++) {
                         VirtualWorldField.Status stat = fields[i][j].status;
@@ -108,15 +108,15 @@ public class VirtualWorldScreen extends Screen {
 
                 g.setColor(Color.RED);
                 g.fillRect(
-                        (int) (baseX + (actualPosY - 0.5) * fieldSize),
-                        (int) (baseY + (actualPosX - 0.5) * fieldSize),
+                        (int) (baseX + (actualPosX - 0.5) * fieldSize),
+                        (int) (baseY + (actualPosY- 0.5) * fieldSize),
                         fieldSize, fieldSize
                 );
 
                 g.setColor(Color.BLUE);
                 for (Radar.RadarData data : radarData) {
-                    double startX = baseX + actualPosY * fieldSize;
-                    double startY = baseY + actualPosX * fieldSize;
+                    double startX = baseX + actualPosX * fieldSize;
+                    double startY = baseY + actualPosY * fieldSize;
                     double rayLength = data.getDistance() * fieldSize;
                     g.drawLine(
                             (int) startX,
@@ -126,14 +126,14 @@ public class VirtualWorldScreen extends Screen {
                     );
                 }
 
-                recentPosX = actualPosY;
-                recentPosY = actualPosX;
+                recentPosX = actualPosX;
+                recentPosY = actualPosY;
             }
         }
 
         public void setRobotVacuumPos(Position pos) {
-            actualPosX = pos.y;
-            actualPosY = pos.x;
+            actualPosX = pos.x;
+            actualPosY = pos.y;
             myCanvas.repaint();
         }
 

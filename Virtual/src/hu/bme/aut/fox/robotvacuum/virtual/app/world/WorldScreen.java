@@ -22,7 +22,7 @@ public class WorldScreen extends Screen {
 
 	public static class WorldPanel extends JPanel {
 
-		private int fieldSize = 10;
+		private int fieldSize = 15;
 		private final int baseX = 0;
 		private final int baseY = 0;
 		private WorldViewModel viewModel;
@@ -32,7 +32,6 @@ public class WorldScreen extends Screen {
 
 
 		public WorldPanel(RobotVacuum rv) {
-
 			setPreferredSize(new Dimension(700,700));
 
 			viewModel = new WorldViewModel(rv);
@@ -77,7 +76,7 @@ public class WorldScreen extends Screen {
 				System.out.println("RobotWorldCanvas.paint meghivodott");
 				super.paint(graphics);
 				fields = viewModel.getFields();
-				fieldSize = (int) (600 / viewModel.getScalingFactor());
+				//fieldSize = (int) (600 / viewModel.getScalingFactor());
 
 				for (int i = 0; i < viewModel.getScalingFactor(); i++) {
 					for (int j = 0; j < viewModel.getScalingFactor(); j++) {

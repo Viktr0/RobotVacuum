@@ -4,6 +4,7 @@ import hu.bme.aut.fox.robotvacuum.virtual.app.App;
 import hu.bme.aut.fox.robotvacuum.virtual.app.Simulation;
 import hu.bme.aut.fox.robotvacuum.virtual.app.clock.ClockScreen;
 
+import hu.bme.aut.fox.robotvacuum.virtual.app.combined.CombinedScreen;
 import hu.bme.aut.fox.robotvacuum.virtual.app.simulationapp.SimulationAppScreen;
 import hu.bme.aut.fox.robotvacuum.virtual.app.world.WorldScreen;
 import hu.bme.aut.fox.robotvacuum.virtual.app.virtualworld.VirtualWorldScreen;
@@ -53,10 +54,18 @@ public class MainScreen extends App.Screen {
 				});
 
 
-		JButton exitButton = new JButton("Exit");
-		exitButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-		exitButton.addActionListener(
-				(event) -> System.exit(0)
+		JButton combinedButton = new JButton("Combined Screen");
+		combinedButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+		combinedButton.addActionListener(
+				(event) -> {
+					Simulation simulation = new Simulation();
+					navigate(new CombinedScreen(
+							simulation.getWorld(),
+							simulation.getRadar(),
+							simulation.getMotor(),
+							simulation.getRobotVacuum()
+					));
+				}
 		);
 
 		add(Box.createVerticalGlue());
@@ -64,7 +73,7 @@ public class MainScreen extends App.Screen {
 		add(simulationButton);
 		add(virtualWorldButton);
 		add(worldButton);
-		add(exitButton);
+		add(combinedButton);
 		add(Box.createVerticalGlue());
 	}
 }

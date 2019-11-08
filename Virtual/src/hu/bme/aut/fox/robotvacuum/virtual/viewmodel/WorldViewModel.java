@@ -36,7 +36,7 @@ public class WorldViewModel {
         int max = scalingFactor/2;
         for(int i = min; i < max; ++i)
             for(int j = min; j < max; ++j)
-                fields[i + max][j + max] = robotVacuum.getWorld().getGridField(i, j);
+                fields[i + max][j + max] = robotVacuum.getWorld().getGridField(j, i);
         world.onNext(fields);
     }
 
