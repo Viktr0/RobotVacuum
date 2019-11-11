@@ -10,6 +10,7 @@ import hu.bme.aut.fox.robotvacuum.world.World;
 
 import java.util.Collections;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 
 public class RobotVacuum {
@@ -72,6 +73,13 @@ public class RobotVacuum {
 		}
 	}
 
+	public List<Navigator.Target> getTargets() {
+		List<Navigator.Target> targets = new LinkedList<>();
+		targets.add(target);
+		targets.addAll(this.targets);
+		return targets;
+	}
+
 	public void start() {
 		radar.addOnUpdateListener(this::onRadarUpdate);
 		motor.addOnMovementListener(this::onMotorMovement);
@@ -124,17 +132,18 @@ public class RobotVacuum {
 				);
 
 				if (movement != null) {
-					if (movement.getDistance() != 0) motor.move(movement.getDistance());
-					if (movement.getAngle() != 0) motor.rotate(movement.getAngle());
+					if (movement.getAngle() != 0) {
+						motor.rotate(movement.getAngle());
+					} else if (movement.getDistance() != 0) {
+						motor.move(movement.getDistance());
+					}
 					break;
 				}
 			}
 
 			if (targets.size() == 0) {
-				Collections.addAll(
-						targets,
-						navigator.getTargetPath(world, state)
-				);
+				Navigator.Target[] targets = navigator.getTargetPath(world, state);
+				if (targets != null) Collections.addAll(this.targets, targets);
 			}
 
 			if (targets.size() > 0) {

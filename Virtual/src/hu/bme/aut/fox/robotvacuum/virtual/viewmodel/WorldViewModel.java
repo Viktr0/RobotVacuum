@@ -2,6 +2,7 @@ package hu.bme.aut.fox.robotvacuum.virtual.viewmodel;
 
 
 import hu.bme.aut.fox.robotvacuum.RobotVacuum;
+import hu.bme.aut.fox.robotvacuum.navigation.Navigator;
 import hu.bme.aut.fox.robotvacuum.world.Field;
 import io.reactivex.subjects.BehaviorSubject;
 
@@ -44,6 +45,9 @@ public class WorldViewModel {
         return fields;
     }
 
+    public Navigator.Target[] getTargets() {
+        return robotVacuum.getTargets().toArray(new Navigator.Target[0]);
+    }
 
     public int getScalingFactor() {
         return scalingFactor;
