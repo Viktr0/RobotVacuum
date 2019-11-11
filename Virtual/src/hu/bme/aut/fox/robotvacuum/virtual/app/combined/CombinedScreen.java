@@ -2,6 +2,7 @@ package hu.bme.aut.fox.robotvacuum.virtual.app.combined;
 
 import hu.bme.aut.fox.robotvacuum.RobotVacuum;
 import hu.bme.aut.fox.robotvacuum.hardware.Radar;
+import hu.bme.aut.fox.robotvacuum.navigation.Navigator;
 import hu.bme.aut.fox.robotvacuum.virtual.app.App;
 import hu.bme.aut.fox.robotvacuum.virtual.components.*;
 import hu.bme.aut.fox.robotvacuum.virtual.viewmodel.VirtualWorldViewModel;
@@ -111,12 +112,12 @@ public class CombinedScreen extends App.Screen {
                 for (int j = 0; j < SF; j++) {
                     if (fields[j][i] != null) {
                         if (fields[j][i].isObstacle()) {
-                            graphics.setColor(Color.RED);
+                            graphics.setColor(Color.BLUE);
                         } else {
                             if (fields[j][i].isCleaned()) {
                                 graphics.setColor(Color.WHITE);
                             } else {
-                                graphics.setColor(Color.PINK);
+                                graphics.setColor(new Color(127, 160, 255));
                             }
                         }
                         graphics.fillRect(baseX + i * fieldSize, baseY + j * fieldSize, fieldSize, fieldSize);
@@ -125,14 +126,47 @@ public class CombinedScreen extends App.Screen {
                 }
             }
 
-            graphics.setColor(Color.BLUE);
+            //A megcelzott utvonal
+            int worldSize = worldViewModel.getScalingFactor();
+
+            int prevX = 0;
+            int prevY = 0;
+            boolean first = true;
+
+            graphics.setColor(new Color(127, 255, 200));
+            for (Navigator.Target target : worldViewModel.getTargets()) {
+                int x = (int) ((worldSize / 2 + target.getX()) * fieldSize);
+                int y = (int) ((worldSize / 2 + target.getY()) * fieldSize);
+
+                if (!first) {
+                    graphics.drawLine(x, y, prevX, prevY);
+                }
+
+                prevX = x;
+                prevY = y;
+                first = false;
+            }
+
+            graphics.setColor(Color.GREEN);
+            if (!first) {
+                graphics.drawRect(
+                        prevX - fieldSize / 2,
+                        prevY - fieldSize / 2,
+                        fieldSize,
+                        fieldSize
+                );
+            }
+
+            //A porszivo
+            graphics.setColor(Color.DARK_GRAY);
             graphics.fillRect(
                     (int) (vwBaseX + (actualPosX - 0.5) * fieldSize),
-                    (int) (vwBaseY + (actualPosY- 0.5) * fieldSize),
+                    (int) (vwBaseY + (actualPosY - 0.5) * fieldSize),
                     fieldSize, fieldSize
             );
 
-            graphics.setColor(Color.BLUE);
+            //A radar
+            graphics.setColor(Color.GRAY);
             for (Radar.RadarData data : radarData) {
                 double startX = vwBaseX + actualPosX * fieldSize;
                 double startY = vwBaseY + actualPosY * fieldSize;
