@@ -5,16 +5,17 @@ import hu.bme.aut.fox.robotvacuum.hardware.Radar;
 import hu.bme.aut.fox.robotvacuum.world.Field;
 import hu.bme.aut.fox.robotvacuum.world.World;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
 public class SimpleInterpreter implements Interpreter {
 
-	private static final double ERROR = 0.1f;
+	private static final double ERROR = 0.25f;
 
 	@Override
 	public Interpretation interpretRadar(World currentWorld, RobotVacuum.State currentState, Radar.RadarData[] radarData) {
+		// TODO: Better implementation
+
 		double gridScale = currentWorld.getGridScale();
 		double posX = currentState.getPositionX();
 		double posY = currentState.getPositionY();
