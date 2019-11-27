@@ -1,11 +1,10 @@
 package hu.bme.aut.fox.robotvacuum;
 
-import hu.bme.aut.fox.robotvacuum.hardware.Motor;
-import hu.bme.aut.fox.robotvacuum.hardware.Radar;
+import hu.bme.aut.fox.robotvacuum.hardware.OldMotor;
+import hu.bme.aut.fox.robotvacuum.hardware.OldRadar;
 import hu.bme.aut.fox.robotvacuum.interpretation.Interpreter;
 import hu.bme.aut.fox.robotvacuum.movement.MovementController;
 import hu.bme.aut.fox.robotvacuum.navigation.Navigator;
-import hu.bme.aut.fox.robotvacuum.world.Field;
 import hu.bme.aut.fox.robotvacuum.world.World;
 
 import java.util.Collections;
@@ -15,8 +14,8 @@ import java.util.Queue;
 
 public class RobotVacuum {
 
-	private final Radar radar;
-	private final Motor motor;
+	private final OldRadar oldRadar;
+	private final OldMotor oldMotor;
 
 	private final Interpreter interpreter;
 	private final Navigator navigator;
@@ -30,11 +29,11 @@ public class RobotVacuum {
 	private Navigator.Target target;
 
 	public RobotVacuum(
-			Radar radar, Motor motor,
-			Interpreter interpreter, Navigator navigator, MovementController movementController
+		OldRadar oldRadar, OldMotor oldMotor,
+		Interpreter interpreter, Navigator navigator, MovementController movementController
 	) {
-		this.radar = radar;
-		this.motor = motor;
+		this.oldRadar = oldRadar;
+		this.oldMotor = oldMotor;
 
 		this.interpreter = interpreter;
 		this.navigator = navigator;
@@ -81,24 +80,24 @@ public class RobotVacuum {
 	}
 
 	public void start() {
-		radar.addOnUpdateListener(this::onRadarUpdate);
-		motor.addOnMovementListener(this::onMotorMovement);
-		motor.addOnRotationListener(this::onMotorRotation);
+		oldRadar.addOnUpdateListener(this::onRadarUpdate);
+		oldMotor.addOnMovementListener(this::onMotorMovement);
+		oldMotor.addOnRotationListener(this::onMotorRotation);
 
-		radar.start();
-		motor.start();
+		oldRadar.start();
+		oldMotor.start();
 	}
 
 	public void stop() {
-		radar.stop();
-		motor.stop();
+		oldRadar.stop();
+		oldMotor.stop();
 
-		radar.removeOnUpdateListener(this::onRadarUpdate);
-		motor.removeOnMovementListener(this::onMotorMovement);
-		motor.removeOnRotationListener(this::onMotorRotation);
+		oldRadar.removeOnUpdateListener(this::onRadarUpdate);
+		oldMotor.removeOnMovementListener(this::onMotorMovement);
+		oldMotor.removeOnRotationListener(this::onMotorRotation);
 	}
 
-	private void onRadarUpdate(Radar.RadarData[] data) {
+	private void onRadarUpdate(OldRadar.RadarData[] data) {
 		synchronized (interpretationLock) {
 			Interpreter.Interpretation interpretation = interpreter.interpretRadar(world, state, data);
 			setWorld(interpretation.getWorld());
@@ -133,9 +132,9 @@ public class RobotVacuum {
 
 				if (movement != null) {
 					if (movement.getAngle() != 0) {
-						motor.rotate(movement.getAngle());
+						oldMotor.rotate(movement.getAngle());
 					} else if (movement.getDistance() != 0) {
-						motor.move(movement.getDistance());
+						oldMotor.move(movement.getDistance());
 					}
 					break;
 				}
@@ -149,7 +148,7 @@ public class RobotVacuum {
 			if (targets.size() > 0) {
 				target = targets.remove();
 			} else {
-				motor.rotate(Math.PI);
+				oldMotor.rotate(Math.PI);
 				break;
 			}
 		}

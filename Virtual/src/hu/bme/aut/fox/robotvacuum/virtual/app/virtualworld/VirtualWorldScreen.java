@@ -1,6 +1,6 @@
 package hu.bme.aut.fox.robotvacuum.virtual.app.virtualworld;
 
-import hu.bme.aut.fox.robotvacuum.hardware.Radar;
+import hu.bme.aut.fox.robotvacuum.hardware.OldRadar;
 import hu.bme.aut.fox.robotvacuum.virtual.components.*;
 import hu.bme.aut.fox.robotvacuum.virtual.app.App.Screen;
 import hu.bme.aut.fox.robotvacuum.virtual.viewmodel.VirtualWorldViewModel;
@@ -32,7 +32,7 @@ public class VirtualWorldScreen extends Screen {
         private double actualPosX = 0;
         private double actualPosY = 0;
 
-        private Radar.RadarData[] radarData = new Radar.RadarData[0];
+        private OldRadar.RadarData[] radarData = new OldRadar.RadarData[0];
 
         private JPanel myCanvas;
         private JButton stepRightBtn;
@@ -114,7 +114,7 @@ public class VirtualWorldScreen extends Screen {
                 );
 
                 g.setColor(Color.BLUE);
-                for (Radar.RadarData data : radarData) {
+                for (OldRadar.RadarData data : radarData) {
                     double startX = baseX + actualPosX * fieldSize;
                     double startY = baseY + actualPosY * fieldSize;
                     double rayLength = data.getDistance() * fieldSize;
@@ -137,7 +137,7 @@ public class VirtualWorldScreen extends Screen {
             myCanvas.repaint();
         }
 
-        public void setRadarData(Radar.RadarData[] data) {
+        public void setRadarData(OldRadar.RadarData[] data) {
             radarData = data;
             myCanvas.repaint();
         }

@@ -1,14 +1,13 @@
 package hu.bme.aut.fox.robotvacuum.virtual.components;
 
-import hu.bme.aut.fox.robotvacuum.hardware.Radar;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import hu.bme.aut.fox.robotvacuum.hardware.OldRadar;
 //import javafx.util.Pair;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-public class VirtualRadar implements Radar {
+public class VirtualRadar implements OldRadar {
 	private static final Object observableLock = new Object();
 	private static final int pingInterval = 0;
 	private static final double angle = 2.0 / 3.0 * Math.PI;
@@ -96,7 +95,7 @@ public class VirtualRadar implements Radar {
 		for (double phi = position.direction - angle / 2; phi < position.direction + angle / 2; phi += dPhi){
 			double dirX = Math.cos(phi);
 			double dirY = Math.sin(phi);
-			Radar.RadarData rayData = null;
+			OldRadar.RadarData rayData = null;
 
 			for (double dist = 0; dist < maxLength; dist += 0.01){
 				double x = position.x + dirX * dist;

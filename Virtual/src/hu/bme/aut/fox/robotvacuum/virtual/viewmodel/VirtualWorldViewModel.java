@@ -1,6 +1,6 @@
 package hu.bme.aut.fox.robotvacuum.virtual.viewmodel;
 
-import hu.bme.aut.fox.robotvacuum.hardware.Radar;
+import hu.bme.aut.fox.robotvacuum.hardware.OldRadar;
 import hu.bme.aut.fox.robotvacuum.virtual.components.*;
 import io.reactivex.subjects.BehaviorSubject;
 
@@ -9,7 +9,7 @@ public class VirtualWorldViewModel {
 
 
     public final BehaviorSubject<Position> robotVacuum = BehaviorSubject.create();
-    public final BehaviorSubject<Radar.RadarData[]> radarData = BehaviorSubject.create();
+    public final BehaviorSubject<OldRadar.RadarData[]> radarData = BehaviorSubject.create();
 
     private VirtualWorld virtualWorld;
     private VirtualRadar virtualRadar;
@@ -32,7 +32,7 @@ public class VirtualWorldViewModel {
         robotVacuum.onNext(position);
     }
 
-    private void onUpdate(Radar.RadarData[] data) {
+    private void onUpdate(OldRadar.RadarData[] data) {
         radarData.onNext(data.clone());
     }
 

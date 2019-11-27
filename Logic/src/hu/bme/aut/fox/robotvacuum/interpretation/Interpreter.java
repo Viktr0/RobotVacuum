@@ -1,7 +1,7 @@
 package hu.bme.aut.fox.robotvacuum.interpretation;
 
 import hu.bme.aut.fox.robotvacuum.RobotVacuum;
-import hu.bme.aut.fox.robotvacuum.hardware.Radar;
+import hu.bme.aut.fox.robotvacuum.hardware.OldRadar;
 import hu.bme.aut.fox.robotvacuum.world.World;
 
 public interface Interpreter {
@@ -9,7 +9,7 @@ public interface Interpreter {
 	Interpretation interpretRadar(
 			World currentWorld,
 			RobotVacuum.State currentState,
-			Radar.RadarData[] radarData
+			OldRadar.RadarData[] radarData
 	);
 
 	Interpretation interpretMovement(

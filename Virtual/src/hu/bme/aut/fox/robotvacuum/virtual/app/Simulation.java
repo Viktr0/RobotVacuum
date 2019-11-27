@@ -17,7 +17,7 @@ public class Simulation {
 
 	public Simulation() {
 		try {
-			world = new WorldLoader("world1").load();
+			world = new VirtualWorldLoader("world1").load();
 			vacuum = new RobotVacuum(
 					radar = new VirtualRadar(world),
 					motor = new VirtualMotor(world),

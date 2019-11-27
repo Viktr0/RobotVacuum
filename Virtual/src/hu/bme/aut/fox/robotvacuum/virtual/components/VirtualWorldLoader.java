@@ -5,11 +5,11 @@ import java.io.FileNotFoundException;
 import java.security.InvalidParameterException;
 import java.util.Scanner;
 
-public class WorldLoader {
+public class VirtualWorldLoader {
 	private static final String worldsFolder = "Virtual/src/hu/bme/aut/fox/robotvacuum/virtual/worlds/";
 	private final String fileName;
 
-	public WorldLoader(final String file) {
+	public VirtualWorldLoader(final String file) {
 		fileName = file;
 	}
 

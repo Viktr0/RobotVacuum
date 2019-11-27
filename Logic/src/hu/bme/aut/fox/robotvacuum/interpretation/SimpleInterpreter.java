@@ -1,7 +1,7 @@
 package hu.bme.aut.fox.robotvacuum.interpretation;
 
 import hu.bme.aut.fox.robotvacuum.RobotVacuum;
-import hu.bme.aut.fox.robotvacuum.hardware.Radar;
+import hu.bme.aut.fox.robotvacuum.hardware.OldRadar;
 import hu.bme.aut.fox.robotvacuum.world.Field;
 import hu.bme.aut.fox.robotvacuum.world.World;
 
@@ -13,7 +13,7 @@ public class SimpleInterpreter implements Interpreter {
 	private static final double ERROR = 0.25f;
 
 	@Override
-	public Interpretation interpretRadar(World currentWorld, RobotVacuum.State currentState, Radar.RadarData[] radarData) {
+	public Interpretation interpretRadar(World currentWorld, RobotVacuum.State currentState, OldRadar.RadarData[] radarData) {
 		// TODO: Better implementation
 
 		double gridScale = currentWorld.getGridScale();
@@ -24,7 +24,7 @@ public class SimpleInterpreter implements Interpreter {
 
 		List<Field> emptyFields = new LinkedList<>();
 		List<Field> obstacleFields = new LinkedList<>();
-		for (Radar.RadarData data : radarData) {
+		for (OldRadar.RadarData data : radarData) {
 //			List<Field> intersectedFields = new LinkedList<>();
 //
 			double dirX = Math.cos(data.getDirection());

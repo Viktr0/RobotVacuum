@@ -1,7 +1,7 @@
 package hu.bme.aut.fox.robotvacuum.virtual.app.combined;
 
 import hu.bme.aut.fox.robotvacuum.RobotVacuum;
-import hu.bme.aut.fox.robotvacuum.hardware.Radar;
+import hu.bme.aut.fox.robotvacuum.hardware.OldRadar;
 import hu.bme.aut.fox.robotvacuum.navigation.Navigator;
 import hu.bme.aut.fox.robotvacuum.virtual.app.App;
 import hu.bme.aut.fox.robotvacuum.virtual.components.*;
@@ -22,7 +22,7 @@ public class CombinedScreen extends App.Screen {
     private double actualPosY;
     private double recentPosX;
     private double recentPosY;
-    private Radar.RadarData[] radarData = new Radar.RadarData[0];
+    private OldRadar.RadarData[] radarData = new OldRadar.RadarData[0];
 
     //kép adatai
     private int fieldSize;
@@ -167,7 +167,7 @@ public class CombinedScreen extends App.Screen {
 
             //A radar
             graphics.setColor(Color.GRAY);
-            for (Radar.RadarData data : radarData) {
+            for (OldRadar.RadarData data : radarData) {
                 double startX = vwBaseX + actualPosX * fieldSize;
                 double startY = vwBaseY + actualPosY * fieldSize;
                 double rayLength = data.getDistance() * fieldSize;
@@ -190,7 +190,7 @@ public class CombinedScreen extends App.Screen {
         combinedCanvas.repaint();
     }
 
-    public void setRadarData(Radar.RadarData[] data) {
+    public void setRadarData(OldRadar.RadarData[] data) {
         radarData = data;
         combinedCanvas.repaint();
     }

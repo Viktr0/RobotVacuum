@@ -1,11 +1,11 @@
 package hu.bme.aut.fox.robotvacuum.virtual.components;
 
-import hu.bme.aut.fox.robotvacuum.hardware.Motor;
+import hu.bme.aut.fox.robotvacuum.hardware.OldMotor;
 
 import java.util.LinkedList;
 import java.util.List;
 
-public class VirtualMotor implements Motor {
+public class VirtualMotor implements OldMotor {
 	private static final Object controlLock = new Object();
 	private static final Object observableLock = new Object();
 	private static final int movingInterval = 30;

@@ -1,7 +1,6 @@
-import hu.bme.aut.fox.robotvacuum.virtual.components.Position;
 import hu.bme.aut.fox.robotvacuum.virtual.components.VirtualMotor;
 import hu.bme.aut.fox.robotvacuum.virtual.components.VirtualWorld;
-import hu.bme.aut.fox.robotvacuum.virtual.components.WorldLoader;
+import hu.bme.aut.fox.robotvacuum.virtual.components.VirtualWorldLoader;
 
 import java.io.FileNotFoundException;
 
@@ -11,7 +10,7 @@ public class Test {
 
 		VirtualWorld world = null;
 		try {
-			world = new WorldLoader("world1").load();
+			world = new VirtualWorldLoader("world1").load();
 			VirtualMotor motor = new VirtualMotor(world);
 
 			world.addListener(p -> {
