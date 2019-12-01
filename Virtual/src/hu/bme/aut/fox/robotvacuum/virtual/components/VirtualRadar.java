@@ -118,13 +118,6 @@ public class VirtualRadar implements OldRadar {
 			data.add(rayData);
 		}
 
-
-
-
-
-
-
-
 		notifyRadarListeners(data.toArray(new RadarData[0]));
 	}
 
