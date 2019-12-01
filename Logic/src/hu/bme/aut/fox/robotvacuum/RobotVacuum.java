@@ -1,7 +1,7 @@
 package hu.bme.aut.fox.robotvacuum;
 
-import hu.bme.aut.fox.robotvacuum.hardware.OldMotor;
-import hu.bme.aut.fox.robotvacuum.hardware.OldRadar;
+import hu.bme.aut.fox.robotvacuum.hardware.Motor;
+import hu.bme.aut.fox.robotvacuum.hardware.Radar;
 import hu.bme.aut.fox.robotvacuum.interpretation.Interpreter;
 import hu.bme.aut.fox.robotvacuum.movement.MovementController;
 import hu.bme.aut.fox.robotvacuum.navigation.Navigator;
@@ -14,12 +14,17 @@ import java.util.Queue;
 
 public class RobotVacuum {
 
-	private final OldRadar oldRadar;
-	private final OldMotor oldMotor;
+	private final double size;
+
+	private final Radar radar;
+	private final Motor motor;
 
 	private final Interpreter interpreter;
 	private final Navigator navigator;
 	private final MovementController movementController;
+
+	private boolean running = false;
+	private Thread thread = null;
 
 	private final Object interpretationLock = new Object();
 	private State state;
@@ -29,11 +34,14 @@ public class RobotVacuum {
 	private Navigator.Target target;
 
 	public RobotVacuum(
-		OldRadar oldRadar, OldMotor oldMotor,
-		Interpreter interpreter, Navigator navigator, MovementController movementController
+			float size,
+			Radar radar, Motor motor,
+			Interpreter interpreter, Navigator navigator, MovementController movementController
 	) {
-		this.oldRadar = oldRadar;
-		this.oldMotor = oldMotor;
+		this.size = size;
+
+		this.radar = radar;
+		this.motor = motor;
 
 		this.interpreter = interpreter;
 		this.navigator = navigator;
@@ -41,35 +49,14 @@ public class RobotVacuum {
 
 		state = new State();
 		world = new World();
-
-		onStateChanged();
-		onWorldChanged();
 	}
 
 	public State getState() {
 		return state;
 	}
 
-	private void setState(State state) {
-		State prevState = this.state;
-		this.state = state;
-
-		if (this.state != prevState) {
-			onStateChanged();
-		}
-	}
-
-	public World getWorld(){
+	public World getWorld() {
 		return world;
-	}
-
-	private void setWorld(World world) {
-		World prevWorld = this.world;
-		this.world = world;
-
-		if (this.world != prevWorld) {
-			onWorldChanged();
-		}
 	}
 
 	public List<Navigator.Target> getTargets() {
@@ -80,48 +67,36 @@ public class RobotVacuum {
 	}
 
 	public void start() {
-		oldRadar.addOnUpdateListener(this::onRadarUpdate);
-		oldMotor.addOnMovementListener(this::onMotorMovement);
-		oldMotor.addOnRotationListener(this::onMotorRotation);
+		if (running) throw new IllegalStateException("The vacuum has already been started");
+		running = true;
 
-		oldRadar.start();
-		oldMotor.start();
+		radar.start();
+		motor.start();
+
+		thread = new Thread(() -> {
+			while (running) loop();
+		});
 	}
 
 	public void stop() {
-		oldRadar.stop();
-		oldMotor.stop();
+		if (!running) throw new IllegalStateException("The vacuum hasn't been started");
+		running = false;
 
-		oldRadar.removeOnUpdateListener(this::onRadarUpdate);
-		oldMotor.removeOnMovementListener(this::onMotorMovement);
-		oldMotor.removeOnRotationListener(this::onMotorRotation);
-	}
+		try {
+			thread.join();
+		} catch (InterruptedException ignored) {
 
-	private void onRadarUpdate(OldRadar.RadarData[] data) {
-		synchronized (interpretationLock) {
-			Interpreter.Interpretation interpretation = interpreter.interpretRadar(world, state, data);
-			setWorld(interpretation.getWorld());
-			setState(interpretation.getState());
 		}
+
+		radar.stop();
+		motor.stop();
 	}
 
-	private void onMotorMovement(double distance) {
-		synchronized (interpretationLock) {
-			Interpreter.Interpretation interpretation = interpreter.interpretMovement(world, state, distance);
-			setWorld(interpretation.getWorld());
-			setState(interpretation.getState());
-		}
-	}
+	private void loop() {
+		Interpreter.Interpretation interpretation = interpreter.interpretRadar(size, world, state, radar.getRadarData());
+		world = interpretation.getWorld();
+		state = interpretation.getState();
 
-	private void onMotorRotation(double angle) {
-		synchronized (interpretationLock) {
-			Interpreter.Interpretation interpretation = interpreter.interpretRotation(world, state, angle);
-			setWorld(interpretation.getWorld());
-			setState(interpretation.getState());
-		}
-	}
-
-	private void onStateChanged() {
 		while (true) {
 			if (target != null) {
 				MovementController.Movement movement = movementController.getNextMovement(
@@ -131,31 +106,30 @@ public class RobotVacuum {
 				);
 
 				if (movement != null) {
-					if (movement.getAngle() != 0) {
-						oldMotor.rotate(movement.getAngle());
-					} else if (movement.getDistance() != 0) {
-						oldMotor.move(movement.getDistance());
-					}
+					interpretation = interpreter.interpretRotation(size, world, state, motor.rotate(movement.getAngle()));
+					world = interpretation.getWorld();
+					state = interpretation.getState();
+
+					interpretation = interpreter.interpretMovement(size, world, state, motor.move(movement.getDistance()));
+					world = interpretation.getWorld();
+					state = interpretation.getState();
+
 					break;
 				}
 			}
 
 			if (targets.size() == 0) {
-				Navigator.Target[] targets = navigator.getTargetPath(world, state);
+				Navigator.Target[] targets = navigator.getTargetPath(size, world, state);
 				if (targets != null) Collections.addAll(this.targets, targets);
 			}
 
 			if (targets.size() > 0) {
 				target = targets.remove();
 			} else {
-				oldMotor.rotate(Math.PI);
+				motor.rotate(Math.PI);
 				break;
 			}
 		}
-	}
-
-	private void onWorldChanged() {
-
 	}
 
 	public static class State {
