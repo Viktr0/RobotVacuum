@@ -1,6 +1,7 @@
 package hu.bme.aut.fox.robotvacuum.hardware;
 
 public interface Radar {
+
 	RadarData[] getRadarData();
 
 	void start();

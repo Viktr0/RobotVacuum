@@ -1,7 +1,7 @@
 package hu.bme.aut.fox.robotvacuum.interpretation;
 
 import hu.bme.aut.fox.robotvacuum.RobotVacuum;
-import hu.bme.aut.fox.robotvacuum.hardware.OldRadar;
+import hu.bme.aut.fox.robotvacuum.hardware.Radar;
 import hu.bme.aut.fox.robotvacuum.world.Field;
 import hu.bme.aut.fox.robotvacuum.world.World;
 
@@ -13,7 +13,12 @@ public class SimpleInterpreter implements Interpreter {
 	private static final double ERROR = 0.25f;
 
 	@Override
-	public Interpretation interpretRadar(World currentWorld, RobotVacuum.State currentState, OldRadar.RadarData[] radarData) {
+	public Interpretation interpretRadar(
+			double size,
+			World currentWorld,
+			RobotVacuum.State currentState,
+			Radar.RadarData[] radarData
+	) {
 		// TODO: Better implementation
 
 		double gridScale = currentWorld.getGridScale();
@@ -24,7 +29,7 @@ public class SimpleInterpreter implements Interpreter {
 
 		List<Field> emptyFields = new LinkedList<>();
 		List<Field> obstacleFields = new LinkedList<>();
-		for (OldRadar.RadarData data : radarData) {
+		for (Radar.RadarData data : radarData) {
 //			List<Field> intersectedFields = new LinkedList<>();
 //
 			double dirX = Math.cos(data.getDirection());
@@ -137,7 +142,12 @@ public class SimpleInterpreter implements Interpreter {
 	}
 
 	@Override
-	public Interpretation interpretMovement(World currentWorld, RobotVacuum.State currentState, double distance) {
+	public Interpretation interpretMovement(
+			double size,
+			World currentWorld,
+			RobotVacuum.State currentState,
+			double distance
+	) {
 		RobotVacuum.State state = new RobotVacuum.State(
 				currentState.getPositionX() + Math.cos(currentState.getDirection()) * distance,
 				currentState.getPositionY() + Math.sin(currentState.getDirection()) * distance,
@@ -160,7 +170,12 @@ public class SimpleInterpreter implements Interpreter {
 	}
 
 	@Override
-	public Interpretation interpretRotation(World currentWorld, RobotVacuum.State currentState, double angle) {
+	public Interpretation interpretRotation(
+			double size,
+			World currentWorld,
+			RobotVacuum.State currentState,
+			double angle
+	) {
 		RobotVacuum.State state = new RobotVacuum.State(
 				currentState.getPositionX(),
 				currentState.getPositionY(),
