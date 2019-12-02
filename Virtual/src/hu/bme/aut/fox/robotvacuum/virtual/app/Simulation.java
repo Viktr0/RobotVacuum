@@ -10,20 +10,21 @@ import java.io.FileNotFoundException;
 
 public class Simulation {
 
-	private VirtualWorld world;
-	private VirtualRadar radar;
-	private VirtualMotor motor;
+	private ContinuousWorld world;
+	private ContinuousRadar radar;
+	private ContinuousMotor motor;
 	private RobotVacuum vacuum;
 
 	public Simulation() {
 		try {
-			world = new VirtualWorldLoader("world1").load();
+			world = new ContinuousWorldLoader("world2").load();
 			vacuum = new RobotVacuum(
-					radar = new VirtualRadar(world),
-					motor = new VirtualMotor(world),
-					new SimpleInterpreter(),
-					new SimpleNavigator(),
-					new SimpleMovementController()
+				1.0,
+				radar = new ContinuousRadar(world),
+				motor = new ContinuousMotor(world),
+				new SimpleInterpreter(),
+				new SimpleNavigator(),
+				new SimpleMovementController()
 			);
 			start();
 		} catch (FileNotFoundException e) {
@@ -38,15 +39,15 @@ public class Simulation {
 
 	public RobotVacuum getRobotVacuum() { return vacuum; }
 
-	public VirtualWorld getWorld() {
+	public ContinuousWorld getWorld() {
 		return world;
 	}
 
-	public VirtualRadar getRadar() {
+	public ContinuousRadar getRadar() {
 		return radar;
 	}
 
-	public VirtualMotor getMotor() {
+	public ContinuousMotor getMotor() {
 		return motor;
 	}
 }
