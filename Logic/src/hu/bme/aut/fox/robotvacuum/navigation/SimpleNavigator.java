@@ -9,51 +9,29 @@ import java.util.List;
 
 public class SimpleNavigator implements Navigator {
 
-	boolean furthest = false;
-
 	@Override
 	public Target[] getTargetPath(double size, World world, RobotVacuum.State state) {
 		Field onField = world.getField(state.getPositionX(), state.getPositionY());
 		if (onField == null) return null;
 
 		List<Node> tree = getNavigatorTree(world, onField);
-		Node furthestNode = null;
 		Node targetNode = null;
-		if (furthest) {
-			for (Node node : tree) {
-				if (!node.field.isCleaned() && (furthestNode == null || node.getDepth() > furthestNode.getDepth())) {
-					furthestNode = node;
-				}
-			}
-		} else {
-			for (Node node : tree) {
-				if (!node.field.isCleaned()) {
-					targetNode = node;
-					break;
-				}
+		for (Node node : tree) {
+			if (!node.field.isCleaned()) {
+				targetNode = node;
+				break;
 			}
 		}
 
 		List<Target> path = new LinkedList<>();
-		if (furthest) {
-			while (furthestNode != null) {
-				path.add(0, new Target(
-						world.toWorldCoordinate(furthestNode.field.getX()) + world.getGridScale() / 2,
-						world.toWorldCoordinate(furthestNode.field.getY()) + world.getGridScale() / 2
-				));
-				furthestNode = furthestNode.getParent();
-			}
-		} else {
-			while (targetNode != null) {
-				path.add(0, new Target(
-						world.toWorldCoordinate(targetNode.field.getX()) + world.getGridScale() / 2,
-						world.toWorldCoordinate(targetNode.field.getY()) + world.getGridScale() / 2
-				));
-				targetNode = targetNode.getParent();
-			}
+		while (targetNode != null) {
+			path.add(0, new Target(
+					world.toWorldCoordinate(targetNode.field.getX()) + world.getGridScale() / 2,
+					world.toWorldCoordinate(targetNode.field.getY()) + world.getGridScale() / 2
+			));
+			targetNode = targetNode.getParent();
 		}
 
-		furthest = !furthest;
 		return path.toArray(new Target[0]);
 	}
 
@@ -86,7 +64,11 @@ public class SimpleNavigator implements Navigator {
 						break;
 				}
 
-				if (neighbor != null && !neighbor.isObstacle() && !scanned.contains(neighbor)) {
+				if (neighbor != null &&
+						!neighbor.isObstacle() &&
+						neighbor.isReachable() &&
+						!scanned.contains(neighbor)
+				) {
 					scanned.add(neighbor);
 					edge.add(new Node(node, neighbor));
 				}
