@@ -28,7 +28,7 @@ public class SimulationAppScreen extends App.Screen {
         worldPanel = new WorldScreen.WorldPanel(simulation.getRobotVacuum());
 
         VirtualWorldScreen virtualWorldScreen = new VirtualWorldScreen(simulation.getWorld(), simulation.getRadar(), simulation.getMotor());
-        virtualWorldPanel = new VirtualWorldScreen.VirtualWorldPanel(simulation.getWorld(), simulation.getRadar(), simulation.getMotor());
+        // virtualWorldPanel = new VirtualWorldScreen.VirtualWorldPanel(simulation.getWorld(), simulation.getRadar(), simulation.getMotor());
 
 
     /*
@@ -53,7 +53,7 @@ public class SimulationAppScreen extends App.Screen {
         super.onAttach();
         subscribe(worldPanel.getViewModel().world, (matrix) -> worldPanel.drawWorld(matrix));
         subscribe(virtualWorldPanel.getViewModel().robotVacuum, virtualWorldPanel::setRobotVacuumPos);
-        subscribe(virtualWorldPanel.getViewModel().radarData, virtualWorldPanel::setRadarData);
+        // subscribe(virtualWorldPanel.getViewModel().radarData, virtualWorldPanel::setRadarData);
     }
 
 }

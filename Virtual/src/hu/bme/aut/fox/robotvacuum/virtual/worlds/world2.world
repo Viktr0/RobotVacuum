@@ -1,13 +1,7 @@
 20 14
 2 7 0.145
-# number of objects
-# object 1 number of vertices
-# vertexX vertexY
-# vertexX vertexY
-# vertexX vertexY
-# object 2 number of vertices
-# vertexX vertexY
-# vertexX vertexY
-# vertexX vertexY
-# vertexX vertexY
-# etc.
+1
+3
+10 10
+5 5
+0 0

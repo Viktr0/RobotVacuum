@@ -4,12 +4,9 @@ import hu.bme.aut.fox.robotvacuum.virtual.app.App;
 import hu.bme.aut.fox.robotvacuum.virtual.app.Simulation;
 import hu.bme.aut.fox.robotvacuum.virtual.app.clock.ClockScreen;
 
-import hu.bme.aut.fox.robotvacuum.virtual.app.combined.CombinedScreen;
 import hu.bme.aut.fox.robotvacuum.virtual.app.simulationapp.SimulationAppScreen;
 import hu.bme.aut.fox.robotvacuum.virtual.app.world.WorldScreen;
 import hu.bme.aut.fox.robotvacuum.virtual.app.virtualworld.VirtualWorldScreen;
-import hu.bme.aut.fox.robotvacuum.virtual.components.VirtualWorld;
-import hu.bme.aut.fox.robotvacuum.world.World;
 
 import javax.swing.*;
 import java.awt.*;
@@ -59,12 +56,12 @@ public class MainScreen extends App.Screen {
 		combinedButton.addActionListener(
 				(event) -> {
 					Simulation simulation = new Simulation();
-					navigate(new CombinedScreen(
-							simulation.getWorld(),
-							simulation.getRadar(),
-							simulation.getMotor(),
-							simulation.getRobotVacuum()
-					));
+//					navigate(new CombinedScreen(
+//							simulation.getWorld(),
+//							simulation.getRadar(),
+//							simulation.getMotor(),
+//							simulation.getRobotVacuum()
+//					));
 				}
 		);
 
