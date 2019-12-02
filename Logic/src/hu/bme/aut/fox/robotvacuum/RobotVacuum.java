@@ -26,7 +26,6 @@ public class RobotVacuum {
 	private boolean running = false;
 	private Thread thread = null;
 
-	private final Object interpretationLock = new Object();
 	private State state;
 	private World world;
 
@@ -34,7 +33,7 @@ public class RobotVacuum {
 	private Navigator.Target target;
 
 	public RobotVacuum(
-			float size,
+			double size,
 			Radar radar, Motor motor,
 			Interpreter interpreter, Navigator navigator, MovementController movementController
 	) {
@@ -48,7 +47,7 @@ public class RobotVacuum {
 		this.movementController = movementController;
 
 		state = new State();
-		world = new World();
+		world = new World(0.2);
 	}
 
 	public State getState() {
