@@ -2,21 +2,21 @@ package hu.bme.aut.fox.robotvacuum.virtual.components;
 
 import hu.bme.aut.fox.robotvacuum.hardware.Radar;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class ContinuousRadar implements Radar {
 	private static final double angle = 2.0 / 3.0 * Math.PI;
 	private static final double dPhi = 0.15;
 	private static final double maxLength = 5.0;
 
+	private final Set<RadarListener> listeners;
+
 	private boolean isRunning;
 	ContinuousWorld world;
 
 	public ContinuousRadar(ContinuousWorld world) {
 		this.world = world;
+		listeners = new HashSet<>();
 	}
 
 	@Override
@@ -30,7 +30,18 @@ public class ContinuousRadar implements Radar {
 		for (double phi = position.direction - angle / 2; phi < position.direction + angle / 2; phi += dPhi)
 			data.add(measure(objects, position, phi));
 
+		notifyListeners(data);
 		return data.toArray(new RadarData[0]);
+	}
+
+	@Override
+	public void addRadarListener(RadarListener listener) {
+		listeners.add(listener);
+	}
+
+	@Override
+	public void removeRadarListener(RadarListener listener) {
+		listeners.remove(listener);
 	}
 
 	RadarData measure(ContinuousWorld.WorldObject[] objects, Position position, double phi) {
@@ -86,6 +97,11 @@ public class ContinuousRadar implements Radar {
 			return intersection;
 		return null;
 
+	}
+
+	private void notifyListeners(List<RadarData> data) {
+		for (RadarListener listener : listeners)
+			listener.notifyNewData(data.toArray(new RadarData[0]));
 	}
 
 	@Override
