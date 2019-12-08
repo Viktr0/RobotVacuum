@@ -3,6 +3,7 @@ package hu.bme.aut.fox.robotvacuum.virtual.components;
 import hu.bme.aut.fox.robotvacuum.hardware.Radar;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -43,7 +44,7 @@ public class ContinuousRadar implements Radar {
 					data.add(intersection);
 			}
 		}
-		return Collections.min(data, (a, b) -> (int) ((a.getDistance() - b.getDistance()) * 100));
+		return Collections.min(data, Comparator.comparingDouble(RadarData::getDistance));
 	}
 
 	RadarData intersectWithObject(ContinuousWorld.WorldObject object, Position p, double phi) {
@@ -52,7 +53,7 @@ public class ContinuousRadar implements Radar {
 
 		ContinuousWorld.Coordinate[] vertices = object.getVertices();
 		final int length = vertices.length;
-		for (int i = 0, j = 1; i < length; ++i, j = j + 1 % length) {
+		for (int i = 0, j = 1; i < length; ++i, j = (j + 1) % length) {
 			Vec2 intersection = intersectWithLine(vertices[i], vertices[j], position, phi);
 			if (intersection != null)
 				intersections.add(position.minus(intersection).getLength());
@@ -61,7 +62,7 @@ public class ContinuousRadar implements Radar {
 		if (intersections.size() == 0)
 			return null;
 
-		double min = Collections.min(intersections, (a, b) -> (int) (a - b));
+		double min = Collections.min(intersections, Double::compare);
 
 		return new RadarData(min, phi, true);
 	}
@@ -76,8 +77,6 @@ public class ContinuousRadar implements Radar {
 		double dist2 = dist.getLengthSquared();
 
 		double e = dist2 / dist.scalarProduct(rayDir);
-
-		System.out.println(dist.scalarProduct(rayDir) + " " + dist + " " + rayDir);
 
 		Vec2 intersection = from.plus(rayDir.scale(e));
 

@@ -5,7 +5,7 @@ import hu.bme.aut.fox.robotvacuum.hardware.Motor;
 public class ContinuousMotor implements Motor {
 	private static final double speed = 1.0;
 	private static final double rotationSpeed = 0.1;
-	private boolean isRunning;
+	private boolean isRunning = false;
 	ContinuousWorld world;
 
 	public ContinuousMotor(ContinuousWorld world) {
