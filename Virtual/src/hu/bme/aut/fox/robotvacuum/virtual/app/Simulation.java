@@ -26,6 +26,7 @@ public class Simulation {
 				new SimpleNavigator(),
 				new SimpleMovementController()
 			);
+			motor.setSize(1.0);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
