@@ -75,6 +75,7 @@ public class RobotVacuum {
 		thread = new Thread(() -> {
 			while (running) loop();
 		});
+		thread.start();
 	}
 
 	public void stop() {
