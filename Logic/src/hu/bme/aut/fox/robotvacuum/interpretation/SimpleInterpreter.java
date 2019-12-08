@@ -44,7 +44,7 @@ public class SimpleInterpreter implements Interpreter {
 				double hitCenterX = hitGridX + 0.5;
 				double hitCenterY = hitGridY + 0.5;
 
-				double r = currentState.getSize() / gridScale;
+				double r = currentState.getSize() / 2 / gridScale;
 				for (int gridY = (int) (hitGridY - r); gridY < Math.ceil(hitGridY + r); gridY++) {
 					for (int gridX = (int) (hitGridX - r); gridX < Math.ceil(hitGridX + r); gridX++) {
 						double distanceX = gridX + 0.5 - hitCenterX;
@@ -52,7 +52,11 @@ public class SimpleInterpreter implements Interpreter {
 						if (Math.sqrt(distanceX * distanceX + distanceY * distanceY) < r) {
 							Field field = currentWorld.getGridField(gridX, gridY);
 							if (field == null || !field.isObstacle()) {
-								unreachableFields.add(new Field(gridX, gridY, false, false, false));
+								unreachableFields.add(new Field(
+										gridX, gridY,
+										false, false,
+										field != null && field.isCleaned()
+								));
 							}
 						}
 					}
@@ -97,7 +101,10 @@ public class SimpleInterpreter implements Interpreter {
 			);
 		}
 
-		Field cleanedField = new Field(currentField.getX(), currentField.getY(), false, true, true);
+		Field cleanedField = new Field(
+				currentField.getX(), currentField.getY(),
+				currentField.isObstacle(), currentField.isReachable(), true
+		);
 		World world = new World(currentWorld, cleanedField);
 
 		return new Interpretation(world, state);
