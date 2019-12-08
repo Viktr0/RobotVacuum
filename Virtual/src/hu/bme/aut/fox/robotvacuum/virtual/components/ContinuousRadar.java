@@ -47,18 +47,18 @@ public class ContinuousRadar implements Radar {
 	RadarData measure(ContinuousWorld.WorldObject[] objects, Position position, double phi) {
 		List<RadarData> data = new LinkedList<>();
 		for (ContinuousWorld.WorldObject object : objects) {
-			RadarData intersection = intersectWithObject(object, position, phi);
-			if (intersection != null) {
-				if (intersection.getDistance() > maxLength)
+			Double distance = getObjectsDistance(object, position, phi);
+			if (distance != null) {
+				if (distance > maxLength)
 					data.add(new RadarData(phi, maxLength, false));
 				else
-					data.add(intersection);
+					data.add(new RadarData(phi, distance, true));
 			}
 		}
 		return Collections.min(data, Comparator.comparingDouble(RadarData::getDistance));
 	}
 
-	RadarData intersectWithObject(ContinuousWorld.WorldObject object, Position p, double phi) {
+	static Double getObjectsDistance(ContinuousWorld.WorldObject object, Position p, double phi) {
 		Vec2 position = new Vec2(p.x, p.y);
 		List<Double> intersections = new LinkedList<>();
 
@@ -75,10 +75,10 @@ public class ContinuousRadar implements Radar {
 
 		double min = Collections.min(intersections, Double::compare);
 
-		return new RadarData(min, phi, true);
+		return min;
 	}
 
-	Vec2 intersectWithLine(Vec2 a, Vec2 b, Vec2 from, double phi) {
+	static Vec2 intersectWithLine(Vec2 a, Vec2 b, Vec2 from, double phi) {
 		Vec2 dir = b.minus(a).normalize();
 		Vec2 rayDir = new Vec2(1, Math.tan(phi)).normalize();
 

@@ -5,6 +5,7 @@ import hu.bme.aut.fox.robotvacuum.hardware.Motor;
 public class ContinuousMotor implements Motor {
 	private static final double speed = 1.0;
 	private static final double rotationSpeed = 0.8;
+	private double radius;
 	private boolean isRunning = false;
 	ContinuousWorld world;
 
@@ -17,10 +18,12 @@ public class ContinuousMotor implements Motor {
 		final Position prevPosition = world.getRobotVacuum();
 		final double time = distance / speed;
 		sleep(time);
-		final double dx = Math.cos(prevPosition.direction) * distance;
-		final double dy = Math.sin(prevPosition.direction) * distance;
+		double realDistance = getMaxMove(prevPosition, distance);
+//		realDistance = distance;
+		final double dx = Math.cos(prevPosition.direction) * realDistance;
+		final double dy = Math.sin(prevPosition.direction) * realDistance;
 		world.setRobotVacuum(new Position(prevPosition.x + dx, prevPosition.y + dy, prevPosition.direction));
-		return distance;
+		return realDistance;
 	}
 
 	@Override
@@ -40,6 +43,15 @@ public class ContinuousMotor implements Motor {
 		}
 	}
 
+	private Double getMaxMove(Position position, double distance) {
+		for (ContinuousWorld.WorldObject object : world.getObjects()) {
+			Double dist = ContinuousRadar.getObjectsDistance(object, position, position.direction);
+			if (dist != null && dist + radius < distance)
+				return dist;
+		}
+		return distance;
+	}
+
 
 	@Override
 	public void start() {
@@ -49,5 +61,9 @@ public class ContinuousMotor implements Motor {
 	@Override
 	public void stop() {
 		isRunning = false;
+	}
+
+	public void setSize(double size) {
+		this.radius = size / 2;
 	}
 }
