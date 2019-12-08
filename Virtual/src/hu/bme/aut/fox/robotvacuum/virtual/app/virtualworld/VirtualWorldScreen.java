@@ -12,7 +12,7 @@ public class VirtualWorldScreen extends Screen {
     private VirtualWorldPanel virtualWorldPanel;
 
     public VirtualWorldScreen(ContinuousWorld virtualWorld, ContinuousRadar radar, ContinuousMotor virtualMotor){
-        virtualWorldPanel = new VirtualWorldPanel(virtualWorld, virtualMotor);
+        virtualWorldPanel = new VirtualWorldPanel(virtualWorld, radar, virtualMotor);
         setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
         add(virtualWorldPanel);
     }
@@ -31,17 +31,20 @@ public class VirtualWorldScreen extends Screen {
         private double actualPosX = 0;
         private double actualPosY = 0;
 
-        //private OldRadar.RadarData[] radarData = new OldRadar.RadarData[0];
+        private ContinuousRadar.RadarData[] radarData = new ContinuousRadar.RadarData[0];
+
 
         private JPanel myCanvas;
 
         public VirtualWorldPanel(
             ContinuousWorld virtualWorld,
+            ContinuousRadar radar,
             ContinuousMotor virtualMotor
         ) {
-
+            radarData = radar.getRadarData();
             viewModel = new VirtualWorldViewModel(
                 virtualWorld,
+                radar,
                 virtualMotor
             );
 
@@ -98,16 +101,8 @@ public class VirtualWorldScreen extends Screen {
                     }
                     g.setColor(Color.BLACK);
                     g.fillPolygon(new Polygon(xCoos, yCoos, coos.length));
-                    //    VirtualWorldField.Status stat = fields[i][j].status;
                     //    fields[(int) recentPosX][(int) recentPosY].status = VirtualWorldField.Status.CLEAN; //TODO
-                    //if (stat == VirtualWorldField.Status.DIRTY)
-                    //    g.setColor(Color.LIGHT_GRAY);
-                    //else if (stat == VirtualWorldField.Status.NOTEMPTY)
-                    //    g.setColor(Color.BLACK);
-                    //else {
-                    //    g.setColor(Color.WHITE);
-                    //}
-                    //g.fillRect(baseX + i * fieldSize, baseY + j * fieldSize, fieldSize, fieldSize);
+
 
                 }
 
@@ -116,9 +111,10 @@ public class VirtualWorldScreen extends Screen {
                 g.fillOval((int) (baseX + (actualPosX - 0.5) * fieldSize),
                         (int) (baseY + (actualPosY- 0.5) * fieldSize),
                         fieldSize, fieldSize);
-/*
+
+
                 g.setColor(Color.BLUE);
-                for (OldRadar.RadarData data : radarData) {
+                for (ContinuousRadar.RadarData data : radarData) {
                     double startX = baseX + actualPosX * fieldSize;
                     double startY = baseY + actualPosY * fieldSize;
                     double rayLength = data.getDistance() * fieldSize;
@@ -129,7 +125,7 @@ public class VirtualWorldScreen extends Screen {
                             (int) (startY + Math.sin(data.getDirection()) * rayLength)
                     );
                 }
-*/
+
                 recentPosX = actualPosX;
                 recentPosY = actualPosY;
             }
@@ -138,13 +134,14 @@ public class VirtualWorldScreen extends Screen {
         public void setRobotVacuumPos(Position pos) {
             actualPosX = pos.x;
             actualPosY = pos.y;
+
             myCanvas.repaint();
         }
 
-        //public void setRadarData(OldRadar.RadarData[] data) {
-        //    radarData = data;
-        //    myCanvas.repaint();
-        //}
+        public void setRadarData(ContinuousRadar.RadarData[] data) {
+            radarData = data;
+            myCanvas.repaint();
+        }
     }
 
     @Override
