@@ -24,7 +24,7 @@ public class VirtualWorldScreen extends Screen {
         private VirtualWorldViewModel viewModel;
         private final int baseX = 0;
         private final int baseY = 0;
-        private final int fieldSize = 15;
+        private final int fieldSize = 20;
 
         private double recentPosX;
         private double recentPosY;
@@ -93,8 +93,8 @@ public class VirtualWorldScreen extends Screen {
                     int[] xCoos = new int[coos.length];
                     int[] yCoos = new int[coos.length];
                     for(int j = 0; j < coos.length; j++) {
-                        xCoos[j] = (int)coos[j].getX() * fieldSize+fieldSize;
-                        yCoos[j] = (int)coos[j].getY() * fieldSize+fieldSize;
+                        xCoos[j] = (int)(coos[j].getX() * fieldSize + fieldSize);
+                        yCoos[j] = (int)(coos[j].getY() * fieldSize + fieldSize);
                     }
                     g.setColor(Color.BLACK);
                     g.fillPolygon(new Polygon(xCoos, yCoos, coos.length));
