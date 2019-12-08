@@ -34,12 +34,10 @@ public class ContinuousRadar implements Radar {
 		return data.toArray(new RadarData[0]);
 	}
 
-	@Override
 	public void addRadarListener(RadarListener listener) {
 		listeners.add(listener);
 	}
 
-	@Override
 	public void removeRadarListener(RadarListener listener) {
 		listeners.remove(listener);
 	}
@@ -113,4 +111,9 @@ public class ContinuousRadar implements Radar {
 	public void stop() {
 		isRunning = false;
 	}
+
+	interface RadarListener {
+		void notifyNewData(RadarData[] data);
+	}
+
 }
