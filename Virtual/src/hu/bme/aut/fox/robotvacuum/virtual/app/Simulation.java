@@ -26,7 +26,6 @@ public class Simulation {
 				new SimpleNavigator(),
 				new SimpleMovementController()
 			);
-			start();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}

@@ -32,7 +32,7 @@ public class ContinuousRadar implements Radar {
 		return data.toArray(new RadarData[0]);
 	}
 
-	private RadarData measure(ContinuousWorld.WorldObject[] objects, Position position, double phi) {
+	RadarData measure(ContinuousWorld.WorldObject[] objects, Position position, double phi) {
 		List<RadarData> data = new LinkedList<>();
 		for (ContinuousWorld.WorldObject object : objects) {
 			RadarData intersection = intersectWithObject(object, position, phi);
@@ -46,7 +46,7 @@ public class ContinuousRadar implements Radar {
 		return Collections.min(data, (a, b) -> (int) ((a.getDistance() - b.getDistance()) * 100));
 	}
 
-	private RadarData intersectWithObject(ContinuousWorld.WorldObject object, Position p, double phi) {
+	RadarData intersectWithObject(ContinuousWorld.WorldObject object, Position p, double phi) {
 		Vec2 position = new Vec2(p.x, p.y);
 		List<Double> intersections = new LinkedList<>();
 
@@ -66,16 +66,19 @@ public class ContinuousRadar implements Radar {
 		return new RadarData(min, phi, true);
 	}
 
-	private Vec2 intersectWithLine(Vec2 a, Vec2 b, Vec2 from, double phi) {
-		Vec2 dir = a.minus(b).normalize();
+	Vec2 intersectWithLine(Vec2 a, Vec2 b, Vec2 from, double phi) {
+		Vec2 dir = b.minus(a).normalize();
 		Vec2 rayDir = new Vec2(1, Math.tan(phi)).normalize();
 
-		double d = a.minus(from).scalarProduct(dir);
+		double d = dir.scalarProduct(from.minus(a));
 
-		Vec2 dist = from.minus(a.plus(dir.scale(d)));
+		Vec2 dist = a.plus(dir.scale(d)).minus(from);
 		double dist2 = dist.getLengthSquared();
 
-		double e = dist2 / dist.scalarProduct(dir);
+		double e = dist2 / dist.scalarProduct(rayDir);
+
+		System.out.println(dist.scalarProduct(rayDir) + " " + dist + " " + rayDir);
+
 		Vec2 intersection = from.plus(rayDir.scale(e));
 
 		double segmentLength2 = a.minus(b).getLengthSquared();

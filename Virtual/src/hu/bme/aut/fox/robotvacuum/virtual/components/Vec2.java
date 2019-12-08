@@ -41,7 +41,7 @@ public class Vec2 {
 	}
 
 	public Vec2 normalize() {
-		return this.scale(getLength());
+		return this.scale(1 / getLength());
 	}
 
 	public double scalarProduct(Vec2 b) {
@@ -50,5 +50,10 @@ public class Vec2 {
 
 	public Vec2 normal() {
 		return new Vec2(-y, x);
+	}
+
+	@Override
+	public String toString() {
+		return "("+ x +", "+ y +" )";
 	}
 }
