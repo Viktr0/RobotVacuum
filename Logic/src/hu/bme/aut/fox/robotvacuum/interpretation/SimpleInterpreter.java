@@ -10,6 +10,10 @@ import java.util.List;
 
 public class SimpleInterpreter implements Interpreter {
 
+	private static final double RADIUS_ERROR = 0.25;
+	private static final double RAY_ERROR = 0.02;
+	private static final double DOUBLE_ERROR = 0.01;
+
 	@Override
 	public Interpretation interpretRadar(
 			World currentWorld,
@@ -17,8 +21,12 @@ public class SimpleInterpreter implements Interpreter {
 			Radar.RadarData[] radarData
 	) {
 		double gridScale = currentWorld.getGridScale();
+
 		double posX = currentState.getPositionX();
 		double posY = currentState.getPositionY();
+
+		double rad = currentState.getSize() / 2 + RADIUS_ERROR * gridScale;
+		double radSquared = rad * rad;
 
 		List<Field> emptyFields = new LinkedList<>();
 		List<Field> unreachableFields = new LinkedList<>();
@@ -27,7 +35,7 @@ public class SimpleInterpreter implements Interpreter {
 		for (Radar.RadarData data : radarData) {
 			double dirX = Math.cos(data.getDirection());
 			double dirY = Math.sin(data.getDirection());
-			double dist = data.getDistance();
+			double dist = data.getDistance() + RAY_ERROR * gridScale;
 
 			double stepSize = gridScale * 0.1;
 			for (double progress = 0; progress < dist; progress += stepSize) {
@@ -39,18 +47,29 @@ public class SimpleInterpreter implements Interpreter {
 			}
 
 			if (data.isHit()) {
-				int hitGridX = currentWorld.toGridCoordinate(posX + dirX * dist);
-				int hitGridY = currentWorld.toGridCoordinate(posY + dirY * dist);
-				double hitCenterX = hitGridX + 0.5;
-				double hitCenterY = hitGridY + 0.5;
+				double hitX = posX + dirX * dist;
+				double hitY = posY + dirY * dist;
 
-				double r = currentState.getSize() / 2 / gridScale;
-				for (int gridY = (int) (hitGridY - r); gridY < Math.ceil(hitGridY + r); gridY++) {
-					for (int gridX = (int) (hitGridX - r); gridX < Math.ceil(hitGridX + r); gridX++) {
-						double distanceX = gridX + 0.5 - hitCenterX;
-						double distanceY = gridY + 0.5 - hitCenterY;
-						if (Math.sqrt(distanceX * distanceX + distanceY * distanceY) < r) {
+				double hitCenterX = (Math.floor(hitX / gridScale) + 0.5) * gridScale;
+				double hitCenterY = (Math.floor(hitY / gridScale) + 0.5) * gridScale;
+
+				double overEstimatedRadius = Math.ceil(rad / gridScale) * gridScale;
+				double approxMinX = hitCenterX - overEstimatedRadius;
+				double approxMinY = hitCenterY - overEstimatedRadius;
+				double approxMaxX = hitCenterX + overEstimatedRadius;
+				double approxMaxY = hitCenterY + overEstimatedRadius;
+
+				double doubleEqualError = DOUBLE_ERROR * gridScale;
+				for (double y = approxMinY; y <= approxMaxY + doubleEqualError; y += gridScale) {
+					for (double x = approxMinX; x <= approxMaxX + doubleEqualError; x += gridScale) {
+						double distanceX = x - hitCenterX;
+						double distanceY = y - hitCenterY;
+
+						if (distanceX * distanceX + distanceY * distanceY < radSquared) {
+							int gridX = currentWorld.toGridCoordinate(x);
+							int gridY = currentWorld.toGridCoordinate(y);
 							Field field = currentWorld.getGridField(gridX, gridY);
+
 							if (field == null || !field.isObstacle()) {
 								unreachableFields.add(new Field(
 										gridX, gridY,
@@ -62,6 +81,8 @@ public class SimpleInterpreter implements Interpreter {
 					}
 				}
 
+				int hitGridX = currentWorld.toGridCoordinate(hitX);
+				int hitGridY = currentWorld.toGridCoordinate(hitY);
 				if (currentWorld.getGridField(hitGridX, hitGridY) != null) {
 					obstacleFields.add(new Field(hitGridX, hitGridY, true, false, false));
 				}
