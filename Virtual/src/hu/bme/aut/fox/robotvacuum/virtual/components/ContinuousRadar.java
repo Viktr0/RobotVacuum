@@ -33,8 +33,8 @@ public class ContinuousRadar implements Radar {
 
 		notifyListeners(data);
 
-		for (RadarData d : data)
-			System.out.println(d.getDistance() + " " + d.isHit());
+//		for (RadarData d : data)
+//			System.out.println(d.getDistance() + " " + d.isHit());
 		return data.toArray(new RadarData[0]);
 	}
 
