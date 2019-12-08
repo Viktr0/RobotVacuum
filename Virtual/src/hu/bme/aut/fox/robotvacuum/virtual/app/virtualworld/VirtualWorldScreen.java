@@ -33,7 +33,6 @@ public class VirtualWorldScreen extends Screen {
 
         private ContinuousRadar.RadarData[] radarData = new ContinuousRadar.RadarData[0];
 
-
         private JPanel myCanvas;
 
         public VirtualWorldPanel(
@@ -96,8 +95,8 @@ public class VirtualWorldScreen extends Screen {
                     int[] xCoos = new int[coos.length];
                     int[] yCoos = new int[coos.length];
                     for(int j = 0; j < coos.length; j++) {
-                        xCoos[j] = (int)(coos[j].getX() * fieldSize + fieldSize);
-                        yCoos[j] = (int)(coos[j].getY() * fieldSize + fieldSize);
+                        xCoos[j] = (int)(coos[j].getX() * fieldSize);
+                        yCoos[j] = (int)(coos[j].getY() * fieldSize);
                     }
                     g.setColor(Color.BLACK);
                     g.fillPolygon(new Polygon(xCoos, yCoos, coos.length));
@@ -114,17 +113,19 @@ public class VirtualWorldScreen extends Screen {
 
 
                 g.setColor(Color.BLUE);
-                for (ContinuousRadar.RadarData data : radarData) {
-                    double startX = baseX + actualPosX * fieldSize;
-                    double startY = baseY + actualPosY * fieldSize;
-                    double rayLength = data.getDistance() * fieldSize;
-                    g.drawLine(
-                            (int) startX,
-                            (int) startY,
-                            (int) (startX + Math.cos(data.getDirection()) * rayLength),
-                            (int) (startY + Math.sin(data.getDirection()) * rayLength)
-                    );
-                }
+                //if(radarData != null) {
+                    for (ContinuousRadar.RadarData data : radarData) {
+                        double startX = baseX + actualPosX * fieldSize;
+                        double startY = baseY + actualPosY * fieldSize;
+                        double rayLength = data.getDistance() * fieldSize;
+                        g.drawLine(
+                                (int) startX,
+                                (int) startY,
+                                (int) (startX + Math.cos(data.getDirection()) * rayLength),
+                                (int) (startY + Math.sin(data.getDirection()) * rayLength)
+                        );
+                    }
+                //}
 
                 recentPosX = actualPosX;
                 recentPosY = actualPosY;
@@ -148,7 +149,7 @@ public class VirtualWorldScreen extends Screen {
     public void onAttach() {
         super.onAttach();
         subscribe(virtualWorldPanel.viewModel.robotVacuum, virtualWorldPanel::setRobotVacuumPos);
-        //subscribe(virtualWorldPanel.viewModel.radarData, virtualWorldPanel::setRadarData);
+        subscribe(virtualWorldPanel.viewModel.radarData, virtualWorldPanel::setRadarData);
     }
 
 
