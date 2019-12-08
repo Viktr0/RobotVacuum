@@ -16,4 +16,11 @@ class ContinuousRadarTest {
 		assertTrue(Math.abs(3 - point.getX()) < 0.00001);
 		assertTrue(Math.abs(6 - point.getY()) < 0.00001);
 	}
+
+	void testRadarSpeed() {
+		Simulation simulation = new Simulation();
+		ContinuousRadar radar = simulation.getRadar();
+		long t1 = System.currentTimeMillis();
+		radar.getRadarData();
+	}
 }
