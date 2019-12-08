@@ -37,6 +37,7 @@ public class ContinuousWorld {
 	public void setRobotVacuum(Position robotVacuum) {
 		this.robotVacuum = robotVacuum;
 		this.normalizeRobotVacuumPosition();
+		System.out.println(this.robotVacuum.x + " " + robotVacuum.y + " " + robotVacuum.direction);
 		notifyListeners();
 	}
 

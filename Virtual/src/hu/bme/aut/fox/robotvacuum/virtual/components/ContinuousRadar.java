@@ -52,7 +52,7 @@ public class ContinuousRadar implements Radar {
 
 		ContinuousWorld.Coordinate[] vertices = object.getVertices();
 		final int length = vertices.length;
-		for (int i = 0, j = 1; i < length; ++i, j = j + 1 % length) {
+		for (int i = 0, j = 1; i < length; ++i, j = (j + 1) % length) {
 			Vec2 intersection = intersectWithLine(vertices[i], vertices[j], position, phi);
 			if (intersection != null)
 				intersections.add(position.minus(intersection).getLength());
@@ -76,8 +76,6 @@ public class ContinuousRadar implements Radar {
 		double dist2 = dist.getLengthSquared();
 
 		double e = dist2 / dist.scalarProduct(rayDir);
-
-		System.out.println(dist.scalarProduct(rayDir) + " " + dist + " " + rayDir);
 
 		Vec2 intersection = from.plus(rayDir.scale(e));
 

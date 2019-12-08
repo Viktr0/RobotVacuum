@@ -39,7 +39,7 @@ public class MainScreen extends App.Screen {
 							simulation.getRadar(),
 							simulation.getMotor()
 					));
-					//simulation.start();
+					simulation.start();
 				}
 		);
 
