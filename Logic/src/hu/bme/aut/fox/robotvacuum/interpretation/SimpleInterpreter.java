@@ -20,17 +20,17 @@ public class SimpleInterpreter implements Interpreter {
 			RobotVacuum.State currentState,
 			Radar.RadarData[] radarData
 	) {
+		List<Field> emptyFields = new LinkedList<>();
+		List<Field> unreachableFields = new LinkedList<>();
+		List<Field> obstacleFields = new LinkedList<>();
+
 		double gridScale = currentWorld.getGridScale();
 
 		double posX = currentState.getPositionX();
 		double posY = currentState.getPositionY();
 
-		double rad = currentState.getSize() / 2 + RADIUS_ERROR * gridScale;
-		double radSquared = rad * rad;
-
-		List<Field> emptyFields = new LinkedList<>();
-		List<Field> unreachableFields = new LinkedList<>();
-		List<Field> obstacleFields = new LinkedList<>();
+		double radius = currentState.getSize() / 2 + RADIUS_ERROR * gridScale;
+		double radiusSquared = radius * radius;
 
 		for (Radar.RadarData data : radarData) {
 			double dirX = Math.cos(data.getDirection());
@@ -53,7 +53,7 @@ public class SimpleInterpreter implements Interpreter {
 				double hitCenterX = (Math.floor(hitX / gridScale) + 0.5) * gridScale;
 				double hitCenterY = (Math.floor(hitY / gridScale) + 0.5) * gridScale;
 
-				double overEstimatedRadius = Math.ceil(rad / gridScale) * gridScale;
+				double overEstimatedRadius = Math.ceil(radius / gridScale) * gridScale;
 				double approxMinX = hitCenterX - overEstimatedRadius;
 				double approxMinY = hitCenterY - overEstimatedRadius;
 				double approxMaxX = hitCenterX + overEstimatedRadius;
@@ -65,7 +65,7 @@ public class SimpleInterpreter implements Interpreter {
 						double distanceX = x - hitCenterX;
 						double distanceY = y - hitCenterY;
 
-						if (distanceX * distanceX + distanceY * distanceY < radSquared) {
+						if (distanceX * distanceX + distanceY * distanceY < radiusSquared) {
 							int gridX = currentWorld.toGridCoordinate(x);
 							int gridY = currentWorld.toGridCoordinate(y);
 							Field field = currentWorld.getGridField(gridX, gridY);
@@ -113,21 +113,44 @@ public class SimpleInterpreter implements Interpreter {
 				currentState.getDirection()
 		);
 
-		Field currentField = currentWorld.getField(state.getPositionX(), state.getPositionY());
-		if (currentField == null) {
-			currentField = new Field(
-					currentWorld.toGridCoordinate(state.getPositionX()),
-					currentWorld.toGridCoordinate(state.getPositionY()),
-					false, true, false
-			);
+		List<Field> cleanedFields = new LinkedList<>();
+
+		double gridScale = currentWorld.getGridScale();
+
+		double posX = currentState.getPositionX();
+		double posY = currentState.getPositionY();
+
+		double radius = currentState.getSize() / 2;
+		double radiusSquared = radius * radius;
+
+		double overEstimatedRadius = Math.ceil(radius / gridScale) * gridScale;
+		double approxMinX = posX - overEstimatedRadius;
+		double approxMinY = posY - overEstimatedRadius;
+		double approxMaxX = posX + overEstimatedRadius;
+		double approxMaxY = posY + overEstimatedRadius;
+
+		double doubleEqualError = DOUBLE_ERROR * gridScale;
+		for (double y = approxMinY; y <= approxMaxY + doubleEqualError; y += gridScale) {
+			for (double x = approxMinX; x <= approxMaxX + doubleEqualError; x += gridScale) {
+				double distanceX = x - posX;
+				double distanceY = y - posY;
+
+				if (distanceX * distanceX + distanceY * distanceY < radiusSquared) {
+					int gridX = currentWorld.toGridCoordinate(x);
+					int gridY = currentWorld.toGridCoordinate(y);
+					Field field = currentWorld.getGridField(gridX, gridY);
+
+					cleanedFields.add(new Field(
+							gridX, gridY,
+							field != null && field.isObstacle(),
+							field == null || field.isReachable(),
+							true
+					));
+				}
+			}
 		}
 
-		Field cleanedField = new Field(
-				currentField.getX(), currentField.getY(),
-				currentField.isObstacle(), currentField.isReachable(), true
-		);
-		World world = new World(currentWorld, cleanedField);
-
+		World world = new World(currentWorld, cleanedFields.toArray(new Field[0]));
 		return new Interpretation(world, state);
 	}
 
