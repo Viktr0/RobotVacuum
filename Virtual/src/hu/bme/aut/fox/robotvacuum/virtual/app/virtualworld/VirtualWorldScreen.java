@@ -81,7 +81,7 @@ public class VirtualWorldScreen extends Screen {
                     if (objects[i].getVertices().length > max)
                         max = objects[i].getVertices().length;
                 }
-                System.out.println(objects.length);
+                //System.out.println(objects.length);
 
                 columns = (int) viewModel.getVirtualWorld().getWidth();
                 rows = (int) viewModel.getVirtualWorld().getHeight();
@@ -113,7 +113,7 @@ public class VirtualWorldScreen extends Screen {
 
 
                 g.setColor(Color.BLUE);
-                //if(radarData != null) {
+                if(radarData != null) {
                     for (ContinuousRadar.RadarData data : radarData) {
                         double startX = baseX + actualPosX * fieldSize;
                         double startY = baseY + actualPosY * fieldSize;
@@ -125,7 +125,7 @@ public class VirtualWorldScreen extends Screen {
                                 (int) (startY + Math.sin(data.getDirection()) * rayLength)
                         );
                     }
-                //}
+                }
 
                 recentPosX = actualPosX;
                 recentPosY = actualPosY;

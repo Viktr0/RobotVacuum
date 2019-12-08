@@ -4,6 +4,7 @@ import hu.bme.aut.fox.robotvacuum.virtual.app.App;
 import hu.bme.aut.fox.robotvacuum.virtual.app.Simulation;
 import hu.bme.aut.fox.robotvacuum.virtual.app.clock.ClockScreen;
 
+import hu.bme.aut.fox.robotvacuum.virtual.app.combined.CombinedScreen;
 import hu.bme.aut.fox.robotvacuum.virtual.app.simulationapp.SimulationAppScreen;
 import hu.bme.aut.fox.robotvacuum.virtual.app.world.WorldScreen;
 import hu.bme.aut.fox.robotvacuum.virtual.app.virtualworld.VirtualWorldScreen;
@@ -47,8 +48,10 @@ public class MainScreen extends App.Screen {
 		worldButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 		worldButton.addActionListener(
 				(event) -> {
-					WorldScreen ws = new WorldScreen(new Simulation().getRobotVacuum());
+					Simulation simulation = new Simulation();
+					WorldScreen ws = new WorldScreen(simulation.getRobotVacuum());
 					navigate(ws);
+					simulation.start();
 				});
 
 
@@ -57,12 +60,13 @@ public class MainScreen extends App.Screen {
 		combinedButton.addActionListener(
 				(event) -> {
 					Simulation simulation = new Simulation();
-//					navigate(new CombinedScreen(
-//							simulation.getWorld(),
-//							simulation.getRadar(),
-//							simulation.getMotor(),
-//							simulation.getRobotVacuum()
-//					));
+					navigate(new CombinedScreen(
+							simulation.getWorld(),
+							simulation.getRadar(),
+							simulation.getMotor(),
+							simulation.getRobotVacuum()
+					));
+					simulation.start();
 				}
 		);
 
