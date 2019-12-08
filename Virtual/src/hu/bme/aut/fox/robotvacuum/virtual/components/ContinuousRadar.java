@@ -33,6 +33,8 @@ public class ContinuousRadar implements Radar {
 
 		notifyListeners(data);
 
+		for (RadarData d : data)
+			System.out.println(d.getDistance() + " " + d.isHit());
 		return data.toArray(new RadarData[0]);
 	}
 
@@ -49,7 +51,7 @@ public class ContinuousRadar implements Radar {
 		for (ContinuousWorld.WorldObject object : objects) {
 			Double distance = getObjectsDistance(object, position, phi);
 			if (distance != null) {
-				if (distance > maxLength)
+				if (distance >= maxLength - 0.000001)
 					data.add(new RadarData(phi, maxLength, false));
 				else
 					data.add(new RadarData(phi, distance, true));
