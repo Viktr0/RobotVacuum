@@ -88,13 +88,13 @@ public class RobotVacuum {
 		state = interpretation.getState();
 
 		MovementController.Movement movement = getMovement();
-		double rotation = motor.rotate(movement.getAngle());
-		double distance = motor.move(movement.getDistance());
 
+		double rotation = motor.rotate(movement.getAngle());
 		interpretation = interpreter.interpretRotation(world, state, rotation);
 		world = interpretation.getWorld();
 		state = interpretation.getState();
 
+		double distance = motor.move(movement.getDistance());
 		interpretation = interpreter.interpretMovement(world, state, distance);
 		world = interpretation.getWorld();
 		state = interpretation.getState();
