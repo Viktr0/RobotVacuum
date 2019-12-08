@@ -12,12 +12,10 @@ public class SimpleInterpreter implements Interpreter {
 
 	@Override
 	public Interpretation interpretRadar(
-			double size,
 			World currentWorld,
 			RobotVacuum.State currentState,
 			Radar.RadarData[] radarData
 	) {
-
 		double gridScale = currentWorld.getGridScale();
 		double posX = currentState.getPositionX();
 		double posY = currentState.getPositionY();
@@ -31,7 +29,8 @@ public class SimpleInterpreter implements Interpreter {
 			double dirY = Math.sin(data.getDirection());
 			double dist = data.getDistance();
 
-			for (double progress = 0; progress < dist; progress += 0.05) {
+			double stepSize = gridScale * 0.1;
+			for (double progress = 0; progress < dist; progress += stepSize) {
 				int gridX = currentWorld.toGridCoordinate(posX + dirX * progress);
 				int gridY = currentWorld.toGridCoordinate(posY + dirY * progress);
 				if (currentWorld.getGridField(gridX, gridY) == null) {
@@ -45,7 +44,7 @@ public class SimpleInterpreter implements Interpreter {
 				double hitCenterX = hitGridX + 0.5;
 				double hitCenterY = hitGridY + 0.5;
 
-				double r = size / gridScale;
+				double r = currentState.getSize() / 2 / gridScale;
 				for (int gridY = (int) (hitGridY - r); gridY < Math.ceil(hitGridY + r); gridY++) {
 					for (int gridX = (int) (hitGridX - r); gridX < Math.ceil(hitGridX + r); gridX++) {
 						double distanceX = gridX + 0.5 - hitCenterX;
@@ -53,7 +52,11 @@ public class SimpleInterpreter implements Interpreter {
 						if (Math.sqrt(distanceX * distanceX + distanceY * distanceY) < r) {
 							Field field = currentWorld.getGridField(gridX, gridY);
 							if (field == null || !field.isObstacle()) {
-								unreachableFields.add(new Field(gridX, gridY, false, false, false));
+								unreachableFields.add(new Field(
+										gridX, gridY,
+										false, false,
+										field != null && field.isCleaned()
+								));
 							}
 						}
 					}
@@ -78,12 +81,12 @@ public class SimpleInterpreter implements Interpreter {
 
 	@Override
 	public Interpretation interpretMovement(
-			double size,
 			World currentWorld,
 			RobotVacuum.State currentState,
 			double distance
 	) {
 		RobotVacuum.State state = new RobotVacuum.State(
+				currentState.getSize(),
 				currentState.getPositionX() + Math.cos(currentState.getDirection()) * distance,
 				currentState.getPositionY() + Math.sin(currentState.getDirection()) * distance,
 				currentState.getDirection()
@@ -98,7 +101,10 @@ public class SimpleInterpreter implements Interpreter {
 			);
 		}
 
-		Field cleanedField = new Field(currentField.getX(), currentField.getY(), false, true, true);
+		Field cleanedField = new Field(
+				currentField.getX(), currentField.getY(),
+				currentField.isObstacle(), currentField.isReachable(), true
+		);
 		World world = new World(currentWorld, cleanedField);
 
 		return new Interpretation(world, state);
@@ -106,12 +112,12 @@ public class SimpleInterpreter implements Interpreter {
 
 	@Override
 	public Interpretation interpretRotation(
-			double size,
 			World currentWorld,
 			RobotVacuum.State currentState,
 			double angle
 	) {
 		RobotVacuum.State state = new RobotVacuum.State(
+				currentState.getSize(),
 				currentState.getPositionX(),
 				currentState.getPositionY(),
 				currentState.getDirection() + angle

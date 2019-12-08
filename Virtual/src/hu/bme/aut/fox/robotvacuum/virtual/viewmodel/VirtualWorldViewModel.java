@@ -1,6 +1,5 @@
 package hu.bme.aut.fox.robotvacuum.virtual.viewmodel;
 
-import hu.bme.aut.fox.robotvacuum.hardware.Radar;
 import hu.bme.aut.fox.robotvacuum.virtual.components.*;
 import io.reactivex.subjects.BehaviorSubject;
 
@@ -9,7 +8,7 @@ public class VirtualWorldViewModel {
 
 
     public final BehaviorSubject<Position> robotVacuum = BehaviorSubject.create();
-    //public final BehaviorSubject<Radar.RadarData[]> radarData = BehaviorSubject.create();
+    public final BehaviorSubject<ContinuousRadar.RadarData[]> radarData = BehaviorSubject.create();
 
     private ContinuousWorld virtualWorld;
     private ContinuousRadar virtualRadar;
@@ -17,22 +16,24 @@ public class VirtualWorldViewModel {
 
     public VirtualWorldViewModel(
         ContinuousWorld virtualWorld,
+        ContinuousRadar radar,
         ContinuousMotor virtualMotor
     ){
         this.virtualWorld = virtualWorld;
         this.virtualMotor = virtualMotor;
+        this.virtualRadar = radar;
 
         virtualWorld.addListener(this::positionChanged);
-        //virtualRadar.addOnUpdateListener(this::onUpdate);
+        virtualRadar.addRadarListener(this::onUpdate);
     }
 
     private void positionChanged(Position position) {
         robotVacuum.onNext(position);
     }
 
-    //private void onUpdate(Radar.RadarData[] data) {
-    //    radarData.onNext(data.clone());
-    //}
+    private void onUpdate(ContinuousRadar.RadarData[] data) {
+        radarData.onNext(data.clone());
+    }
 
     //public VirtualWorldField[][] getWorld() {
     //    return virtualWorld.getWorldMatrix();

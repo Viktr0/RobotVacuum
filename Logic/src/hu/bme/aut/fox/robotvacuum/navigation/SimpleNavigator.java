@@ -10,7 +10,7 @@ import java.util.List;
 public class SimpleNavigator implements Navigator {
 
 	@Override
-	public Target[] getTargetPath(double size, World world, RobotVacuum.State state) {
+	public Target[] getTargetPath(World world, RobotVacuum.State state) {
 		Field onField = world.getField(state.getPositionX(), state.getPositionY());
 		if (onField == null) return null;
 
@@ -20,6 +20,13 @@ public class SimpleNavigator implements Navigator {
 			if (!node.field.isCleaned()) {
 				targetNode = node;
 				break;
+			}
+		}
+
+		if (targetNode != null) {
+			Field targetField = targetNode.field;
+			if (targetField.isObstacle() || !targetField.isReachable()) {
+				targetNode = null;
 			}
 		}
 

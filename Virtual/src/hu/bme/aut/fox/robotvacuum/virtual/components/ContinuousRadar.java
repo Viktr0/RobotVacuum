@@ -112,7 +112,7 @@ public class ContinuousRadar implements Radar {
 		isRunning = false;
 	}
 
-	interface RadarListener {
+	public interface RadarListener {
 		void notifyNewData(RadarData[] data);
 	}
 
