@@ -3,15 +3,9 @@ package hu.bme.aut.fox.robotvacuum.hardware;
 public interface Radar {
 
 	RadarData[] getRadarData();
-	void addRadarListener(RadarListener listener);
-	void removeRadarListener(RadarListener listener);
 
 	void start();
 	void stop();
-
-	interface RadarListener {
-		RadarData[] notifyNewData(RadarData[] data);
-	}
 
 	final class RadarData {
 

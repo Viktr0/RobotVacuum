@@ -2,10 +2,7 @@ package hu.bme.aut.fox.robotvacuum.virtual.components;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Scanner;
+import java.util.*;
 
 public class ContinuousWorldLoader {
 	private static final String worldsFolder = "Virtual/src/hu/bme/aut/fox/robotvacuum/virtual/worlds/";
@@ -20,23 +17,29 @@ public class ContinuousWorldLoader {
         Locale locale = Locale.ENGLISH;
         // set the locale to the scanner object
         scanner.useLocale(locale);
-		final int width = scanner.nextInt();
-		final int height = scanner.nextInt();
-		final int posX = scanner.nextInt();
-		final int posY = scanner.nextInt();
-		final double dir = scanner.nextDouble();
+        try {
+			final int width = scanner.nextInt();
+			final int height = scanner.nextInt();
+			final int posX = scanner.nextInt();
+			final int posY = scanner.nextInt();
+			final double dir = scanner.nextDouble();
 
-		List<ContinuousWorld.WorldObject> worldObjects = new LinkedList<>();
-		
-		final int numOfObjects = scanner.nextInt();
-		for (int i = 0; i < numOfObjects; ++i)
-			worldObjects.add(nextObject(scanner));
-		
-		return new ContinuousWorld(
-			width,
-			height,
-			worldObjects.toArray(new ContinuousWorld.WorldObject[0]), 
-			new Position(posX, posY, dir));
+			List<ContinuousWorld.WorldObject> worldObjects = new LinkedList<>();
+
+			final int numOfObjects = scanner.nextInt();
+			for (int i = 0; i < numOfObjects; ++i)
+				worldObjects.add(nextObject(scanner));
+
+			return new ContinuousWorld(
+				width,
+				height,
+				worldObjects.toArray(new ContinuousWorld.WorldObject[0]),
+				new Position(posX, posY, dir));
+
+		}
+        catch(InputMismatchException e) {
+        	throw new InputMismatchException("Invalid format for width / height / posX / posY / dir / number of objects");
+		}
 	}
 	
 	private ContinuousWorld.WorldObject nextObject(Scanner scanner) {
