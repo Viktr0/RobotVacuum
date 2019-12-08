@@ -13,10 +13,12 @@ public class WorldViewModel {
     private RobotVacuum robotVacuum;
     private Field[][] fields;
     private int scalingFactor = 40;
+    private double gridScale;
 
     public WorldViewModel(RobotVacuum rv){
 
         robotVacuum = rv;
+        gridScale = robotVacuum.getWorld().getGridScale();
         timerThread = new Thread(() -> {
             while(true) {
                 this.updateWorld();
@@ -35,6 +37,7 @@ public class WorldViewModel {
         fields = new Field[scalingFactor][scalingFactor];
         int min = 0 - scalingFactor/2;
         int max = scalingFactor/2;
+        gridScale = robotVacuum.getWorld().getGridScale();
         for(int i = min; i < max; ++i)
             for(int j = min; j < max; ++j)
                 fields[i + max][j + max] = robotVacuum.getWorld().getGridField(j, i);
@@ -51,6 +54,10 @@ public class WorldViewModel {
 
     public int getScalingFactor() {
         return scalingFactor;
+    }
+
+    public double getGridScale() {
+        return gridScale;
     }
 
     public void setScalingFactor(int scalingFactor) {
