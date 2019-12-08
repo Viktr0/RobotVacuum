@@ -11,8 +11,6 @@ import java.util.*;
 
 public class RobotVacuum {
 
-	private final double size;
-
 	private final Radar radar;
 	private final Motor motor;
 
@@ -33,8 +31,6 @@ public class RobotVacuum {
 			Radar radar, Motor motor,
 			Interpreter interpreter, Navigator navigator, MovementController movementController
 	) {
-		this.size = size;
-
 		this.radar = radar;
 		this.motor = motor;
 
@@ -42,7 +38,7 @@ public class RobotVacuum {
 		this.navigator = navigator;
 		this.movementController = movementController;
 
-		state = new State();
+		state = new State(size, 0, 0, 0);
 		world = new World(0.2);
 	}
 
@@ -86,8 +82,8 @@ public class RobotVacuum {
 	}
 
 	private void loop() {
-		Interpreter.Interpretation interpretation;
-		interpretation = interpreter.interpretRadar(size, world, state, radar.getRadarData());
+		Radar.RadarData[] radarData = radar.getRadarData();
+		Interpreter.Interpretation interpretation = interpreter.interpretRadar(world, state, radarData);
 		world = interpretation.getWorld();
 		state = interpretation.getState();
 
@@ -95,21 +91,21 @@ public class RobotVacuum {
 		double rotation = motor.rotate(movement.getAngle());
 		double distance = motor.move(movement.getDistance());
 
-		interpretation = interpreter.interpretRotation(size, world, state, rotation);
+		interpretation = interpreter.interpretRotation(world, state, rotation);
 		world = interpretation.getWorld();
 		state = interpretation.getState();
 
-		interpretation = interpreter.interpretMovement(size, world, state, distance);
+		interpretation = interpreter.interpretMovement(world, state, distance);
 		world = interpretation.getWorld();
 		state = interpretation.getState();
 	}
 
 	private MovementController.Movement getMovement() {
-		Navigator.Target target;
 		MovementController.Movement movement;
 
 		do {
-			target = getTarget();
+			Navigator.Target target = getTarget();
+
 			if (target == null) {
 				movement = new MovementController.Movement(0, Math.PI);
 			} else {
@@ -127,15 +123,11 @@ public class RobotVacuum {
 
 	private Navigator.Target getTarget() {
 		if (targets.size() == 0) {
-			Navigator.Target[] targets = navigator.getTargetPath(size, world, state);
+			Navigator.Target[] targets = navigator.getTargetPath(world, state);
 			if (targets != null) Collections.addAll(this.targets, targets);
 		}
 
-		if (targets.size() > 0) {
-			return targets.peek();
-		} else {
-			return null;
-		}
+		return targets.peek();
 	}
 
 	private void nextTarget() {
@@ -144,18 +136,24 @@ public class RobotVacuum {
 
 	public static class State {
 
+		private final double size;
 		private final double positionX;
 		private final double positionY;
 		private final double direction;
 
 		public State() {
-			this(0, 0, 0);
+			this(0, 0, 0, 0);
 		}
 
-		public State(double positionX, double positionY, double direction) {
+		public State(double size, double positionX, double positionY, double direction) {
+			this.size = size;
 			this.positionX = positionX;
 			this.positionY = positionY;
 			this.direction = direction;
+		}
+
+		public double getSize() {
+			return size;
 		}
 
 		public double getPositionX() {

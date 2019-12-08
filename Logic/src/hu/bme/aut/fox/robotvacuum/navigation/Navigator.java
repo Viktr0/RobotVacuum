@@ -5,7 +5,7 @@ import hu.bme.aut.fox.robotvacuum.world.World;
 
 public interface Navigator {
 
-	Target[] getTargetPath(double size, World world, RobotVacuum.State state);
+	Target[] getTargetPath(World world, RobotVacuum.State state);
 
 	final class Target {
 

@@ -7,21 +7,18 @@ import hu.bme.aut.fox.robotvacuum.world.World;
 public interface Interpreter {
 
 	Interpretation interpretRadar(
-			double size,
 			World currentWorld,
 			RobotVacuum.State currentState,
 			Radar.RadarData[] radarData
 	);
 
 	Interpretation interpretMovement(
-			double size,
 			World currentWorld,
 			RobotVacuum.State currentState,
 			double distance
 	);
 
 	Interpretation interpretRotation(
-			double size,
 			World currentWorld,
 			RobotVacuum.State currentState,
 			double angle
