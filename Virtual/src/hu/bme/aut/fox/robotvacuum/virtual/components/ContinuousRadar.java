@@ -30,7 +30,9 @@ public class ContinuousRadar implements Radar {
 		for (double phi = position.direction - angle / 2; phi < position.direction + angle / 2; phi += dPhi)
 			data.add(measure(objects, position, phi));
 
+
 		notifyListeners(data);
+
 		return data.toArray(new RadarData[0]);
 	}
 
@@ -53,7 +55,10 @@ public class ContinuousRadar implements Radar {
 					data.add(new RadarData(phi, distance, true));
 			}
 		}
-		return Collections.min(data, Comparator.comparingDouble(RadarData::getDistance));
+
+		RadarData result = Collections.min(data, Comparator.comparingDouble(RadarData::getDistance));
+
+		return result;
 	}
 
 	static Double getObjectsDistance(ContinuousWorld.WorldObject object, Position p, double phi) {
@@ -66,6 +71,8 @@ public class ContinuousRadar implements Radar {
 			Vec2 intersection = intersectWithLine(vertices[i], vertices[j], position, phi);
 			if (intersection != null)
 				intersections.add(position.minus(intersection).getLength());
+			else
+				intersections.add(maxLength);
 		}
 
 		if (intersections.size() == 0)
@@ -78,7 +85,7 @@ public class ContinuousRadar implements Radar {
 
 	static Vec2 intersectWithLine(Vec2 a, Vec2 b, Vec2 from, double phi) {
 		Vec2 dir = b.minus(a).normalize();
-		Vec2 rayDir = new Vec2(1, Math.tan(phi)).normalize();
+		Vec2 rayDir = new Vec2(Math.cos(phi), Math.sin(phi));
 
 		double d = dir.scalarProduct(from.minus(a));
 
@@ -91,7 +98,9 @@ public class ContinuousRadar implements Radar {
 
 		double segmentLength2 = a.minus(b).getLengthSquared();
 		if (a.minus(intersection).getLengthSquared() < segmentLength2 &&
-			b.minus(intersection).getLengthSquared() < segmentLength2)
+			b.minus(intersection).getLengthSquared() < segmentLength2 &&
+			rayDir.scalarProduct(intersection.minus(from)) > 0
+			)
 			return intersection;
 		return null;
 
