@@ -23,6 +23,13 @@ public class SimpleNavigator implements Navigator {
 			}
 		}
 
+		if (targetNode != null) {
+			Field targetField = targetNode.field;
+			if (targetField.isObstacle() || !targetField.isReachable()) {
+				targetNode = null;
+			}
+		}
+
 		List<Target> path = new LinkedList<>();
 		while (targetNode != null) {
 			path.add(0, new Target(
