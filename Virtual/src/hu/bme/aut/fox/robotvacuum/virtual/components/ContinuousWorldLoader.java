@@ -7,6 +7,7 @@ import java.util.*;
 public class ContinuousWorldLoader {
 	private static final String worldsFolder = "Virtual/src/hu/bme/aut/fox/robotvacuum/virtual/worlds/";
 	private final String fileName;
+	private int lines = 0;
 
 	public ContinuousWorldLoader(final String file) {
 		fileName = file;
@@ -27,6 +28,7 @@ public class ContinuousWorldLoader {
 			List<ContinuousWorld.WorldObject> worldObjects = new LinkedList<>();
 
 			final int numOfObjects = scanner.nextInt();
+			lines = 3;
 			for (int i = 0; i < numOfObjects; ++i)
 				worldObjects.add(nextObject(scanner));
 
@@ -38,25 +40,43 @@ public class ContinuousWorldLoader {
 
 		}
         catch(InputMismatchException e) {
+        	throw e;
+		}
+        catch(Throwable e) {
         	throw new InputMismatchException("Invalid format for width / height / posX / posY / dir / number of objects");
 		}
 	}
 	
 	private ContinuousWorld.WorldObject nextObject(Scanner scanner) {
-		scanner.nextLine();
-		final int numOfVertexes = scanner.nextInt();
-		List<ContinuousWorld.Coordinate> vertices = new LinkedList<>();
-		for (int i = 0; i< numOfVertexes; ++i)
-			vertices.add(nextVertex(scanner));
-		
-		return new ContinuousWorld.WorldObject(vertices.toArray(new ContinuousWorld.Coordinate[0]));
+		try {
+			scanner.nextLine();
+			lines++;
+			final int numOfVertexes = scanner.nextInt();
+			List<ContinuousWorld.Coordinate> vertices = new LinkedList<>();
+			for (int i = 0; i< numOfVertexes; ++i)
+				vertices.add(nextVertex(scanner));
+
+			return new ContinuousWorld.WorldObject(vertices.toArray(new ContinuousWorld.Coordinate[0]));
+		}
+		catch(InputMismatchException e) {
+			throw e;
+		}
+		catch(Throwable e) {
+			throw new InputMismatchException("Invalid format for object on line " + (lines + 1));
+		}
 	}
 
 	private ContinuousWorld.Coordinate nextVertex(Scanner scanner) {
-		scanner.nextLine();
-		final double x = scanner.nextDouble();
-		final double y = scanner.nextDouble();
-		return new ContinuousWorld.Coordinate(x, y);
+		try {
+			scanner.nextLine();
+			lines++;
+			final double x = scanner.nextDouble();
+			final double y = scanner.nextDouble();
+			return new ContinuousWorld.Coordinate(x, y);
+		}
+		catch(Throwable e) {
+			throw new InputMismatchException("Invalid format for vertex on line " + (lines + 1));
+		}
 	}
 
 
