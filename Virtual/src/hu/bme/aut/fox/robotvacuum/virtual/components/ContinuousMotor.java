@@ -29,7 +29,7 @@ public class ContinuousMotor implements Motor {
 	@Override
 	public double rotate(double angle) {
 		final Position prevPosition = world.getRobotVacuum();
-		final double time = angle / rotationSpeed;
+		final double time = Math.abs(angle / rotationSpeed);
 		sleep(time);
 		world.setRobotVacuum(new Position(prevPosition.x, prevPosition.y, prevPosition.direction + angle));
 		return angle;
