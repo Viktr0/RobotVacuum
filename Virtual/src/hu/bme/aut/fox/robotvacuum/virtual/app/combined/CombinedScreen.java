@@ -17,6 +17,9 @@ public class CombinedScreen extends App.Screen {
     private JPanel combinedCanvas;
 
     //porszivo adatai
+    private int robotVacuumPosX;
+    private int robotVacuumPosY;
+
     private double actualPosX;
     private double actualPosY;
     private double recentPosX;
@@ -81,12 +84,12 @@ public class CombinedScreen extends App.Screen {
             cn = (int)actualPosX;
             int r = (rp > rn)? rp : rn;
             int c = (cn > cp)? cn : cp;
-            worldViewModel.setScalingFactor(2 * ((r > c)? r : c));
+            //worldViewModel.setScalingFactor((int)(2 * ((r > c)? r : c) / worldViewModel.getGridScale()));
+            worldViewModel.setScalingFactor((int)(2 * ((r > c)? r : c) / worldViewModel.getGridScale()));
             SF = worldViewModel.getScalingFactor();
-            worldScale = worldViewModel.getGridScale();
-            //System.out.println("GRIDSCALE: " + worldScale);
+            System.out.println("SCALINGFACTOR: " + SF);
 
-            fieldSize = 700/SF;
+            fieldSize = 30;
             vwBaseX = (SF/2 - (int)actualPosX) * fieldSize;
             vwBaseY = (SF/2 - (int)actualPosY) * fieldSize;
             wBaseX = baseX;
@@ -101,7 +104,6 @@ public class CombinedScreen extends App.Screen {
 
 
             //Az alap
-
            for (int i = 0; i < objects.length; i++) {
                ContinuousWorld.Coordinate[] coos = objects[i].getVertices();
                int[] xCoos = new int[coos.length];
@@ -114,21 +116,27 @@ public class CombinedScreen extends App.Screen {
                graphics.fillPolygon(new Polygon(xCoos, yCoos, coos.length));
            }
 
-
             //Robot kepe
             for (int i = 0; i < SF; i++) {
                 for (int j = 0; j < SF; j++) {
                     if (fields[j][i] != null) {
                         if (fields[j][i].isObstacle()) {
-                            graphics.setColor(new Color(0, 0, 255, 100));
+                            graphics.setColor(new Color(127, 0, 0, 100));
+                        } else if (!fields[j][i].isReachable()) {
+                            graphics.setColor(new Color(255, 0, 0, 100));
                         } else {
                             if (fields[j][i].isCleaned()) {
-                                graphics.setColor(new Color(255, 255, 255, 100));
+                                graphics.setColor(new Color(0, 0, 255, 100));
                             } else {
-                                graphics.setColor(new Color(127, 160, 255, 10));
+                                graphics.setColor(new Color(0, 0, 127, 100));
                             }
                         }
-                        graphics.fillRect(baseX + i * (int)(fieldSize * worldScale), baseY + j * (int)(fieldSize * worldScale), (int)(fieldSize * worldScale), (int)(fieldSize * worldScale));
+                        graphics.fillRect(
+                                baseX + (int) ((i - SF / 2) * worldViewModel.getGridScale() * fieldSize) + 1 * fieldSize,
+                                baseY + (int) ((j - SF / 2) * worldViewModel.getGridScale() * fieldSize) + 1 * fieldSize,
+                                (int)(fieldSize * worldViewModel.getGridScale()),
+                                (int)(fieldSize * worldViewModel.getGridScale())
+                        );
                     } else {
                     }
                 }
@@ -136,11 +144,9 @@ public class CombinedScreen extends App.Screen {
 
             //A megcelzott utvonal
             int worldSize = worldViewModel.getScalingFactor();
-
             int prevX = 0;
             int prevY = 0;
-           boolean first = true;
-
+            boolean first = true;
             graphics.setColor(new Color(127, 255, 200));
             for (Navigator.Target target : worldViewModel.getTargets()) {
                 int x = (int) ((worldSize / 2 + target.getX()) * fieldSize);
@@ -154,7 +160,6 @@ public class CombinedScreen extends App.Screen {
                 prevY = y;
                 first = false;
             }
-
             graphics.setColor(Color.GREEN);
             if (!first) {
                 graphics.drawRect(
@@ -169,7 +174,7 @@ public class CombinedScreen extends App.Screen {
            graphics.setColor(Color.RED);
            graphics.fillOval((int) (baseX + (actualPosX - 0.5) * fieldSize),
                    (int) (baseY + (actualPosY- 0.5) * fieldSize),
-                   fieldSize, fieldSize);
+                   (int)(fieldSize),(int)(fieldSize));
 
             //A radar
            graphics.setColor(Color.BLUE);
@@ -214,6 +219,11 @@ public class CombinedScreen extends App.Screen {
         subscribe(virtualWorldViewModel.robotVacuum, this::setRobotVacuumPos);
         subscribe(virtualWorldViewModel.radarData, this::setRadarData);
         subscribe(worldViewModel.world, (matrix) -> drawWorld(matrix));
+        /*subscribe(worldViewModel.state, state -> {
+            robotVacuumPosX = (int) state.getPositionX();
+            robotVacuumPosY = (int) state.getPositionY();
+            combinedCanvas.repaint();
+        });*/
     }
 
 

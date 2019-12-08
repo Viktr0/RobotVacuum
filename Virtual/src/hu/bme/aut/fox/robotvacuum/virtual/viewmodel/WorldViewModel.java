@@ -9,6 +9,7 @@ import io.reactivex.subjects.BehaviorSubject;
 public class WorldViewModel {
 
     public BehaviorSubject<Field[][]> world = BehaviorSubject.create();
+    //public BehaviorSubject<RobotVacuum.State> state = BehaviorSubject.create();
     private Thread timerThread;
     private RobotVacuum robotVacuum;
     private Field[][] fields;
@@ -40,8 +41,9 @@ public class WorldViewModel {
         gridScale = robotVacuum.getWorld().getGridScale();
         for(int i = min; i < max; ++i)
             for(int j = min; j < max; ++j)
-                fields[i + max][j + max] = robotVacuum.getWorld().getGridField(j, i);
+                fields[i - min][j - min] = robotVacuum.getWorld().getGridField(j, i);
         world.onNext(fields);
+        //state.onNext(robotVacuum.getState());
     }
 
     public Field[][] getFields(){
