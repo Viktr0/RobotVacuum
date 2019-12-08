@@ -23,7 +23,7 @@ public class MainScreen extends App.Screen {
 				(event) -> navigate(new ClockScreen())
 		);
 
-		JButton simulationButton = new JButton("StartSimulation");
+		JButton simulationButton = new JButton("SideBySide");
 		simulationButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 		simulationButton.addActionListener(
 				(event) -> navigate(new SimulationAppScreen())
@@ -39,6 +39,7 @@ public class MainScreen extends App.Screen {
 							simulation.getRadar(),
 							simulation.getMotor()
 					));
+					//simulation.start();
 				}
 		);
 

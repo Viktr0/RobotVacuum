@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Scanner;
 
 public class ContinuousWorldLoader {
@@ -16,6 +17,9 @@ public class ContinuousWorldLoader {
 
 	public ContinuousWorld load() throws FileNotFoundException {
 		Scanner scanner = new Scanner(new FileInputStream(worldsFolder + fileName + ".world"));
+        Locale locale = Locale.ENGLISH;
+        // set the locale to the scanner object
+        scanner.useLocale(locale);
 		final int width = scanner.nextInt();
 		final int height = scanner.nextInt();
 		final int posX = scanner.nextInt();

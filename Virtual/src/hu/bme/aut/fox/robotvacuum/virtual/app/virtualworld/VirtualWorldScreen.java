@@ -1,6 +1,5 @@
 package hu.bme.aut.fox.robotvacuum.virtual.app.virtualworld;
 
-//import hu.bme.aut.fox.robotvacuum.hardware.OldRadar;
 import hu.bme.aut.fox.robotvacuum.virtual.components.*;
 import hu.bme.aut.fox.robotvacuum.virtual.app.App.Screen;
 import hu.bme.aut.fox.robotvacuum.virtual.viewmodel.VirtualWorldViewModel;
@@ -8,7 +7,6 @@ import hu.bme.aut.fox.robotvacuum.virtual.viewmodel.VirtualWorldViewModel;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
 
 public class VirtualWorldScreen extends Screen {
     private VirtualWorldPanel virtualWorldPanel;
@@ -36,10 +34,6 @@ public class VirtualWorldScreen extends Screen {
         //private OldRadar.RadarData[] radarData = new OldRadar.RadarData[0];
 
         private JPanel myCanvas;
-        private JButton stepRightBtn;
-        private JButton stepLeftBtn;
-        private JButton stepUpBtn;
-        private JButton stepDownBtn;
 
         public VirtualWorldPanel(
             ContinuousWorld virtualWorld,
@@ -68,7 +62,6 @@ public class VirtualWorldScreen extends Screen {
             //matrix adatok
             private int rows = 0;
             private int columns = 0;
-            //VirtualWorldField[][] fields;
             ContinuousWorld.WorldObject[] objects;
 
             public FullWorldCanvas() {
@@ -79,7 +72,6 @@ public class VirtualWorldScreen extends Screen {
                 recentPosX = actualPosX;
                 recentPosY = actualPosY;
 
-                //fields = viewModel.getVirtualWorld().getWorldMatrix();
                 objects = viewModel.getVirtualWorld().getObjects();
                 int max = 0;
                 int len = objects.length;
@@ -87,6 +79,7 @@ public class VirtualWorldScreen extends Screen {
                     if (objects[i].getVertices().length > max)
                         max = objects[i].getVertices().length;
                 }
+                System.out.println(objects.length);
 
                 columns = (int) viewModel.getVirtualWorld().getWidth();
                 rows = (int) viewModel.getVirtualWorld().getHeight();
@@ -100,8 +93,8 @@ public class VirtualWorldScreen extends Screen {
                     int[] xCoos = new int[coos.length];
                     int[] yCoos = new int[coos.length];
                     for(int j = 0; j < coos.length; j++) {
-                        xCoos[j] = (int)coos[j].getX();
-                        yCoos[j] = (int)coos[j].getY();
+                        xCoos[j] = (int)coos[j].getX() * fieldSize+fieldSize;
+                        yCoos[j] = (int)coos[j].getY() * fieldSize+fieldSize;
                     }
                     g.setColor(Color.BLACK);
                     g.fillPolygon(new Polygon(xCoos, yCoos, coos.length));
@@ -120,11 +113,9 @@ public class VirtualWorldScreen extends Screen {
 
 
                 g.setColor(Color.RED);
-                g.fillRect(
-                    (int) (baseX + (actualPosX - 0.5) * fieldSize),
-                    (int) (baseY + (actualPosY- 0.5) * fieldSize),
-                    fieldSize, fieldSize
-                );
+                g.fillOval((int) (baseX + (actualPosX - 0.5) * fieldSize),
+                        (int) (baseY + (actualPosY- 0.5) * fieldSize),
+                        fieldSize, fieldSize);
 /*
                 g.setColor(Color.BLUE);
                 for (OldRadar.RadarData data : radarData) {
