@@ -107,7 +107,7 @@ public class RobotVacuum {
 			Navigator.Target target = getTarget();
 
 			if (target == null) {
-				movement = new MovementController.Movement(0, Math.PI);
+				movement = new MovementController.Movement(0, Math.PI * 0.1);
 			} else {
 				movement = movementController.getNextMovement(
 						state,
