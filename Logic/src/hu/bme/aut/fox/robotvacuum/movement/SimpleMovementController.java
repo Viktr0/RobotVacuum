@@ -7,8 +7,8 @@ public class SimpleMovementController implements MovementController {
 	private static final double DISTANCE_THRESHOLD = 0.001;
 	private static final double DIRECTION_THRESHOLD = 0.001;
 
-	private static final double MAX_DISTANCE = 0.2;
-	private static final double MAX_ANGLE = 0.2;
+	private static final double MAX_DISTANCE = 0.1;
+	private static final double MAX_ANGLE = 0.1;
 
 	@Override
 	public Movement getNextMovement(RobotVacuum.State state, double targetX, double targetY) {
@@ -31,10 +31,10 @@ public class SimpleMovementController implements MovementController {
 			if (angle > Math.PI) angle -= 2 * Math.PI;
 
 			// Calculating movement towards the target if the angle is below the threshold
-			if (angle < DIRECTION_THRESHOLD) {
+			if (Math.abs(angle) < DIRECTION_THRESHOLD) {
 				return new Movement(
-						Math.min(targetDistance, MAX_DISTANCE),
-						Math.min(angle, MAX_ANGLE)
+						Math.max(-MAX_DISTANCE, Math.min(targetDistance, MAX_DISTANCE)),
+						Math.max(-MAX_ANGLE, Math.min(angle, MAX_ANGLE))
 				);
 			} else {
 				// Correcting the rotational error

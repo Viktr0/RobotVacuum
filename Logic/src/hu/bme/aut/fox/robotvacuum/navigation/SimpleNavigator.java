@@ -23,6 +23,8 @@ public class SimpleNavigator implements Navigator {
 			}
 		}
 
+		System.out.println(tree.size());
+
 		if (targetNode != null) {
 			Field targetField = targetNode.field;
 			if (targetField.isObstacle() || !targetField.isReachable()) {
@@ -54,25 +56,15 @@ public class SimpleNavigator implements Navigator {
 			Node node = edge.remove(0);
 			Field field = node.getField();
 
-			for (int i = 0; i < 4; i++) {
-				Field neighbor = null;
-				switch (i) {
-					case 0:
-						neighbor = world.getField(field.getX() + 1, field.getY());
-						break;
-					case 1:
-						neighbor = world.getField(field.getX() - 1, field.getY());
-						break;
-					case 2:
-						neighbor = world.getField(field.getX(), field.getY() + 1);
-						break;
-					case 3:
-						neighbor = world.getField(field.getX(), field.getY() - 1);
-						break;
-				}
+			Field[] neighbors = {
+					world.getGridField(field.getX() + 1, field.getY()),
+					world.getGridField(field.getX() - 1, field.getY()),
+					world.getGridField(field.getX(), field.getY() + 1),
+					world.getGridField(field.getX(), field.getY() - 1)
+			};
 
+			for (Field neighbor : neighbors) {
 				if (neighbor != null &&
-						!neighbor.isObstacle() &&
 						neighbor.isReachable() &&
 						!scanned.contains(neighbor)
 				) {
