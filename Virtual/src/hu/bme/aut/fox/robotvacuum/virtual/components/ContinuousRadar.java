@@ -3,6 +3,7 @@ package hu.bme.aut.fox.robotvacuum.virtual.components;
 import hu.bme.aut.fox.robotvacuum.hardware.Radar;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -43,7 +44,7 @@ public class ContinuousRadar implements Radar {
 					data.add(intersection);
 			}
 		}
-		return Collections.min(data, (a, b) -> (int) ((a.getDistance() - b.getDistance()) * 100));
+		return Collections.min(data, Comparator.comparingDouble(RadarData::getDistance));
 	}
 
 	RadarData intersectWithObject(ContinuousWorld.WorldObject object, Position p, double phi) {
@@ -61,7 +62,7 @@ public class ContinuousRadar implements Radar {
 		if (intersections.size() == 0)
 			return null;
 
-		double min = Collections.min(intersections, (a, b) -> (int) (a - b));
+		double min = Collections.min(intersections, Double::compare);
 
 		return new RadarData(min, phi, true);
 	}
