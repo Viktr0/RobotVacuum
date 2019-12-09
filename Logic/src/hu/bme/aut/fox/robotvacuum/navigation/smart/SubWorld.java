@@ -114,7 +114,7 @@ class SubWorld {
 		}
 
 		for (int x = startX; x < startX + width - 1; x++) {
-			int start = startX;
+			int start = startY;
 
 			for (int y = startY; y <= startY + height; y++) {
 				boolean leftBlocking = isBlocking(world.getGridField(x, y));
@@ -155,17 +155,17 @@ class SubWorld {
 
 		private boolean intersects(double startX, double startY, double endX, double endY) {
 			if (horizontal) {
-				if (startX == endX) return false;
+				if (startY == endY) return false;
 				if (startY < y && endY < y || startY > y && endY > y) return false;
 				double slope = (endX - startX) / (endY - startY);
 				double intersectionX = slope * (y - startY) + startX;
-				return intersectionX > x && intersectionX < x + length;
+				return intersectionX >= x && intersectionX <= x + length;
 			} else {
 				if (startX == endX) return false;
 				if (startX < x && endX < x || startX > x && endX > x) return false;
 				double slope = (endY - startY) / (endX - startX);
 				double intersectionY = slope * (x - startX) + startY;
-				return intersectionY > y && intersectionY < y + length;
+				return intersectionY >= y && intersectionY <= y + length;
 			}
 		}
 	}

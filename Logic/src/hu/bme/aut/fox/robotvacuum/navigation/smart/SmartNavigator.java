@@ -35,11 +35,6 @@ public class SmartNavigator implements Navigator {
 			node = node.parent;
 		}
 
-		minX = -40;
-		minY = -40;
-		maxX = 400;
-		maxY = 400;
-
 		SubWorld subWorld = new SubWorld(world, minX, minY, maxX - minX + 1, maxY - minY + 1);
 		SubWorld.Node pathEnd = subWorld.getShortestPath(onField, targetNode.field);
 

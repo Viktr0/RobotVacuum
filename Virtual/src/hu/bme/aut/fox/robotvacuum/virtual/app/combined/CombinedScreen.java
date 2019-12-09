@@ -143,31 +143,28 @@ public class CombinedScreen extends App.Screen {
             }
 
             //A megcelzott utvonal
-            int worldSize = worldViewModel.getScalingFactor();
             int prevX = 0;
             int prevY = 0;
             boolean first = true;
-            graphics.setColor(new Color(127, 255, 200));
+            graphics.setColor(Color.GREEN);
             for (Navigator.Target target : worldViewModel.getTargets()) {
-                int x = (int) ((worldSize / 2 + target.getX()) * fieldSize);
-                int y = (int) ((worldSize / 2 + target.getY()) * fieldSize);
+                int x = (int) ((target.getX()) * fieldSize) + 1 * fieldSize;
+                int y = (int) ((target.getY()) * fieldSize) + 1 * fieldSize;
 
                 if (!first) {
                     graphics.drawLine(x, y, prevX, prevY);
                 }
 
-               prevX = x;
-                prevY = y;
-                first = false;
-            }
-            graphics.setColor(Color.GREEN);
-            if (!first) {
-                graphics.drawRect(
-                        prevX - fieldSize / 2,
-                        prevY - fieldSize / 2,
+                graphics.drawOval(
+                        x - fieldSize / 2,
+                        y - fieldSize / 2,
                         fieldSize,
                         fieldSize
                 );
+
+                prevX = x;
+                prevY = y;
+                first = false;
             }
 
             //A porszivo
