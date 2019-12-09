@@ -33,12 +33,12 @@ public class SimpleMovementController implements MovementController {
 			// Calculating movement towards the target if the angle is below the threshold
 			if (Math.abs(angle) < DIRECTION_THRESHOLD) {
 				return new Movement(
-						Math.max(-MAX_DISTANCE, Math.min(targetDistance, MAX_DISTANCE)),
-						Math.max(-MAX_ANGLE, Math.min(angle, MAX_ANGLE))
+						Math.max(Math.min(targetDistance, MAX_DISTANCE), -MAX_DISTANCE),
+						Math.max(Math.min(angle, MAX_ANGLE), -MAX_ANGLE)
 				);
 			} else {
 				// Correcting the rotational error
-				return new Movement(0, Math.min(angle, MAX_ANGLE));
+				return new Movement(0, Math.max(Math.min(angle, MAX_ANGLE), -MAX_ANGLE));
 			}
 		} else {
 			return null;

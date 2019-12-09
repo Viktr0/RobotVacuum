@@ -23,8 +23,6 @@ public class SimpleNavigator implements Navigator {
 			}
 		}
 
-		System.out.println(tree.size());
-
 		if (targetNode != null) {
 			Field targetField = targetNode.field;
 			if (targetField.isObstacle() || !targetField.isReachable()) {
