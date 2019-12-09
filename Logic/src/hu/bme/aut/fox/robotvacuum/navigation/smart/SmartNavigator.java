@@ -1,12 +1,12 @@
-package hu.bme.aut.fox.robotvacuum.navigation;
+package hu.bme.aut.fox.robotvacuum.navigation.smart;
 
 import hu.bme.aut.fox.robotvacuum.RobotVacuum;
+import hu.bme.aut.fox.robotvacuum.navigation.Navigator;
 import hu.bme.aut.fox.robotvacuum.world.Field;
 import hu.bme.aut.fox.robotvacuum.world.World;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.function.Function;
 
 public class SmartNavigator implements Navigator {
 
@@ -15,87 +15,54 @@ public class SmartNavigator implements Navigator {
 		Field onField = world.getField(state.getPositionX(), state.getPositionY());
 		if (onField == null) return null;
 
-		FieldNode targetNode = findNode(world, onField, true, node -> !node.field.isCleaned());
+		WorldCrawler crawler = new WorldCrawler(world, onField);
+		WorldCrawler.Node targetNode = crawler.find(true, node -> !node.field.isCleaned());
 
-		if (targetNode != null) {
-			Field targetField = targetNode.field;
-			if (targetField.isObstacle() || !targetField.isReachable()) {
-				targetNode = null;
-			}
+		if (targetNode == null) return null;
+		if (!targetNode.field.isReachable()) return null;
+
+		int minX = targetNode.field.getX();
+		int minY = targetNode.field.getY();
+		int maxX = targetNode.field.getX();
+		int maxY = targetNode.field.getY();
+
+		WorldCrawler.Node node = targetNode.parent;
+		while (node != null) {
+			if (node.field.getX() < minX) minX = node.field.getX();
+			if (node.field.getY() < minY) minY = node.field.getY();
+			if (node.field.getX() > maxX) maxX = node.field.getX();
+			if (node.field.getY() > maxY) maxY = node.field.getY();
+			node = node.parent;
 		}
 
+		minX = -40;
+		minY = -40;
+		maxX = 400;
+		maxY = 400;
+
+		SubWorld subWorld = new SubWorld(world, minX, minY, maxX - minX + 1, maxY - minY + 1);
+		SubWorld.Node pathEnd = subWorld.getShortestPath(onField, targetNode.field);
+
 		List<Target> path = new LinkedList<>();
-		while (targetNode != null) {
+		SubWorld.Node pathNode = pathEnd;
+		while (pathNode != null) {
 			path.add(0, new Target(
-					world.toWorldCoordinate(targetNode.field.getX()) + world.getGridScale() / 2,
-					world.toWorldCoordinate(targetNode.field.getY()) + world.getGridScale() / 2
+					world.toWorldCoordinate(pathNode.field.getX()) + world.getGridScale() / 2,
+					world.toWorldCoordinate(pathNode.field.getY()) + world.getGridScale() / 2
 			));
-			targetNode = targetNode.parent;
+			pathNode = pathNode.parent;
+		}
+
+		if (path.size() == 0) {
+			while (targetNode != null) {
+				path.add(0, new Target(
+						world.toWorldCoordinate(targetNode.field.getX()) + world.getGridScale() / 2,
+						world.toWorldCoordinate(targetNode.field.getY()) + world.getGridScale() / 2
+				));
+				targetNode = targetNode.parent;
+			}
 		}
 
 		return path.toArray(new Target[0]);
-	}
-
-	private FieldNode findNode(
-			World world,
-			Field startField,
-			boolean ignoreUnreachable,
-			Function<FieldNode, Boolean> evaluator
-	) {
-		List<Field> scanned = new LinkedList<>();
-		List<FieldNode> edge = new LinkedList<>();
-
-		scanned.add(startField);
-		edge.add(new FieldNode(null, startField));
-		while (edge.size() > 0) {
-			FieldNode node = edge.remove(0);
-			if (evaluator.apply(node)) return node;
-
-			Field field = node.field;
-			Field[] neighbors = {
-					world.getGridField(field.getX() + 1, field.getY()),
-					world.getGridField(field.getX() - 1, field.getY()),
-					world.getGridField(field.getX(), field.getY() + 1),
-					world.getGridField(field.getX(), field.getY() - 1)
-			};
-
-			for (Field neighbor : neighbors) {
-				if (neighbor != null) {
-					if (ignoreUnreachable ? neighbor.isReachable() : !neighbor.isObstacle()) {
-						if (!scanned.contains(neighbor)) {
-							scanned.add(neighbor);
-							edge.add(new FieldNode(node, neighbor));
-						}
-					}
-				}
-			}
-		}
-
-		return null;
-	}
-
-	private static final class FieldNode {
-
-		private final FieldNode parent;
-		private final int depth;
-		private final Field field;
-
-		private FieldNode(FieldNode parent, Field field) {
-			this.parent = parent;
-			this.depth = parent == null ? 0 : parent.depth + 1;
-			this.field = field;
-		}
-	}
-
-	private static class Node {
-
-
-
-		private Node parent;
-		private double distance;
-
-//		public Node(Point point) {
-//			this.point = point;
-//		}
 	}
 }

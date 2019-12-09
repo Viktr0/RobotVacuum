@@ -7,31 +7,25 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Function;
 
-class FieldNode {
+class WorldCrawler {
 
-	final FieldNode parent;
-	final int depth;
-	final Field field;
+	private final World world;
+	private final Field entry;
 
-	private FieldNode(FieldNode parent, Field field) {
-		this.parent = parent;
-		this.depth = parent == null ? 0 : parent.depth + 1;
-		this.field = field;
+	WorldCrawler(World world, Field entry) {
+		this.world = world;
+		this.entry = entry;
 	}
 
-	static FieldNode findInWorld(
-			World world,
-			Field startField,
-			boolean ignoreUnreachable,
-			Function<FieldNode, Boolean> evaluator
-	) {
+	Node find(boolean ignoreUnreachable, Function<Node, Boolean> evaluator) {
 		List<Field> scanned = new LinkedList<>();
-		List<FieldNode> edge = new LinkedList<>();
+		List<Node> edge = new LinkedList<>();
 
-		scanned.add(startField);
-		edge.add(new FieldNode(null, startField));
+		scanned.add(entry);
+		edge.add(new Node(null, entry));
+
 		while (edge.size() > 0) {
-			FieldNode node = edge.remove(0);
+			Node node = edge.remove(0);
 			if (evaluator.apply(node)) return node;
 
 			Field field = node.field;
@@ -47,7 +41,7 @@ class FieldNode {
 					if (ignoreUnreachable ? neighbor.isReachable() : !neighbor.isObstacle()) {
 						if (!scanned.contains(neighbor)) {
 							scanned.add(neighbor);
-							edge.add(new FieldNode(node, neighbor));
+							edge.add(new Node(node, neighbor));
 						}
 					}
 				}
@@ -55,5 +49,18 @@ class FieldNode {
 		}
 
 		return null;
+	}
+
+	static class Node {
+
+		final Node parent;
+		final int depth;
+		final Field field;
+
+		private Node(Node parent, Field field) {
+			this.parent = parent;
+			this.depth = parent == null ? 0 : parent.depth + 1;
+			this.field = field;
+		}
 	}
 }

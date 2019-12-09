@@ -3,8 +3,7 @@ package hu.bme.aut.fox.robotvacuum.virtual.app;
 import hu.bme.aut.fox.robotvacuum.RobotVacuum;
 import hu.bme.aut.fox.robotvacuum.interpretation.SimpleInterpreter;
 import hu.bme.aut.fox.robotvacuum.movement.SimpleMovementController;
-import hu.bme.aut.fox.robotvacuum.navigation.SimpleNavigator;
-import hu.bme.aut.fox.robotvacuum.navigation.SmartNavigator;
+import hu.bme.aut.fox.robotvacuum.navigation.smart.SmartNavigator;
 import hu.bme.aut.fox.robotvacuum.virtual.components.*;
 
 import java.io.FileNotFoundException;
