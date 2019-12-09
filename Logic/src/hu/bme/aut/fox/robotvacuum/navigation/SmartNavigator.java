@@ -6,22 +6,16 @@ import hu.bme.aut.fox.robotvacuum.world.World;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Function;
 
-public class SimpleNavigator implements Navigator {
+public class SmartNavigator implements Navigator {
 
 	@Override
 	public Target[] getTargetPath(World world, RobotVacuum.State state) {
 		Field onField = world.getField(state.getPositionX(), state.getPositionY());
 		if (onField == null) return null;
 
-		List<Node> tree = getNavigatorTree(world, onField);
-		Node targetNode = null;
-		for (Node node : tree) {
-			if (!node.field.isCleaned()) {
-				targetNode = node;
-				break;
-			}
-		}
+		Node targetNode = findNode(world, onField, true, node -> !node.field.isCleaned());
 
 		if (targetNode != null) {
 			Field targetField = targetNode.field;
@@ -36,15 +30,18 @@ public class SimpleNavigator implements Navigator {
 					world.toWorldCoordinate(targetNode.field.getX()) + world.getGridScale() / 2,
 					world.toWorldCoordinate(targetNode.field.getY()) + world.getGridScale() / 2
 			));
-			targetNode = targetNode.getParent();
+			targetNode = targetNode.parent;
 		}
 
 		return path.toArray(new Target[0]);
 	}
 
-	private List<Node> getNavigatorTree(World world, Field startField) {
-		List<Node> tree = new LinkedList<>();
-
+	private Node findNode(
+			World world,
+			Field startField,
+			boolean ignoreUnreachable,
+			Function<Node, Boolean> evaluator
+	) {
 		List<Field> scanned = new LinkedList<>();
 		List<Node> edge = new LinkedList<>();
 
@@ -52,8 +49,9 @@ public class SimpleNavigator implements Navigator {
 		edge.add(new Node(null, startField));
 		while (edge.size() > 0) {
 			Node node = edge.remove(0);
-			Field field = node.getField();
+			if (evaluator.apply(node)) return node;
 
+			Field field = node.field;
 			Field[] neighbors = {
 					world.getGridField(field.getX() + 1, field.getY()),
 					world.getGridField(field.getX() - 1, field.getY()),
@@ -62,19 +60,18 @@ public class SimpleNavigator implements Navigator {
 			};
 
 			for (Field neighbor : neighbors) {
-				if (neighbor != null &&
-						neighbor.isReachable() &&
-						!scanned.contains(neighbor)
-				) {
-					scanned.add(neighbor);
-					edge.add(new Node(node, neighbor));
+				if (neighbor != null) {
+					if (ignoreUnreachable ? neighbor.isReachable() : !neighbor.isObstacle()) {
+						if (!scanned.contains(neighbor)) {
+							scanned.add(neighbor);
+							edge.add(new Node(node, neighbor));
+						}
+					}
 				}
 			}
-
-			tree.add(node);
 		}
 
-		return tree;
+		return null;
 	}
 
 	private static final class Node {
@@ -83,22 +80,10 @@ public class SimpleNavigator implements Navigator {
 		private final int depth;
 		private final Field field;
 
-		public Node(Node parent, Field field) {
+		private Node(Node parent, Field field) {
 			this.parent = parent;
-			this.depth = parent == null ? 0 : parent.getDepth() + 1;
+			this.depth = parent == null ? 0 : parent.depth + 1;
 			this.field = field;
-		}
-
-		public Node getParent() {
-			return parent;
-		}
-
-		public int getDepth() {
-			return depth;
-		}
-
-		public Field getField() {
-			return field;
 		}
 	}
 }
