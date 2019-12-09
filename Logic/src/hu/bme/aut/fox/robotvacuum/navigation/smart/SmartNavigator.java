@@ -15,7 +15,7 @@ public class SmartNavigator implements Navigator {
 		Field onField = world.getField(state.getPositionX(), state.getPositionY());
 		if (onField == null) return null;
 
-		Node targetNode = findNode(world, onField, true, node -> !node.field.isCleaned());
+		FieldNode targetNode = findNode(world, onField, true, node -> !node.field.isCleaned());
 
 		if (targetNode != null) {
 			Field targetField = targetNode.field;
@@ -36,19 +36,19 @@ public class SmartNavigator implements Navigator {
 		return path.toArray(new Target[0]);
 	}
 
-	private Node findNode(
+	private FieldNode findNode(
 			World world,
 			Field startField,
 			boolean ignoreUnreachable,
-			Function<Node, Boolean> evaluator
+			Function<FieldNode, Boolean> evaluator
 	) {
 		List<Field> scanned = new LinkedList<>();
-		List<Node> edge = new LinkedList<>();
+		List<FieldNode> edge = new LinkedList<>();
 
 		scanned.add(startField);
-		edge.add(new Node(null, startField));
+		edge.add(new FieldNode(null, startField));
 		while (edge.size() > 0) {
-			Node node = edge.remove(0);
+			FieldNode node = edge.remove(0);
 			if (evaluator.apply(node)) return node;
 
 			Field field = node.field;
@@ -64,7 +64,7 @@ public class SmartNavigator implements Navigator {
 					if (ignoreUnreachable ? neighbor.isReachable() : !neighbor.isObstacle()) {
 						if (!scanned.contains(neighbor)) {
 							scanned.add(neighbor);
-							edge.add(new Node(node, neighbor));
+							edge.add(new FieldNode(node, neighbor));
 						}
 					}
 				}
@@ -74,16 +74,28 @@ public class SmartNavigator implements Navigator {
 		return null;
 	}
 
-	private static final class Node {
+	private static final class FieldNode {
 
-		private final Node parent;
+		private final FieldNode parent;
 		private final int depth;
 		private final Field field;
 
-		private Node(Node parent, Field field) {
+		private FieldNode(FieldNode parent, Field field) {
 			this.parent = parent;
 			this.depth = parent == null ? 0 : parent.depth + 1;
 			this.field = field;
 		}
+	}
+
+	private static class Node {
+
+
+
+		private Node parent;
+		private double distance;
+
+//		public Node(Point point) {
+//			this.point = point;
+//		}
 	}
 }
