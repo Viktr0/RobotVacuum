@@ -34,7 +34,6 @@ public class WorldViewModel {
     }
 
     private void updateWorld() {
-        System.out.println("WorldViewModel.updateWorld meghivodott");
         fields = new Field[scalingFactor][scalingFactor];
         int min = 0 - scalingFactor/2;
         int max = scalingFactor/2;

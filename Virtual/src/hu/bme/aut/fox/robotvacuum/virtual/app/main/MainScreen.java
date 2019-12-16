@@ -55,7 +55,7 @@ public class MainScreen extends App.Screen {
 				});
 
 
-		JButton combinedButton = new JButton("Combined Screen");
+		JButton combinedButton = new JButton("Start");
 		combinedButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 		combinedButton.addActionListener(
 				(event) -> {
@@ -71,10 +71,10 @@ public class MainScreen extends App.Screen {
 		);
 
 		add(Box.createVerticalGlue());
-		add(clockButton);
-		add(simulationButton);
-		add(virtualWorldButton);
-		add(worldButton);
+//		add(clockButton);
+//		add(simulationButton);
+//		add(virtualWorldButton);
+//		add(worldButton);
 		add(combinedButton);
 		add(Box.createVerticalGlue());
 	}

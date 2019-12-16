@@ -206,7 +206,6 @@ public class CombinedScreen extends App.Screen {
     }
 
     public void drawWorld(Field[][] fields) {
-        System.out.println("WorldScreen.drawWorld meghivodott meghivodott");
         combinedCanvas.repaint();
     }
 
