@@ -60,7 +60,6 @@ public class WorldScreen extends Screen {
 				System.out.println("RobotWorldCanvas.paint meghivodott");
 				super.paint(graphics);
 				fields = viewModel.getFields();
-				//fieldSize = (int) (600 / viewModel.getScalingFactor());
 
 				for (int i = 0; i < viewModel.getScalingFactor(); i++) {
 					for (int j = 0; j < viewModel.getScalingFactor(); j++) {

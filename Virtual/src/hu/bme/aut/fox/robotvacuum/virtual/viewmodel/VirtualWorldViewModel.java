@@ -6,7 +6,6 @@ import io.reactivex.subjects.BehaviorSubject;
 
 public class VirtualWorldViewModel {
 
-
     public final BehaviorSubject<Position> robotVacuum = BehaviorSubject.create();
     public final BehaviorSubject<VirtualRadar.RadarData[]> radarData = BehaviorSubject.create();
 

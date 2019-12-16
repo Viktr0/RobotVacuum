@@ -83,7 +83,6 @@ public class CombinedScreen extends App.Screen {
             cn = (int)actualPosX;
             int r = (rp > rn)? rp : rn;
             int c = (cn > cp)? cn : cp;
-            //worldViewModel.setScalingFactor((int)(2 * ((r > c)? r : c) / worldViewModel.getGridScale()));
             worldViewModel.setScalingFactor((int)(2 * ((r > c)? r : c) / worldViewModel.getGridScale()));
             SF = worldViewModel.getScalingFactor();
 

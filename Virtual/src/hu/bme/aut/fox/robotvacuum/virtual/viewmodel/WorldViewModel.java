@@ -9,7 +9,6 @@ import io.reactivex.subjects.BehaviorSubject;
 public class WorldViewModel {
 
     public BehaviorSubject<Field[][]> world = BehaviorSubject.create();
-    //public BehaviorSubject<RobotVacuum.State> state = BehaviorSubject.create();
     private Thread timerThread;
     private RobotVacuum robotVacuum;
     private Field[][] fields;
@@ -42,7 +41,6 @@ public class WorldViewModel {
             for(int j = min; j < max; ++j)
                 fields[i - min][j - min] = robotVacuum.getWorld().getGridField(j, i);
         world.onNext(fields);
-        //state.onNext(robotVacuum.getState());
     }
 
     public Field[][] getFields(){
@@ -63,18 +61,6 @@ public class WorldViewModel {
 
     public void setScalingFactor(int scalingFactor) {
         this.scalingFactor = scalingFactor;
-    }
-
-    public void increaseScalingFactor(){
-        if(scalingFactor < 66){
-            scalingFactor = scalingFactor + 2;
-        }
-    }
-
-    public void decreaseScalingFactor(){
-        if(scalingFactor > 4){
-            scalingFactor = scalingFactor -2;
-        }
     }
 
 }
