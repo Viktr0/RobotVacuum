@@ -3,14 +3,14 @@ package hu.bme.aut.fox.robotvacuum.virtual.components;
 import java.util.LinkedList;
 import java.util.List;
 
-public class ContinuousWorld {
+public class VirtualWorld {
 	private WorldObject[] objects;
 	private double width;
 	private double height;
 	private Position robotVacuum;
 	private List<ContinuousWorldListener> listeners;
 
-	public ContinuousWorld(double width, double height, WorldObject[] objects, Position robotVacuum) {
+	public VirtualWorld(double width, double height, WorldObject[] objects, Position robotVacuum) {
 		this.height = height;
 		this.width = width;
 		this.objects = objects;

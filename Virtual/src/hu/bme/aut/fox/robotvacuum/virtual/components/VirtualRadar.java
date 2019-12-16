@@ -4,7 +4,7 @@ import hu.bme.aut.fox.robotvacuum.hardware.Radar;
 
 import java.util.*;
 
-public class ContinuousRadar implements Radar {
+public class VirtualRadar implements Radar {
 	private static final double angle = 2.0 / 3.0 * Math.PI;
 	private static final double dPhi = 0.15;
 	private static final double maxLength = 5.0;
@@ -12,9 +12,9 @@ public class ContinuousRadar implements Radar {
 	private final Set<RadarListener> listeners;
 
 	private boolean isRunning;
-	ContinuousWorld world;
+	VirtualWorld world;
 
-	public ContinuousRadar(ContinuousWorld world) {
+	public VirtualRadar(VirtualWorld world) {
 		this.world = world;
 		listeners = new HashSet<>();
 	}
@@ -23,7 +23,7 @@ public class ContinuousRadar implements Radar {
 	public RadarData[] getRadarData() {
 		if (!isRunning)
 			return null;
-		ContinuousWorld.WorldObject[] objects = world.getObjects();
+		VirtualWorld.WorldObject[] objects = world.getObjects();
 		Position position = world.getRobotVacuum();
 
 		List<RadarData> data = new LinkedList<>();
@@ -46,9 +46,9 @@ public class ContinuousRadar implements Radar {
 		listeners.remove(listener);
 	}
 
-	RadarData measure(ContinuousWorld.WorldObject[] objects, Position position, double phi) {
+	RadarData measure(VirtualWorld.WorldObject[] objects, Position position, double phi) {
 		List<RadarData> data = new LinkedList<>();
-		for (ContinuousWorld.WorldObject object : objects) {
+		for (VirtualWorld.WorldObject object : objects) {
 			Double distance = getObjectsDistance(object, position, phi);
 			if (distance != null) {
 				if (distance >= maxLength - 0.000001)
@@ -63,11 +63,11 @@ public class ContinuousRadar implements Radar {
 		return result;
 	}
 
-	static Double getObjectsDistance(ContinuousWorld.WorldObject object, Position p, double phi) {
+	static Double getObjectsDistance(VirtualWorld.WorldObject object, Position p, double phi) {
 		Vec2 position = new Vec2(p.x, p.y);
 		List<Double> intersections = new LinkedList<>();
 
-		ContinuousWorld.Coordinate[] vertices = object.getVertices();
+		VirtualWorld.Coordinate[] vertices = object.getVertices();
 		final int length = vertices.length;
 		for (int i = 0, j = 1; i < length; ++i, j = (j + 1) % length) {
 			Vec2 intersection = intersectWithLine(vertices[i], vertices[j], position, phi);

@@ -11,7 +11,7 @@ import java.awt.*;
 public class VirtualWorldScreen extends Screen {
     private VirtualWorldPanel virtualWorldPanel;
 
-    public VirtualWorldScreen(ContinuousWorld virtualWorld, ContinuousRadar radar, ContinuousMotor virtualMotor){
+    public VirtualWorldScreen(VirtualWorld virtualWorld, VirtualRadar radar, VirtualMotor virtualMotor){
         virtualWorldPanel = new VirtualWorldPanel(virtualWorld, radar, virtualMotor);
         setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
         add(virtualWorldPanel);
@@ -27,14 +27,14 @@ public class VirtualWorldScreen extends Screen {
         private double actualPosX = 0;
         private double actualPosY = 0;
 
-        private ContinuousRadar.RadarData[] radarData = new ContinuousRadar.RadarData[0];
+        private VirtualRadar.RadarData[] radarData = new VirtualRadar.RadarData[0];
 
         private JPanel myCanvas;
 
         public VirtualWorldPanel(
-            ContinuousWorld virtualWorld,
-            ContinuousRadar radar,
-            ContinuousMotor virtualMotor
+            VirtualWorld virtualWorld,
+            VirtualRadar radar,
+            VirtualMotor virtualMotor
         ) {
             radarData = radar.getRadarData();
             viewModel = new VirtualWorldViewModel(
@@ -56,7 +56,7 @@ public class VirtualWorldScreen extends Screen {
             //matrix adatok
             private int rows = 0;
             private int columns = 0;
-            ContinuousWorld.WorldObject[] objects;
+            VirtualWorld.WorldObject[] objects;
 
             public FullWorldCanvas() {
 
@@ -79,7 +79,7 @@ public class VirtualWorldScreen extends Screen {
             public void paint(Graphics g) {
                 super.paint(g);
                 for (int i = 0; i < objects.length; i++) {
-                    ContinuousWorld.Coordinate[] coos = objects[i].getVertices();
+                    VirtualWorld.Coordinate[] coos = objects[i].getVertices();
                     int[] xCoos = new int[coos.length];
                     int[] yCoos = new int[coos.length];
                     for(int j = 0; j < coos.length; j++) {
@@ -99,7 +99,7 @@ public class VirtualWorldScreen extends Screen {
 
                 g.setColor(Color.BLUE);
                 if(radarData != null) {
-                    for (ContinuousRadar.RadarData data : radarData) {
+                    for (VirtualRadar.RadarData data : radarData) {
                         double startX = baseX + actualPosX * fieldSize;
                         double startY = baseY + actualPosY * fieldSize;
                         double rayLength = data.getDistance() * fieldSize;
@@ -122,7 +122,7 @@ public class VirtualWorldScreen extends Screen {
             myCanvas.repaint();
         }
 
-        public void setRadarData(ContinuousRadar.RadarData[] data) {
+        public void setRadarData(VirtualRadar.RadarData[] data) {
             radarData = data;
             myCanvas.repaint();
         }

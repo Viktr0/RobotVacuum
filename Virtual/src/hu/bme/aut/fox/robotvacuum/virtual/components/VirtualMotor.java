@@ -2,14 +2,14 @@ package hu.bme.aut.fox.robotvacuum.virtual.components;
 
 import hu.bme.aut.fox.robotvacuum.hardware.Motor;
 
-public class ContinuousMotor implements Motor {
+public class VirtualMotor implements Motor {
 	private static final double speed = 20;
 	private static final double rotationSpeed = 20;
 	private double radius;
 	private boolean isRunning = false;
-	ContinuousWorld world;
+	VirtualWorld world;
 
-	public ContinuousMotor(ContinuousWorld world) {
+	public VirtualMotor(VirtualWorld world) {
 		this.world = world;
 	}
 
@@ -44,8 +44,8 @@ public class ContinuousMotor implements Motor {
 	}
 
 	private Double getMaxMove(Position position, double distance) {
-		for (ContinuousWorld.WorldObject object : world.getObjects()) {
-			Double dist = ContinuousRadar.getObjectsDistance(object, position, position.direction);
+		for (VirtualWorld.WorldObject object : world.getObjects()) {
+			Double dist = VirtualRadar.getObjectsDistance(object, position, position.direction);
 			if (dist != null && dist + radius < distance)
 				return dist;
 		}

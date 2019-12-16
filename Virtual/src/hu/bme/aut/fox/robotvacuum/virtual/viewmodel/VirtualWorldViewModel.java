@@ -8,16 +8,16 @@ public class VirtualWorldViewModel {
 
 
     public final BehaviorSubject<Position> robotVacuum = BehaviorSubject.create();
-    public final BehaviorSubject<ContinuousRadar.RadarData[]> radarData = BehaviorSubject.create();
+    public final BehaviorSubject<VirtualRadar.RadarData[]> radarData = BehaviorSubject.create();
 
-    private ContinuousWorld virtualWorld;
-    private ContinuousRadar virtualRadar;
-    private ContinuousMotor virtualMotor;
+    private VirtualWorld virtualWorld;
+    private VirtualRadar virtualRadar;
+    private VirtualMotor virtualMotor;
 
     public VirtualWorldViewModel(
-        ContinuousWorld virtualWorld,
-        ContinuousRadar radar,
-        ContinuousMotor virtualMotor
+        VirtualWorld virtualWorld,
+        VirtualRadar radar,
+        VirtualMotor virtualMotor
     ){
         this.virtualWorld = virtualWorld;
         this.virtualMotor = virtualMotor;
@@ -31,18 +31,11 @@ public class VirtualWorldViewModel {
         robotVacuum.onNext(position);
     }
 
-    private void onUpdate(ContinuousRadar.RadarData[] data) {
+    private void onUpdate(VirtualRadar.RadarData[] data) {
         radarData.onNext(data.clone());
     }
 
-    //public VirtualWorldField[][] getWorld() {
-    //    return virtualWorld.getWorldMatrix();
-    //}
-    public ContinuousWorld.WorldObject[] getWorldObjects() {
-        return virtualWorld.getObjects();
-    }
-
-    public ContinuousWorld getVirtualWorld() {
+    public VirtualWorld getVirtualWorld() {
         return virtualWorld;
     }
 }

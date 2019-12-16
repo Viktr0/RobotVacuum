@@ -23,7 +23,7 @@ public class CombinedScreen extends App.Screen {
     private double actualPosY;
     private double recentPosX;
     private double recentPosY;
-    private ContinuousRadar.RadarData[] radarData = new ContinuousRadar.RadarData[0];
+    private VirtualRadar.RadarData[] radarData = new VirtualRadar.RadarData[0];
     //kép adatai
     private int fieldSize;
     private double worldScale;
@@ -39,7 +39,7 @@ public class CombinedScreen extends App.Screen {
     private int wBaseY;
 
 
-    public CombinedScreen(ContinuousWorld virtualWorld, ContinuousRadar virtualRadar, ContinuousMotor virtualMotor, RobotVacuum robotVacuum){
+    public CombinedScreen(VirtualWorld virtualWorld, VirtualRadar virtualRadar, VirtualMotor virtualMotor, RobotVacuum robotVacuum){
         worldViewModel = new WorldViewModel(robotVacuum);
         virtualWorldViewModel = new VirtualWorldViewModel(
                 virtualWorld,
@@ -55,7 +55,7 @@ public class CombinedScreen extends App.Screen {
 
     public class CombinedCanvas extends JPanel{
         private Field[][] fields;
-        private ContinuousWorld.WorldObject[] objects;
+        private VirtualWorld.WorldObject[] objects;
         private int rows = 0;
         private int columns = 0;
         private int SF;
@@ -102,7 +102,7 @@ public class CombinedScreen extends App.Screen {
 
             //Az alap
            for (int i = 0; i < objects.length; i++) {
-               ContinuousWorld.Coordinate[] coos = objects[i].getVertices();
+               VirtualWorld.Coordinate[] coos = objects[i].getVertices();
                int[] xCoos = new int[coos.length];
                int[] yCoos = new int[coos.length];
                for (int j = 0; j < coos.length; j++) {
@@ -173,7 +173,7 @@ public class CombinedScreen extends App.Screen {
             //A radar
            graphics.setColor(Color.BLUE);
            if(radarData != null) {
-               for (ContinuousRadar.RadarData data : radarData) {
+               for (VirtualRadar.RadarData data : radarData) {
                    double startX = baseX + actualPosX * fieldSize;
                    double startY = baseY + actualPosY * fieldSize;
                    double rayLength = data.getDistance() * fieldSize;
@@ -197,7 +197,7 @@ public class CombinedScreen extends App.Screen {
         combinedCanvas.repaint();
     }
 
-    public void setRadarData(ContinuousRadar.RadarData[] data) {
+    public void setRadarData(VirtualRadar.RadarData[] data) {
         radarData = data;
         combinedCanvas.repaint();
     }

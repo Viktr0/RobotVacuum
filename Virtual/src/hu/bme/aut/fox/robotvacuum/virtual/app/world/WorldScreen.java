@@ -90,5 +90,5 @@ public class WorldScreen extends Screen {
 		super.onAttach();
 		subscribe(worldPanel.viewModel.world, (matrix) -> worldPanel.drawWorld(matrix));
 	}
-	
+
 }
