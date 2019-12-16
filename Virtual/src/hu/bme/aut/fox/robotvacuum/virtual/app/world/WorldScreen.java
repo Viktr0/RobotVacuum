@@ -17,7 +17,6 @@ public class WorldScreen extends Screen {
 		setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
 		worldPanel = new WorldPanel(rv);
 		add(worldPanel);
-
 	}
 
 	public static class WorldPanel extends JPanel {
@@ -27,9 +26,6 @@ public class WorldScreen extends Screen {
 		private final int baseY = 0;
 		private WorldViewModel viewModel;
 		private JPanel myCanvas;
-		private JButton increaseBtn = new JButton("+");
-		private JButton decreaseBtn = new JButton("-");
-
 
 		public WorldPanel(RobotVacuum rv) {
 			setPreferredSize(new Dimension(700,700));
@@ -37,22 +33,10 @@ public class WorldScreen extends Screen {
 			viewModel = new WorldViewModel(rv);
 			setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
 
-			increaseBtn.addActionListener((event) -> {
-				viewModel.increaseScalingFactor();
-				System.out.println(viewModel.getScalingFactor());
-			});
-			decreaseBtn.addActionListener((event) -> {
-				viewModel.decreaseScalingFactor();
-				System.out.println(viewModel.getScalingFactor());
-			});
-
-
 			myCanvas = new RobotWorldCanvas();
 			myCanvas.setPreferredSize(new Dimension(700, 700));
 			myCanvas.repaint();
 			add(myCanvas);
-			//add(increaseBtn);
-			//add(decreaseBtn);
 		}
 
 		public void drawWorld(Field[][] fields) {
@@ -97,17 +81,14 @@ public class WorldScreen extends Screen {
 						graphics.fillRect(baseX + i * fieldSize, baseY + j * fieldSize, fieldSize, fieldSize);
 					}
 				}
-
 			}
 		}
 	}
-
 
 	@Override
 	public void onAttach() {
 		super.onAttach();
 		subscribe(worldPanel.viewModel.world, (matrix) -> worldPanel.drawWorld(matrix));
 	}
-
-
+	
 }

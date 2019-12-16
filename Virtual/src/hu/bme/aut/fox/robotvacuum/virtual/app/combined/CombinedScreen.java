@@ -1,7 +1,6 @@
 package hu.bme.aut.fox.robotvacuum.virtual.app.combined;
 
 import hu.bme.aut.fox.robotvacuum.RobotVacuum;
-//import hu.bme.aut.fox.robotvacuum.ContinuousRadar;
 import hu.bme.aut.fox.robotvacuum.navigation.Navigator;
 import hu.bme.aut.fox.robotvacuum.virtual.app.App;
 import hu.bme.aut.fox.robotvacuum.virtual.components.*;
@@ -87,7 +86,6 @@ public class CombinedScreen extends App.Screen {
             //worldViewModel.setScalingFactor((int)(2 * ((r > c)? r : c) / worldViewModel.getGridScale()));
             worldViewModel.setScalingFactor((int)(2 * ((r > c)? r : c) / worldViewModel.getGridScale()));
             SF = worldViewModel.getScalingFactor();
-            System.out.println("SCALINGFACTOR: " + SF);
 
             fieldSize = 30;
             vwBaseX = (SF/2 - (int)actualPosX) * fieldSize;
@@ -101,7 +99,6 @@ public class CombinedScreen extends App.Screen {
             super.paint(graphics);
             fields = worldViewModel.getFields();
             worldScale = worldViewModel.getGridScale();
-
 
             //Az alap
            for (int i = 0; i < objects.length; i++) {
@@ -117,8 +114,8 @@ public class CombinedScreen extends App.Screen {
            }
 
             //Robot kepe
-            for (int i = 0; i < SF; i++) {
-                for (int j = 0; j < SF; j++) {
+            for (int i = 0; i < fields.length; i++) {
+                for (int j = 0; j < fields.length; j++) {
                     if (fields[j][i] != null) {
                         if (fields[j][i].isObstacle()) {
                             graphics.setColor(new Color(127, 0, 0, 100));
@@ -215,13 +212,6 @@ public class CombinedScreen extends App.Screen {
         subscribe(virtualWorldViewModel.robotVacuum, this::setRobotVacuumPos);
         subscribe(virtualWorldViewModel.radarData, this::setRadarData);
         subscribe(worldViewModel.world, (matrix) -> drawWorld(matrix));
-        /*subscribe(worldViewModel.state, state -> {
-            robotVacuumPosX = (int) state.getPositionX();
-            robotVacuumPosY = (int) state.getPositionY();
-            combinedCanvas.repaint();
-        });*/
     }
-
-
 
 }

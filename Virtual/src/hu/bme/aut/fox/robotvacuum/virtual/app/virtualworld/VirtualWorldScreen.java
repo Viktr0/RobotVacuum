@@ -17,17 +17,13 @@ public class VirtualWorldScreen extends Screen {
         add(virtualWorldPanel);
     }
 
-
     public static class VirtualWorldPanel extends JPanel {
-
 
         private VirtualWorldViewModel viewModel;
         private final int baseX = 0;
         private final int baseY = 0;
         private final int fieldSize = 20;
 
-        private double recentPosX;
-        private double recentPosY;
         private double actualPosX = 0;
         private double actualPosY = 0;
 
@@ -55,10 +51,6 @@ public class VirtualWorldScreen extends Screen {
             add(myCanvas);
         }
 
-        public VirtualWorldViewModel getViewModel(){
-            return viewModel;
-        }
-
         public class FullWorldCanvas extends JPanel {
 
             //matrix adatok
@@ -71,9 +63,6 @@ public class VirtualWorldScreen extends Screen {
                 actualPosX = (int) viewModel.getVirtualWorld().getRobotVacuum().x;
                 actualPosY = (int) viewModel.getVirtualWorld().getRobotVacuum().y;
 
-                recentPosX = actualPosX;
-                recentPosY = actualPosY;
-
                 objects = viewModel.getVirtualWorld().getObjects();
                 int max = 0;
                 int len = objects.length;
@@ -81,7 +70,6 @@ public class VirtualWorldScreen extends Screen {
                     if (objects[i].getVertices().length > max)
                         max = objects[i].getVertices().length;
                 }
-                //System.out.println(objects.length);
 
                 columns = (int) viewModel.getVirtualWorld().getWidth();
                 rows = (int) viewModel.getVirtualWorld().getHeight();
@@ -100,9 +88,6 @@ public class VirtualWorldScreen extends Screen {
                     }
                     g.setColor(Color.BLACK);
                     g.fillPolygon(new Polygon(xCoos, yCoos, coos.length));
-                    //    fields[(int) recentPosX][(int) recentPosY].status = VirtualWorldField.Status.CLEAN; //TODO
-
-
                 }
 
 
@@ -127,8 +112,6 @@ public class VirtualWorldScreen extends Screen {
                     }
                 }
 
-                recentPosX = actualPosX;
-                recentPosY = actualPosY;
             }
         }
 
