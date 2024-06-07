@@ -4,7 +4,7 @@
   <img width=60% src="https://github.com/Viktr0/RobotVacuum/assets/47856193/70d72969-7265-4c04-aed3-add6d75a4a32"/>
 </p>
 
-This was a home assignment created by Ádám Balassa, Árony Derényi and Viktor Horváth.
+This was a home assignment created by [Ádám Balassa](https://github.com/adam-balassa), [Árony Derényi](https://github.com/AronDerenyi) and Viktor Horváth.
 The task was to develop a robot vacuum cleaner type navigation system in Java.
 
 ## Solution
